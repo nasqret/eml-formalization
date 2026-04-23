@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lambda-lab"
+version = "1.0.0"
+description = "Wtyczki, kable i krokodyle — Lambda Lab dla wykładu Falenty 2026"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "dr Bartosz Naskręcki" }]
+license = { text = "MIT" }
+
+dependencies = [
+    "rich>=13.7",
+    "prompt_toolkit>=3.0.43",
+    "typer>=0.12",
+    "pyyaml>=6.0.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+book = [
+    "jupyter-book>=2.0.0a0",
+    "sphinx-proof>=0.2",
+    "sphinx-design>=0.6",
+    "myst-nb>=1.1",
+    "matplotlib>=3.8",
+    "numpy>=1.26",
+    "ipykernel>=6.29",
+]
+
+[project.scripts]
+lambda-lab = "lambda_lab.lab.app:main"
+
+[tool.setuptools.packages.find]
+include = ["lambda_lab*"]

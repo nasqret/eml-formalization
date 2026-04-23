@@ -1,0 +1,49 @@
+# macOS
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+
+# JupyterBook
+book/_build/
+book/.jupyter_cache/
+_build/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (reveal-md)
+node_modules/
+slides/*.html.bak
+
+# Lean
+lean_examples/build/
+**/*.olean
+lake-packages/
+.lake/
+
+# Environment
+.env
+.env.local
+
+# Logs
+*.log
+
+# Lab scratch
+lambda_lab/_scratch/
