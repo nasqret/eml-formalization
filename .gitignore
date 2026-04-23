@@ -17,9 +17,10 @@ build/
 dist/
 .ipynb_checkpoints/
 
-# JupyterBook
+# JupyterBook v2 (mystmd)
 book/_build/
 book/.jupyter_cache/
+book/node_modules/
 _build/
 
 # Editor
