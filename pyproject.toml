@@ -29,6 +29,10 @@ book = [
     "numpy>=1.26",
     "ipykernel>=6.29",
 ]
+site = [
+    "markdown>=3.5",
+    "pygments>=2.17",
+]
 
 [project.scripts]
 lambda-lab = "lambda_lab.lab.app:main"

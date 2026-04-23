@@ -23,6 +23,9 @@ book/.jupyter_cache/
 book/node_modules/
 _build/
 
+# Site generator output (regenerowalne z site/build.py)
+site/md/
+
 # Editor
 .vscode/
 .idea/
