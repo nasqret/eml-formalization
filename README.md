@@ -21,19 +21,31 @@ Materiały do 90-minutowego wykładu popularnonaukowego dla ambitnych licealist�
 
 ## Szybki start
 
+**Otwórz stronę startową:** [`site/index.html`](site/index.html) — landing page z linkami do wszystkich materiałów (książka, slajdy, dokumentacja, repo).
+
+**Uruchom aplikację w 3 krokach:**
+
 ```bash
-# 1. Środowisko Pythona (JupyterBook + Lambda Lab)
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+# 1. Środowisko Pythona
+python3 -m venv .venv && source .venv/bin/activate
 
-# 2. Zbuduj książkę (JupyterBook v2)
-make book
+# 2. Pakiet edytowalnie (wraz z zależnościami)
+pip install -e .
 
-# 3. Uruchom aplikację terminalową
-make lab
-# lub:
+# 3. Aplikacja terminalowa
 python -m lambda_lab
+```
+
+**Pełna instrukcja krok po kroku:** [`docs/quickstart.md`](docs/quickstart.md).
+
+**Budowanie książki i slajdów:**
+
+```bash
+# JupyterBook v2
+pip install -e '.[book]' && cd book && jupyter-book build --html
+
+# slajdy reveal.js (wymaga reveal-md z npm)
+cd slides && reveal-md slides.md --static build --theme assets/theme.css --static-dirs=assets
 ```
 
 ## Filozofia projektu
