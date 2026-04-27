@@ -16,6 +16,8 @@ dependencies = [
     "prompt_toolkit>=3.0.43",
     "typer>=0.12",
     "pyyaml>=6.0.1",
+    "python-dotenv>=1.0",
+    "openai>=1.50",
 ]
 
 [project.optional-dependencies]
@@ -39,3 +41,8 @@ lambda-lab = "lambda_lab.lab.app:main"
 
 [tool.setuptools.packages.find]
 include = ["lambda_lab*"]
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]

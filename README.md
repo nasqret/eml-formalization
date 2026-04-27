@@ -11,8 +11,8 @@ Materiały do 90-minutowego wykładu popularnonaukowego dla ambitnych licealist�
 
 | Katalog | Zawartość |
 | --- | --- |
-| `book/` | **JupyterBook v2** — przystępny wykład krok po kroku, od „krokodyli” Brecta Victora do rachunku Peano, Leana i AlphaGeometry. |
-| `slides/` | **Prezentacja 90 min** (reveal.js + Markdown) z motywem matematyczno-graficznym, dobrze dobranymi przykładami i kolejnymi slajdami do dyskusji. |
+| `book/` | **JupyterBook v2** — przystępny wykład krok po kroku, od „krokodyli” Breta Victora do rachunku Peano, Leana i AlphaGeometry. |
+| `slides/` | **Prezentacja 90 min** (reveal.js + Markdown) z motywem matematyczno-graficznym, starannie dobranymi przykładami i slajdami do dyskusji. |
 | `lambda_lab/` | **Aplikacja terminalowa** (Python, `rich` + `textual`) — startpage, animacje, kolorowe komentarze, tryb krok po kroku dla dowodów w Pythonie, Lean 4 i AlphaGeometry. |
 | `docs/` | Dokumentacja dla wykładowcy: sekwencja lekcji, karty komend `lambda_lab`, notatki wykonawcze, literatura. |
 | `PLAN/` | Wielopoziomowe plany: L0 cele, L1 moduły, L2 rozdziały, L3 zadania. Każdy pas pracy ma własny plik. |
@@ -38,7 +38,17 @@ python -m lambda_lab
 
 **Pełna instrukcja krok po kroku:** [`docs/quickstart.md`](docs/quickstart.md).
 
-**Budowanie książki i slajdów:**
+**Budowanie wszystkiego naraz (Makefile):**
+
+```bash
+make site      # zrenderuj landing page (site/index.html)
+make slides    # reveal.js (slides/build/index.html)
+make book      # JupyterBook v2 (book/_build/html/index.html)
+make lab-test  # uruchom testy pytest
+make all       # site + book + slides + lab-test
+```
+
+**Albo ręcznie:**
 
 ```bash
 # JupyterBook v2
@@ -47,6 +57,8 @@ pip install -e '.[book]' && cd book && jupyter-book build --html
 # slajdy reveal.js (wymaga reveal-md z npm)
 cd slides && reveal-md slides.md --static build --theme assets/theme.css --static-dirs=assets
 ```
+
+**Tryb offline.** Po jednorazowym buildzie wszystko działa bez sieci — szczegóły w [`OFFLINE.md`](OFFLINE.md).
 
 ## Filozofia projektu
 
