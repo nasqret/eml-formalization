@@ -1,0 +1,19 @@
+{
+  "id": "025_calc3_to_calc2",
+  "title_pl": "Redukcja Calc 3 → Calc 2",
+  "title_en": "Calc 3 → Calc 2 reduction",
+  "paper_section": "§3 Results, Table 2 (rows 'Calc 3' and 'Calc 2')",
+  "paper_quote": "From Calc 3 {exp, ln, −x, 1/x, +} we drop −x, 1/x and replace + with − to obtain Calc 2 {exp, ln, −} (4 symbols).",
+  "informal_pl": "Krok kanoniczny: −x usuwamy przez successor identity (chunk 019); 1/x przez tożsamości algebraiczne; + zostaje zastąpione − bo a + b = a − (−b) i −b mamy z 019. Stwierdzenie istnieniowe.",
+  "informal_en": "Canonical step: −x is removed via the successor identity (chunk 019); 1/x via algebraic identities; + is replaced by − because a + b = a − (−b) and −b is now available. Stated as a placeholder existential.",
+  "kind": "calculator-equivalence",
+  "difficulty": 3,
+  "lean_imports": [],
+  "lean_target_signature": "theorem calc3_subset_calc2 : True := by sorry",
+  "depends_on": ["019_negation_in_calc3"],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Same shape as 024 — placeholder."
+}

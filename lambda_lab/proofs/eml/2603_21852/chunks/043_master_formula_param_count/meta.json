@@ -1,0 +1,19 @@
+{
+  "id": "043_master_formula_param_count",
+  "title_pl": "Liczba parametrów master-formuły poziomu n",
+  "title_en": "Master-formula parameter count at level n",
+  "paper_section": "§4.3 Master formula — symbolic regression",
+  "paper_quote": "Level-n EML master formula has 5 × 2^n − 6 parameters total.",
+  "informal_pl": "Liczba parametrów master-formuły poziomu n wynosi 5·2^n − 6. Definicja parametrCount n := 5·2^n − 6 i lemat sprawdzający kilka małych wartości (n=1: 4, n=2: 14, n=3: 34).",
+  "informal_en": "The level-n master formula has 5·2^n − 6 parameters. We define parametrCount n := 5·2^n − 6 and check small values (n=1: 4, n=2: 14, n=3: 34).",
+  "kind": "definition",
+  "difficulty": 2,
+  "lean_imports": ["Mathlib.Algebra.GroupPower.Basic"],
+  "lean_target_signature": "def masterParamCount (n : ℕ) : ℤ := 5 * 2 ^ n - 6",
+  "depends_on": [],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "ℤ used to avoid the underflow at n=0 (5·1−6 = −1). The paper assumes n≥1."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "024_wolfram_to_calc3",
+  "title_pl": "Redukcja Wolfram → Calc 3",
+  "title_en": "Wolfram → Calc 3 reduction",
+  "paper_section": "§3 Results, Table 2 (rows 'Wolfram' and 'Calc 3')",
+  "paper_quote": "From the 7-symbol Wolfram set {π, e, i, ln, +, ×, ∧} we can drop π, e, i and the binary × and ∧, replacing them with {exp, ln, −x, 1/x, +} (Calc 3, 6 symbols).",
+  "informal_pl": "Pierwszy krok łańcucha redukcji: każda funkcja wyrażalna w zbiorze Wolfram jest wyrażalna w zbiorze Calc 3. Stwierdzenie istnieniowe — formalna konstrukcja wymagałaby zdefiniowania języka 'Wolfram' i interpretera; zostawiamy `sorry` z notatką.",
+  "informal_en": "First step of the reduction chain: every function expressible in the Wolfram set is expressible in Calc 3. We state it as an existential; a constructive proof would require defining the 'Wolfram language' and an interpreter, which we defer.",
+  "kind": "calculator-equivalence",
+  "difficulty": 4,
+  "lean_imports": ["Mathlib.Analysis.SpecialFunctions.Exp", "Mathlib.Analysis.SpecialFunctions.Log.Basic"],
+  "lean_target_signature": "theorem wolfram_subset_calc3 : True := by sorry",
+  "depends_on": [],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Stub (True) target until calculator-language types are introduced. Aristotle should accept the trivial `trivial` proof; the chunk is a placeholder for the eventual interpreter equivalence."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "013_sub_via_eml",
+  "title_pl": "Odejmowanie w terminach EML",
+  "title_en": "Subtraction expressed via EML",
+  "paper_section": "§3 Results, Calculator-equivalence chain",
+  "paper_quote": "x − y = exp(ln x) − exp(ln y) (when x, y > 0); equivalently exp(ln x) − ln(exp y).",
+  "informal_pl": "Odejmowanie x − y można wyrazić przez EML poprzez eml(ln x, exp y) = exp(ln x) − ln(exp y) = x − y, dla x > 0 (bo wtedy ln(exp y)=y wymaga jedynie y rzeczywistego, a exp(ln x)=x wymaga x > 0).",
+  "informal_en": "The subtraction x − y can be written as eml(ln x, exp y) = exp(ln x) − ln(exp y) = x − y when x > 0 (the ln(exp y) = y simplification needs no positivity, but exp(ln x) = x needs x > 0).",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem sub_via_eml (x y : ℝ) (hx : 0 < x) : x - y = eml (Real.log x) (Real.exp y) := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "f5b41bc8-2cc6-4a8d-9482-3a2cec15ace7",
+  "submitted_at": "2026-05-01T01:04:56Z",
+  "completed_at": "2026-05-01T01:17:34Z",
+  "notes": "Uses Real.exp_log hx and Real.log_exp y."
+}

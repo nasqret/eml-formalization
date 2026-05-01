@@ -1,0 +1,19 @@
+{
+  "id": "029_eml_minimality",
+  "title_pl": "Minimalność trzech prymitywów",
+  "title_en": "Minimality: three primitives is the minimum",
+  "paper_section": "§3 Results (concluding remark on Table 2)",
+  "paper_quote": "Three primitives is the minimum: any further reduction would either drop the constant (leaving an unsatisfiable arity equation) or merge eml with another operation in a way that loses expressiveness.",
+  "informal_pl": "Stwierdzenie, że nie istnieje konfiguracja kalkulatora z mniejszym niż trzy prymitywami zachowująca pełną elementarną wyrażalność. Pełny dowód argumentu wymaga formalnego pojęcia 'kalkulatora' i 'wyrażalności'; tutaj zostawiamy stub.",
+  "informal_en": "States that no calculator configuration with fewer than three primitives retains full elementary expressiveness. A formal proof requires defining 'calculator' and 'expressible'; we leave a stub.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [],
+  "lean_target_signature": "theorem eml_minimality_stub : True := by sorry",
+  "depends_on": [],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Open / philosophical claim in the paper; we keep it as `True` placeholder."
+}

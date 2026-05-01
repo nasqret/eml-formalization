@@ -1,0 +1,24 @@
+{
+  "id": "007_eml_x_one_eq_exp",
+  "title_pl": "eml(x,1) = exp(x)",
+  "title_en": "eml(x,1) = exp(x)",
+  "paper_section": "§3 Results, EML expression catalog",
+  "paper_quote": "exp(x) = eml(x, 1)",
+  "informal_pl": "Drugi argument równy 1 sprowadza ln(1) do zera, więc eml(x,1) = exp(x) dla każdej liczby rzeczywistej x. To pokazuje, że funkcja wykładnicza jest natychmiast osiągalna w EML.",
+  "informal_en": "Setting the second argument to 1 collapses ln(1) to zero, so eml(x,1) = exp(x) for every real x. This shows that the exponential is immediately reachable in EML.",
+  "kind": "identity",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem eml_x_one (x : ℝ) : eml x 1 = Real.exp x := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "de98b64b-f42f-4be5-a82d-70fca248e1d1",
+  "submitted_at": "2026-05-01T00:08:37Z",
+  "completed_at": "2026-05-01T00:37:12Z",
+  "notes": "Same rewrite shape as 006 but parameterised over x."
+}

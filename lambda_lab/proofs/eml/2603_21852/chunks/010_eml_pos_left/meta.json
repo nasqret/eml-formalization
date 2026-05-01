@@ -1,0 +1,23 @@
+{
+  "id": "010_eml_pos_left",
+  "title_pl": "Pozytywność lewego składnika eml",
+  "title_en": "Positivity of the left exponential of eml",
+  "paper_section": "§3 Results (implicit; pre-condition lemma)",
+  "paper_quote": "exp(x) > 0 for every real x, hence the leading exp term in eml(x,y) is always positive.",
+  "informal_pl": "Lewa część operatora EML, exp(x), jest zawsze ściśle dodatnia. Ten elementarny lemat podpiera dalsze argumenty pozytywności (np. dla pochodnych logarytmu w 011).",
+  "informal_en": "The left summand of EML, exp(x), is always strictly positive. This trivial lemma underpins later positivity arguments (e.g. for the log argument in chunk 011).",
+  "kind": "theorem",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp"
+  ],
+  "lean_target_signature": "theorem eml_left_pos (x y : ℝ) : 0 < Real.exp x := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "159ba0a3-d4bb-47ed-8222-18965d306400",
+  "submitted_at": "2026-05-01T00:10:05Z",
+  "completed_at": "2026-05-01T00:37:16Z",
+  "notes": "Mathlib has Real.exp_pos directly; the chunk is essentially `exact Real.exp_pos x`."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "035_emlterm_for_i",
+  "title_pl": "EMLTerm dla i (jednostki urojonej)",
+  "title_en": "EMLTerm whose eval is i (imaginary unit)",
+  "paper_section": "§3 Results, EML expression catalog (i, K=131)",
+  "paper_quote": "i: K = 131 (literal tree in Supplementary).",
+  "informal_pl": "Istnieje term EML (po przeniesieniu na ℂ) rozmiaru 131 ewaluujący do jednostki urojonej i. PROBABLE PERMANENT SORRY: wymaga zarówno wersji zespolonej EMLTerm jak i transkrypcji 131-węzłowego drzewa.",
+  "informal_en": "There exists an EML term (after lifting to ℂ) of size 131 evaluating to i. PROBABLE PERMANENT SORRY: requires both a complex variant of EMLTerm and transcription of the 131-node tree.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": ["Mathlib.Analysis.SpecialFunctions.Exp", "Mathlib.Analysis.SpecialFunctions.Complex.Log"],
+  "lean_target_signature": "theorem emlterm_for_i : ∃ t : EMLTermℂ, EMLTermℂ.eval t = Complex.I := by sorry",
+  "depends_on": [],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Permanent sorry; the complex variant EMLTermℂ is not formally introduced in the chunks. The target is recorded for the eventual complex-EML pass."
+}

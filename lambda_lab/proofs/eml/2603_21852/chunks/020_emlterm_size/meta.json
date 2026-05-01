@@ -1,0 +1,21 @@
+{
+  "id": "020_emlterm_size",
+  "title_pl": "Rozmiar termów EML",
+  "title_en": "Size function on EML terms",
+  "paper_section": "§4.1 EML compiler ('K denotes the size of the RPN code')",
+  "paper_quote": "K denotes the size of the RPN code (number of EML/leaf nodes in the binary tree).",
+  "informal_pl": "Definiujemy size termu EML jako liczbę węzłów: liść .one ma rozmiar 1, węzeł .eml t u ma rozmiar 1 + size t + size u. Odpowiada to długości RPN-kodu z paperu (kolumna 'EML compiler K').",
+  "informal_en": "We define the size of an EML term as the number of nodes: .one has size 1, and .eml t u has size 1 + size t + size u. This matches the K column ('EML compiler K') in the paper's catalogue.",
+  "kind": "definition",
+  "difficulty": 2,
+  "lean_imports": [],
+  "lean_target_signature": "def EMLTerm.size : EMLTerm → ℕ\n  | .one => 1\n  | .eml t u => 1 + EMLTerm.size t + EMLTerm.size u",
+  "depends_on": [
+    "002_def_eml_term"
+  ],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T01:04:51Z",
+  "notes": "Structural recursion on EMLTerm. | Pure definition: result = target."
+}

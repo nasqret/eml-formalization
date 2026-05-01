@@ -1,0 +1,24 @@
+{
+  "id": "009_eml_x_e",
+  "title_pl": "eml(x, e) = exp(x) − 1",
+  "title_en": "eml(x, e) = exp(x) − 1",
+  "paper_section": "§3 Results (consequence of Equation 3)",
+  "paper_quote": "eml(x, e) = exp(x) − ln(e) = exp(x) − 1",
+  "informal_pl": "Podstawienie y = e daje ln(e) = 1, więc eml(x,e) = exp(x) − 1. Wartość 'exp(x) − 1' pojawia się w wielu rozwinięciach (np. szereg Taylora), więc warto mieć ją jako wyodrębniony lemat.",
+  "informal_en": "Substituting y = e yields ln(e) = 1, so eml(x,e) = exp(x) − 1. The value exp(x) − 1 appears throughout analysis (Taylor expansions, etc.) so it is worth isolating.",
+  "kind": "identity",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem eml_x_e (x : ℝ) : eml x (Real.exp 1) = Real.exp x - 1 := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "30ebb22a-a3f6-44d4-833a-4af14cae82fb",
+  "submitted_at": "2026-05-01T00:10:03Z",
+  "completed_at": "2026-05-01T00:37:15Z",
+  "notes": "Uses Real.log_exp 1 = 1. We model the constant e as Real.exp 1 to avoid pulling Real.exp_one off-stage."
+}

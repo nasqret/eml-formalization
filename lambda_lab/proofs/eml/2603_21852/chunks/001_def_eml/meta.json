@@ -1,0 +1,22 @@
+{
+  "id": "001_def_eml",
+  "title_pl": "Definicja operatora EML",
+  "title_en": "Definition of the EML operator",
+  "paper_section": "§3 Results, Equation 3",
+  "paper_quote": "eml(x, y) = exp(x) − ln(y)",
+  "informal_pl": "Operator EML jest binarnym operatorem rzeczywistym zdefiniowanym wzorem eml(x,y) = exp(x) − ln(y). Stanowi serce konstrukcji Odrzywołka: w połączeniu ze stałą 1 generuje wszystkie elementarne funkcje kalkulatora naukowego.",
+  "informal_en": "The EML operator is a binary real-valued operator defined by eml(x,y) = exp(x) − ln(y). It is the heart of Odrzywołek's construction: combined with the constant 1 it generates every elementary function of a scientific calculator.",
+  "kind": "definition",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "def eml (x y : ℝ) : ℝ := Real.exp x - Real.log y",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T00:07:16Z",
+  "notes": "Pure definition; Aristotle just needs to type-check. Real.log is junk-valued at non-positive arguments, which is fine for the formal definition. | Pure definition: result = target."
+}

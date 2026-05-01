@@ -1,0 +1,9 @@
+# Aristotle download artifacts — re-fetchable, not source.
+**/chunks/*/_archive/
+
+# Lake build artifacts.
+**/lean_workspace/.lake/
+**/lean_workspace/lake-manifest.json
+
+# Mathematica scratch.
+tools/spec_*_out.json

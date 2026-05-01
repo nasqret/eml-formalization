@@ -1,0 +1,19 @@
+{
+  "id": "045_main_completeness_stub",
+  "title_pl": "Główne twierdzenie kompletności — zaślepka",
+  "title_en": "Main completeness theorem — stub",
+  "paper_section": "§3 Results, abstract claim of universality",
+  "paper_quote": "EML + 1 generates all standard scientific calculator operations.",
+  "informal_pl": "Stwierdzenie parasolowe: dla każdego z 36 prymitywów z Tabeli 1 istnieje (parametryzowany) term EML, który go realizuje. Zostawione w postaci `sorry` do czasu, gdy wszystkie podpodprzypadki (chunki 030–042) zostaną rozstrzygnięte.",
+  "informal_en": "Umbrella statement: for each of the 36 primitives in Table 1 there exists a (parameterised) EML term realising it. Left as `sorry` until every sub-case (chunks 030–042) is closed.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [],
+  "lean_target_signature": "theorem main_completeness_stub : True := by sorry",
+  "depends_on": ["030_emlterm_for_zero", "031_emlterm_for_neg_one", "032_emlterm_for_two", "033_emlterm_for_half", "036_emlterm_for_neg_x", "037_emlterm_for_inv_x", "038_emlterm_for_sq_x", "040_emlterm_for_add_xy", "041_emlterm_for_mul_xy", "042_emlterm_for_pow_xy"],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Permanent stub. Excludes 034 (π), 035 (i), 039 (√x) which are individually permanent sorries."
+}

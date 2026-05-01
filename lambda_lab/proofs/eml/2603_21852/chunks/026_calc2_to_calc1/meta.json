@@ -1,0 +1,19 @@
+{
+  "id": "026_calc2_to_calc1",
+  "title_pl": "Redukcja Calc 2 → Calc 1",
+  "title_en": "Calc 2 → Calc 1 reduction",
+  "paper_section": "§3 Results, Table 2 (rows 'Calc 2' and 'Calc 1')",
+  "paper_quote": "From Calc 2 {exp, ln, −} we move to Calc 1 {e or π} ∪ {x^y, log_x(y)}.",
+  "informal_pl": "Krok przejścia od pary unarnych exp/ln + binarnego − do pary binarnych potęgowania i logarytmu_x razem ze stałą e (lub π). Wymaga tożsamości exp(x) = e^x i ln(x) = log_e(x).",
+  "informal_en": "Move from a unary {exp, ln} + binary {−} to two binary primitives {x^y, log_x(y)} together with a constant e (or π). Uses exp(x) = e^x and ln(x) = log_e(x).",
+  "kind": "calculator-equivalence",
+  "difficulty": 3,
+  "lean_imports": [],
+  "lean_target_signature": "theorem calc2_subset_calc1 : True := by sorry",
+  "depends_on": [],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Placeholder; the bijection between languages is the substantive content."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "008_eml_one_y",
+  "title_pl": "eml(1,y) = e − ln(y)",
+  "title_en": "eml(1,y) = e − ln(y)",
+  "paper_section": "§3 Results (consequence of Equation 3)",
+  "paper_quote": "eml(1, y) = exp(1) − ln(y)",
+  "informal_pl": "Pierwszy argument równy 1 redukuje exp(1) do stałej e, więc eml(1,y) = e − ln(y). Hipoteza y > 0 nie jest formalnie konieczna (ze względu na junk-value Real.log), ale dodajemy ją dla przejrzystości semantycznej.",
+  "informal_en": "Setting the first argument to 1 reduces exp(1) to the constant e, giving eml(1,y) = e − ln(y). The hypothesis y > 0 is not formally required (Real.log is junk-valued elsewhere) but we keep it for semantic clarity.",
+  "kind": "identity",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem eml_one_y (y : ℝ) (hy : 0 < y) : eml 1 y = Real.exp 1 - Real.log y := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "94acfe91-42cd-45aa-bc95-8ae366ed6506",
+  "submitted_at": "2026-05-01T00:08:39Z",
+  "completed_at": "2026-05-01T00:37:14Z",
+  "notes": "Should reduce to rfl after unfolding eml; the positivity hypothesis is decoration here."
+}

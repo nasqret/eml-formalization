@@ -1,0 +1,22 @@
+{
+  "id": "018_inv_successor_inv_inverse_simple",
+  "title_pl": "Algebra wyrażenia inv(suc(inv x))",
+  "title_en": "Algebraic simplification of inv(suc(inv x))",
+  "paper_section": "§3 Results (sub-step of successor identity)",
+  "paper_quote": "1/(1/x + 1) = x / (1 + x)",
+  "informal_pl": "Pomocniczy lemat algebraiczny: 1/(1/x + 1) = x/(1+x), dla x ≠ 0 i 1+x ≠ 0. Wykorzystywany jako krok pośredni w 017 i 019.",
+  "informal_en": "Auxiliary algebraic lemma: 1/(1/x + 1) = x/(1+x) for x ≠ 0 and 1+x ≠ 0. Used as an intermediate step in 017 and 019.",
+  "kind": "identity",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Tactic.FieldSimp",
+    "Mathlib.Tactic.Ring"
+  ],
+  "lean_target_signature": "theorem inv_successor_inv (x : ℝ) (hx : x ≠ 0) (hx1 : x + 1 ≠ 0) : 1 / (1 / x + 1) = x / (1 + x) := by sorry",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "2e406c3b-d89b-4402-b4da-0405e945e865",
+  "submitted_at": "2026-05-01T00:10:13Z",
+  "completed_at": "2026-05-01T00:37:24Z",
+  "notes": "field_simp + ring."
+}

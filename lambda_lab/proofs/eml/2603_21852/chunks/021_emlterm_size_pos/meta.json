@@ -1,0 +1,22 @@
+{
+  "id": "021_emlterm_size_pos",
+  "title_pl": "Rozmiar termu EML jest dodatni",
+  "title_en": "EML term size is positive",
+  "paper_section": "§4.1 EML compiler (implicit)",
+  "paper_quote": "Every EML term has at least one node, so K ≥ 1.",
+  "informal_pl": "Dla każdego termu EML zachodzi size t ≥ 1. Dowód indukcyjny: liść ma rozmiar 1, a węzeł 1 + size t + size u ≥ 1.",
+  "informal_en": "For every EML term, size t ≥ 1. Inductive proof: leaves have size 1; nodes have 1 + size t + size u ≥ 1.",
+  "kind": "theorem",
+  "difficulty": 2,
+  "lean_imports": [],
+  "lean_target_signature": "theorem EMLTerm.size_pos (t : EMLTerm) : 1 ≤ EMLTerm.size t := by sorry",
+  "depends_on": [
+    "002_def_eml_term",
+    "020_emlterm_size"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "431476c5-9973-4735-88c3-6eb6dde63548",
+  "submitted_at": "2026-05-01T01:04:59Z",
+  "completed_at": "2026-05-01T01:17:36Z",
+  "notes": "Cases on t; .one is reflexive 1 ≤ 1; .eml needs Nat.le_add ish."
+}

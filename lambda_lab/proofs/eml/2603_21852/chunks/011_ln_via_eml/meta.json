@@ -1,0 +1,24 @@
+{
+  "id": "011_ln_via_eml",
+  "title_pl": "Logarytm naturalny przez EML",
+  "title_en": "Natural logarithm via EML",
+  "paper_section": "§3 Results, Identity 5",
+  "paper_quote": "ln(z) = eml(1, eml(eml(1, z), 1))",
+  "informal_pl": "Logarytm naturalny daje się wyrazić zagnieżdżeniem trzech operatorów EML: ln(z) = eml(1, eml(eml(1, z), 1)). Dowód polega na rozwijaniu definicji EML i użyciu Real.log_one, Real.log_exp oraz arytmetyki rzeczywistej. Dla z > 0 wszystkie wewnętrzne argumenty Real.log są dodatnie.",
+  "informal_en": "The natural log expands as a triple-nested EML application: ln(z) = eml(1, eml(eml(1, z), 1)). The proof unfolds eml repeatedly and uses Real.log_one, Real.log_exp plus arithmetic. For z > 0 all the inner Real.log arguments are positive.",
+  "kind": "identity",
+  "difficulty": 3,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem ln_via_eml (z : ℝ) (hz : 0 < z) : Real.log z = eml 1 (eml (eml 1 z) 1) := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "9880ea74-30f6-49a9-bb47-18c0051f56a1",
+  "submitted_at": "2026-05-01T01:04:52Z",
+  "completed_at": "2026-05-01T01:17:31Z",
+  "notes": "Centerpiece composite identity. Requires careful unfolding plus Real.log_exp on the inner eml(1,z)."
+}

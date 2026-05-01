@@ -1,0 +1,6 @@
+{
+  "target": "x^2",
+  "vars": ["x"],
+  "constraint": "x > 0",
+  "max_size": 13
+}

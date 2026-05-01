@@ -1,0 +1,22 @@
+{
+  "id": "016_add_via_exp_log",
+  "title_pl": "Wariant addytywny: x+y przez exp i ln",
+  "title_en": "Additive consequence: x + y via exp and ln (specialized)",
+  "paper_section": "§3 Results, Identity 1 (specialised consequence)",
+  "paper_quote": "x + y = ln(exp(x) · exp(y))",
+  "informal_pl": "Wariant chunka 014 z bezpośrednim odwołaniem do dwukrotnego użycia exp/ln; rozłączenie z 014 ma sens, jeśli Aristotle proponuje różne ścieżki dowodowe (np. log_mul + log_exp_self vs Real.log_exp_mul_exp).",
+  "informal_en": "A re-statement of chunk 014 split out so that Aristotle can use either (log_mul + log_exp) or a direct combined lemma. Useful for the calculator-equivalence chain in Group 6.",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem add_eq_log_mul_exp (x y : ℝ) : x + y = Real.log (Real.exp x) + Real.log (Real.exp y) := by sorry",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "9e47b118-1c8a-4122-98ca-183b87db7106",
+  "submitted_at": "2026-05-01T00:10:10Z",
+  "completed_at": "2026-05-01T00:37:21Z",
+  "notes": "Trivial via Real.log_exp x + Real.log_exp y; included as a lemma we expect to want when expanding Identity 1 mid-calc."
+}

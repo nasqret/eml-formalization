@@ -1,0 +1,34 @@
+{
+  "id": "042_emlterm_for_pow_xy",
+  "title_pl": "EMLTerm₂ realizujący x^y (dla x > 0 ∧ y > 0)",
+  "title_en": "EMLTerm₂ realising x^y (for 0 < x and 0 < y)",
+  "paper_section": "§3 Results, EML expression catalog (x^y, K=49)",
+  "paper_quote": "x^y: K = 49 (compiler) / K = 25 (direct search).",
+  "informal_pl": "Istnieje 2-zmienny term EML rozmiaru 49 (lub 25 direct-search) ewaluujący do x^y = exp(y · ln x) dla x > 0. Stwierdzenie istnieniowe.",
+  "informal_en": "There exists a two-variable EML term of size 49 (or 25 direct-search) whose evaluation equals x^y = exp(y · ln x) for x > 0. Existential.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Pow.Real"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_pow_pos : ∃ t : EMLTerm₂, ∀ x y : ℝ, 0 < x → 0 < y → EMLTerm₂.eval x y t = x ^ y := by sorry",
+  "depends_on": [
+    "015_mul_via_exp_log"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "628e3e06-0a6b-4667-b33a-47d6eb4bfb5c",
+  "submitted_at": "2026-05-01T16:18:34Z",
+  "completed_at": "2026-05-01T18:12:37Z",
+  "notes": "Real.rpow used. K=49 / K=25. | COMPLETE_WITH_ERRORS. Aristotle searched size ≤15 (~1.1M signatures) plus meet-in-the-middle to size ~31, claims theorem 'appears to be false'. SUSPECT: paper's K=49 (~25 nodes) is within range but Aristotle's search may have used a restricted axiomatization. Aristotle suggested the EML operator might be misdefined (should be 'exp(eval(t) * log(eval(u)))') — but the paper's Equation 3 is unambiguous: exp(x) - log(y). Verified building blocks delivered: log(x), |y|, -1 constant. Main theorem with sorry. | RESOLVED on retry. Aristotle returned COMPLETE for the reformulated `0 < x ∧ 0 < y` spec. Key identity: y*log(x) = y*(1/x + log(x)) - y/x, where 1/x + log(x) > 0 and 1/x > 0 for x > 0, so all log arguments stay positive. Verified by lake env lean (exit 0; some ring/ring_nf hints).",
+  "history": [
+    {
+      "project_id": "3d35a903-b496-4d04-b370-5cd8ae60f601",
+      "submitted_at": "2026-05-01T02:17:30Z",
+      "completed_at": "2026-05-01T10:34:15Z",
+      "status": "partial",
+      "reason": "Aristotle returned COMPLETE_WITH_ERRORS with rich building blocks but main theorem with sorry. Reformulated."
+    }
+  ]
+}

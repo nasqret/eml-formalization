@@ -1,0 +1,24 @@
+{
+  "id": "041_emlterm_for_mul_xy",
+  "title_pl": "EMLTerm dla x · y",
+  "title_en": "EMLTerm₂ realising x · y",
+  "paper_section": "§3 Results, EML expression catalog (x × y, K=41)",
+  "paper_quote": "x × y: K = 41 (compiler) / K = 17 (direct search).",
+  "informal_pl": "Istnieje 2-zmienny term EML rozmiaru 41 ewaluujący do x · y dla x, y > 0 (Identity 1). Stwierdzenie istnieniowe.",
+  "informal_en": "There exists a two-variable EML term of size 41 whose evaluation equals x · y for x, y > 0 (Identity 1). Existential.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_mul : ∃ t : EMLTerm₂, ∀ x y : ℝ, 0 < x → 0 < y → EMLTerm₂.eval x y t = x * y := by sorry",
+  "depends_on": [
+    "015_mul_via_exp_log"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "920cc79d-50c7-4345-8581-8650959fc31b",
+  "submitted_at": "2026-05-01T02:17:28Z",
+  "completed_at": "2026-05-01T03:18:04Z",
+  "notes": "Positivity needed; the negative-x cases would expand the K. K=41 / K=17."
+}

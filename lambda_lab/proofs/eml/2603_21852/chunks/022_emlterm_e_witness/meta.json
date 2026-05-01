@@ -1,0 +1,25 @@
+{
+  "id": "022_emlterm_e_witness",
+  "title_pl": "Term EML ewaluujący do e",
+  "title_en": "An EML term whose eval is e",
+  "paper_section": "§3 Results, EML expression catalog (e, K=3)",
+  "paper_quote": "e: eml(1, 1) — K = 3.",
+  "informal_pl": "Term EML eml(.one, .one) ewaluuje do exp(1) − ln(1) = e. Konstruktywne świadectwo, że stała e leży w obrazie eval. Rozmiar termu wynosi 3 (jeden węzeł + dwa liście), zgodnie z kolumną K paperu.",
+  "informal_en": "The EML term eml(.one, .one) evaluates to exp(1) − ln(1) = e. A constructive witness that e lies in the image of eval. The term's size is 3 (one node + two leaves), matching the K column in the paper's catalogue.",
+  "kind": "theorem",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm_e_witness : EMLTerm.eval (.eml .one .one) = Real.exp 1 := by sorry",
+  "depends_on": [
+    "002_def_eml_term",
+    "003_def_eml_eval"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "4c72725b-e057-4f37-b2d9-4bbd6ff416fc",
+  "submitted_at": "2026-05-01T01:05:01Z",
+  "completed_at": "2026-05-01T01:17:38Z",
+  "notes": "Unfold eval, rewrite Real.log_one. Same algebra as chunk 006 but applied to the inductive."
+}

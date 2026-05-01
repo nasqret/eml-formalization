@@ -1,0 +1,19 @@
+{
+  "id": "034_emlterm_for_pi",
+  "title_pl": "EMLTerm dla π",
+  "title_en": "EMLTerm whose eval is π",
+  "paper_section": "§3 Results, EML expression catalog (π, K=193)",
+  "paper_quote": "π: K = 193 (literal tree in Supplementary).",
+  "informal_pl": "Istnieje term EML rozmiaru 193 ewaluujący do π. PROBABLE PERMANENT SORRY: drzewo o 193 węzłach z Supplementary jest poza budżetem ręcznej transkrypcji w bieżącym przebiegu.",
+  "informal_en": "There exists an EML term of size 193 evaluating to π. PROBABLE PERMANENT SORRY: transcribing a 193-node tree from the Supplementary by hand is beyond the budget of this auto-formalization pass.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": ["Mathlib.Analysis.SpecialFunctions.Exp", "Mathlib.Analysis.SpecialFunctions.Log.Basic", "Mathlib.Analysis.SpecialFunctions.Pow.Real"],
+  "lean_target_signature": "theorem emlterm_for_pi : ∃ t : EMLTerm, EMLTerm.eval t = Real.pi := by sorry",
+  "depends_on": ["002_def_eml_term", "003_def_eml_eval"],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Likely permanent sorry. K=193."
+}

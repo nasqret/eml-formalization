@@ -1,0 +1,24 @@
+{
+  "id": "003_def_eml_eval",
+  "title_pl": "Funkcja ewaluacji termów EML",
+  "title_en": "Evaluation of EML terms",
+  "paper_section": "§4.1 EML compiler",
+  "paper_quote": "Each EML term evaluates to a real number obtained by replacing every leaf 1 by the constant 1 and every internal node eml(t,u) by exp(eval t) − ln(eval u).",
+  "informal_pl": "Funkcja eval mapuje każdy term EML na wartość rzeczywistą: liść .one daje 1, a węzeł .eml t u daje exp(eval t) − ln(eval u). Z powodu Real.log junk-value dla niedodatnich argumentów funkcja jest totalna na ℝ, ale 'sensowne' wartości otrzymujemy tylko gdy poddrzewa eval-ują do liczb dodatnich.",
+  "informal_en": "The eval function maps each EML term to a real number: a .one leaf gives 1, and a .eml t u node gives exp(eval t) − ln(eval u). Because Real.log is junk-valued at non-positive arguments the function is total on ℝ, but the 'meaningful' values arise only when the subtrees evaluate to positive reals.",
+  "kind": "definition",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "def EMLTerm.eval : EMLTerm → ℝ\n  | .one => 1\n  | .eml t u => Real.exp (EMLTerm.eval t) - Real.log (EMLTerm.eval u)",
+  "depends_on": [
+    "002_def_eml_term"
+  ],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T01:04:51Z",
+  "notes": "Recursive definition; structurally terminating. Junk-value behaviour of Real.log is acknowledged; downstream chunks add positivity hypotheses. | Pure definition: result = target."
+}

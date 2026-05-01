@@ -1,0 +1,24 @@
+{
+  "id": "006_eml_one_one_eq_e",
+  "title_pl": "eml(1,1) = e",
+  "title_en": "eml(1,1) = e",
+  "paper_section": "§3 Results, EML expression catalog",
+  "paper_quote": "e = eml(1, 1)",
+  "informal_pl": "Wartość operatora EML dla obu argumentów równych 1 daje liczbę e: eml(1,1) = exp(1) − ln(1) = e − 0 = e. Najprostszy z fundamentalnych przykładów.",
+  "informal_en": "Applying the EML operator to two unit arguments yields Euler's number: eml(1,1) = exp(1) − ln(1) = e − 0 = e. The simplest of the fundamental examples.",
+  "kind": "identity",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem eml_one_one : eml 1 1 = Real.exp 1 := by sorry",
+  "depends_on": [
+    "001_def_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "6bc8201a-4570-4f81-97c7-e23c91b75d06",
+  "submitted_at": "2026-05-01T00:08:35Z",
+  "completed_at": "2026-05-01T00:37:11Z",
+  "notes": "Single-step rewrite: unfold eml, use Real.log_one and sub_zero."
+}

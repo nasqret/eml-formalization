@@ -1,0 +1,22 @@
+{
+  "id": "005_def_neg_eml",
+  "title_pl": "Wariant z negowanym EML",
+  "title_en": "Negated-EML variant",
+  "paper_section": "§3 Results, Identity 4c",
+  "paper_quote": "−eml(y, x) = ln(x) − exp(y),  constant: −∞",
+  "informal_pl": "Trzeci wariant operatora to negacja EML z zamianą argumentów: -eml(y,x) = ln(x) - exp(y). W paperze 'stała' jest oznaczona jako -∞, co odzwierciedla różnicę topologiczną przy próbie wyrażenia stałej 1.",
+  "informal_en": "The third variant negates EML and swaps the arguments: -eml(y,x) = ln(x) - exp(y). The paper labels its required constant as −∞, reflecting a topological difference when trying to express 1.",
+  "kind": "definition",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "def negEml (x y : ℝ) : ℝ := Real.log x - Real.exp y",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T00:07:16Z",
+  "notes": "We model the variant as a function of its natural argument order (x then y), matching the form ln(x) − exp(y) directly. | Pure definition: result = target."
+}

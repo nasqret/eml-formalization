@@ -1,0 +1,24 @@
+{
+  "id": "036_emlterm_for_neg_x",
+  "title_pl": "EMLTerm dla funkcji −x",
+  "title_en": "EMLTerm₁ realising the function −x",
+  "paper_section": "§3 Results, EML expression catalog (−x, K=57)",
+  "paper_quote": "−x: K = 57 (compiler) / K = 15 (direct search).",
+  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 57 (lub 15 w wariancie direct-search), który dla każdego x ewaluuje do −x. Stwierdzenie istnieniowe; ścisły dowód wymaga successor identity 017 w wersji termowej.",
+  "informal_en": "There exists a parameterised EML term of size 57 (or 15 in the direct-search variant) whose evaluation at every x equals −x. Existential; the formal proof would lift the successor identity (017) to the term level.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_neg_x : ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = -x := by sorry",
+  "depends_on": [
+    "023_emlterm_exp_x_witness"
+  ],
+  "status": "partial",
+  "aristotle_project_id": "2db766ca-c43f-466c-9755-bd3ffbd2a590",
+  "submitted_at": "2026-05-01T02:17:22Z",
+  "completed_at": "2026-05-01T06:19:58Z",
+  "notes": "Re-uses EMLTerm₁ from chunk 023. Side conditions on x ≠ 0, x ≠ −1 dropped because Real.log is junk-valued. | Aristotle returned COMPLETE_WITH_ERRORS. Original theorem left with `sorry`. Aristotle claims no EMLTerm₁ of size ≤ 15 evaluates to -x (exhaustive search over 109,824 terms) — BUT paper's tree has K=57 (~28 nodes), beyond Aristotle's search budget; claim suspect. Aristotle also delivered a verified proof in a richer grammar `EMLTerm₂` with `const : ℝ → EMLTerm₂` using `Real.log 2` as a parameter. Needs human review."
+}

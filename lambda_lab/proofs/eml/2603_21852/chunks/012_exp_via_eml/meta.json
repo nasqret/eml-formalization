@@ -1,0 +1,25 @@
+{
+  "id": "012_exp_via_eml",
+  "title_pl": "exp(x) jako exp_via_eml — wniosek z 007",
+  "title_en": "exp(x) as eml — corollary phrasing of 007",
+  "paper_section": "§3 Results, EML expression catalog",
+  "paper_quote": "exp(x) = eml(x, 1)",
+  "informal_pl": "Reformulacja chunka 007 w postaci 'definitorycznej': exp(x) jest dokładnie eml(x,1). Dowód zwykle dziedziczy się przez `(eml_x_one x).symm`.",
+  "informal_en": "A re-statement of chunk 007 in 'definitional' direction: exp(x) is exactly eml(x,1). The proof typically just inherits via `(eml_x_one x).symm`.",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem exp_via_eml (x : ℝ) : Real.exp x = eml x 1 := by sorry",
+  "depends_on": [
+    "001_def_eml",
+    "007_eml_x_one_eq_exp"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "f7d4afc4-1e1e-4cce-b757-90a27b89f643",
+  "submitted_at": "2026-05-01T01:04:54Z",
+  "completed_at": "2026-05-01T01:17:32Z",
+  "notes": "Direction-flipped version of 007; convenient for rewriting Real.exp x in terms of eml."
+}

@@ -1,0 +1,25 @@
+{
+  "id": "031_emlterm_for_neg_one",
+  "title_pl": "EMLTerm dla −1",
+  "title_en": "EMLTerm whose eval is −1",
+  "paper_section": "§3 Results, EML expression catalog (−1, K=17)",
+  "paper_quote": "−1: K = 17 (literal tree in Supplementary).",
+  "informal_pl": "Istnieje term EML rozmiaru 17 ewaluujący do −1. Stwierdzenie istnieniowe; konstrukcja w Supplementary.",
+  "informal_en": "There exists an EML term of size 17 evaluating to −1. Existential; the literal tree is in the Supplementary.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm_for_neg_one : ∃ t : EMLTerm, EMLTerm.eval t = -1 := by sorry",
+  "depends_on": [
+    "002_def_eml_term",
+    "003_def_eml_eval"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "a681c93a-6345-4b8f-8a56-7dd7aba9f13c",
+  "submitted_at": "2026-05-01T02:17:17Z",
+  "completed_at": "2026-05-01T03:18:01Z",
+  "notes": "K=17; deferred constructive."
+}

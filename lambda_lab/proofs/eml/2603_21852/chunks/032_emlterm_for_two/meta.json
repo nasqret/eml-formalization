@@ -1,0 +1,25 @@
+{
+  "id": "032_emlterm_for_two",
+  "title_pl": "EMLTerm dla 2",
+  "title_en": "EMLTerm whose eval is 2",
+  "paper_section": "§3 Results, EML expression catalog (2, K=27)",
+  "paper_quote": "2: K = 27 (literal tree in Supplementary).",
+  "informal_pl": "Istnieje term EML rozmiaru 27 ewaluujący do 2. Stwierdzenie istnieniowe; konstrukcja w Supplementary. Direct-search wariant ma K=19.",
+  "informal_en": "There exists an EML term of size 27 evaluating to 2. Existential; the direct-search variant has K=19.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm_for_two : ∃ t : EMLTerm, EMLTerm.eval t = 2 := by sorry",
+  "depends_on": [
+    "002_def_eml_term",
+    "003_def_eml_eval"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "ea868c47-eb80-4826-b405-23a2a4b44abd",
+  "submitted_at": "2026-05-01T02:17:19Z",
+  "completed_at": "2026-05-01T03:18:03Z",
+  "notes": "K=27 (compiler) / K=19 (direct search). Deferred constructive."
+}

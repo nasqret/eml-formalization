@@ -1,0 +1,22 @@
+{
+  "id": "015_mul_via_exp_log",
+  "title_pl": "Mnożenie przez Identity 1",
+  "title_en": "Multiplication via Identity 1 (Exp-Log reduction)",
+  "paper_section": "§3 Results, Identity 1",
+  "paper_quote": "x × y = exp(ln x + ln y)",
+  "informal_pl": "Mnożenie liczb dodatnich daje się odzyskać z dodawania ich logarytmów: x · y = exp(ln x + ln y) dla x, y > 0. To multiplikatywna połowa Identity 1.",
+  "informal_en": "The product of positive reals is recovered by exponentiating the sum of logs: x · y = exp(ln x + ln y) for x, y > 0. The multiplicative half of Identity 1.",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem mul_via_exp_log (x y : ℝ) (hx : 0 < x) (hy : 0 < y) : x * y = Real.exp (Real.log x + Real.log y) := by sorry",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "c7d7a6be-ff65-4e45-9847-bda1dda29f93",
+  "submitted_at": "2026-05-01T00:10:08Z",
+  "completed_at": "2026-05-01T00:37:19Z",
+  "notes": "Uses Real.exp_add then Real.exp_log on each factor. Positivity hypotheses are essential."
+}

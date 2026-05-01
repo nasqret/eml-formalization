@@ -1,0 +1,22 @@
+{
+  "id": "014_add_via_eml",
+  "title_pl": "Dodawanie przez Identity 1",
+  "title_en": "Addition via Identity 1 (Exp-Log reduction)",
+  "paper_section": "§3 Results, Identity 1",
+  "paper_quote": "x + y = ln(exp(x) × exp(y))",
+  "informal_pl": "Dodawanie wynika z mnożenia funkcji exp przez homomorfizm ln: x + y = ln(exp x · exp y). Kanoniczna tożsamość transcendentalna; w Mathlib jest to Real.log_exp_mul_exp lub kombinacja Real.log_mul + Real.log_exp.",
+  "informal_en": "Addition arises from the exp homomorphism: x + y = ln(exp x · exp y). A canonical transcendental identity; in Mathlib it follows from Real.log_mul plus Real.log_exp.",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem add_via_exp_log (x y : ℝ) : x + y = Real.log (Real.exp x * Real.exp y) := by sorry",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "fb64ca32-b736-4c5d-9b32-185c6e25d6ea",
+  "submitted_at": "2026-05-01T00:10:06Z",
+  "completed_at": "2026-05-01T00:37:18Z",
+  "notes": "No EML dependency; the multiplicative half of Identity 1 is handled in chunk 015. This chunk plus 015 together cover the paper's Identity 1."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "023_emlterm_exp_x_witness",
+  "title_pl": "Term EML z liściem x ewaluujący do exp(x)",
+  "title_en": "EML term with x-leaf whose eval is exp(x)",
+  "paper_section": "§3 Results, EML expression catalog (exp(x), K=3)",
+  "paper_quote": "exp(x): eml(x, 1) — K = 3.",
+  "informal_pl": "Aby zapisać exp(x) jako term EML, rozszerzamy gramatykę o liść .var reprezentujący zmienną x; ewaluacja w punkcie x daje EMLTerm₁.eval x (.eml .var .one) = exp(x). Wprowadzamy oddzielny typ EMLTerm₁ aby nie zaburzać oryginalnego (stałe-tylko) EMLTerm.",
+  "informal_en": "To realise exp(x) as an EML term we add a .var leaf representing the variable x; the evaluation at x gives EMLTerm₁.eval x (.eml .var .one) = exp(x). We introduce a separate type EMLTerm₁ to avoid disturbing the original (constants-only) EMLTerm.",
+  "kind": "theorem",
+  "difficulty": 3,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_exp_x_witness (x : ℝ) : EMLTerm₁.eval x (.eml .var .one) = Real.exp x := by sorry",
+  "depends_on": [
+    "002_def_eml_term"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "8d4dd172-0333-430a-968b-ead5b2b3f1d3",
+  "submitted_at": "2026-05-01T01:05:02Z",
+  "completed_at": "2026-05-01T01:17:39Z",
+  "notes": "Requires defining a parameterised EMLTerm₁ inductive with a .var constructor and an evaluation eval : ℝ → EMLTerm₁ → ℝ. We bundle the type into the same target file."
+}

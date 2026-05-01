@@ -1,0 +1,19 @@
+{
+  "id": "039_emlterm_for_sqrt_x",
+  "title_pl": "EMLTerm dla funkcji √x",
+  "title_en": "EMLTerm₁ realising the function √x",
+  "paper_section": "§3 Results, EML expression catalog (√x, K=139)",
+  "paper_quote": "√x: K = 139 (compiler) / K > 43 (direct search).",
+  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 139 ewaluujący do √x dla x ≥ 0. PROBABLE PERMANENT SORRY: drzewo o 139 węzłach poza budżetem ręcznej transkrypcji.",
+  "informal_en": "There exists a parameterised EML term of size 139 whose evaluation equals √x for x ≥ 0. PROBABLE PERMANENT SORRY: 139-node literal tree beyond the manual-transcription budget.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": ["Mathlib.Analysis.SpecialFunctions.Exp", "Mathlib.Analysis.SpecialFunctions.Log.Basic", "Mathlib.Analysis.SpecialFunctions.Sqrt"],
+  "lean_target_signature": "theorem emlterm1_for_sqrt_x : ∃ t : EMLTerm₁, ∀ x : ℝ, 0 ≤ x → EMLTerm₁.eval x t = Real.sqrt x := by sorry",
+  "depends_on": ["023_emlterm_exp_x_witness"],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Permanent sorry. K=139."
+}

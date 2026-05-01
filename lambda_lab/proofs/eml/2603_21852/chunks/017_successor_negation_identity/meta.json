@@ -1,0 +1,22 @@
+{
+  "id": "017_successor_negation_identity",
+  "title_pl": "Tożsamość successor/negacja",
+  "title_en": "Successor / negation identity",
+  "paper_section": "§3 Results (passing remark)",
+  "paper_quote": "suc(inv(pre(inv(suc(inv(x)))))) = 1/(1/(1/x + 1) − 1) + 1 = −x",
+  "informal_pl": "Tożsamość: 1/(1/(1/x + 1) − 1) + 1 = −x. Pojedynczy `field_simp; ring` powinien zamknąć cel; konieczne hipotezy x ≠ 0, 1/x + 1 ≠ 0, 1/(1/x + 1) − 1 ≠ 0 (czyli x ≠ 0, x ≠ −1).",
+  "informal_en": "Identity: 1/(1/(1/x + 1) − 1) + 1 = −x. A single `field_simp; ring` should close it; the side conditions are x ≠ 0 and x ≠ −1 to keep all denominators alive.",
+  "kind": "identity",
+  "difficulty": 2,
+  "lean_imports": [
+    "Mathlib.Tactic.FieldSimp",
+    "Mathlib.Tactic.Ring"
+  ],
+  "lean_target_signature": "theorem successor_negation_identity (x : ℝ) (hx : x ≠ 0) (hx1 : x ≠ -1) : 1 / (1 / (1 / x + 1) - 1) + 1 = -x := by sorry",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "d9e651d2-01dd-4bf4-b623-ff442c70f1c1",
+  "submitted_at": "2026-05-01T00:10:12Z",
+  "completed_at": "2026-05-01T00:37:22Z",
+  "notes": "Pure algebra, no exp/log content. The paper presents this as motivation for the calc-3 −x circuit."
+}

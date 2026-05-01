@@ -1,0 +1,33 @@
+{
+  "id": "038_emlterm_for_sq_x",
+  "title_pl": "EMLTerm₁ realizujący funkcję x² (dla x > 0)",
+  "title_en": "EMLTerm₁ realising x² (for x > 0)",
+  "paper_section": "§3 Results, EML expression catalog (x², K=75)",
+  "paper_quote": "x²: K = 75 (compiler) / K = 17 (direct search).",
+  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 75 (lub 17 direct-search) ewaluujący do x² dla każdego x. Stwierdzenie istnieniowe.",
+  "informal_en": "There exists a parameterised EML term of size 75 (or 17 direct-search) whose evaluation equals x² for every x. Existential.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_sq_x_pos : ∃ t : EMLTerm₁, ∀ x : ℝ, 0 < x → EMLTerm₁.eval x t = x ^ 2 := by sorry",
+  "depends_on": [
+    "023_emlterm_exp_x_witness"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "a73627ff-56d7-4ae5-bb67-0f8e5b8fd877",
+  "submitted_at": "2026-05-01T10:33:13Z",
+  "completed_at": "2026-05-01T11:05:36Z",
+  "notes": "Reformulated to positive domain after first attempt failed (Harmonic internal error AND over-strong universal-x spec). Paper K=17 (direct) suggests ~9 nodes for the positive case. Now well inside Aristotle's reach. | RESOLVED on retry. Aristotle returned COMPLETE_WITH_ERRORS but the Lean source compiles clean (exit 0). Construction: 7-step bottom-up `sqTerm` building 2·log(x) via the identity x - (x - 2·log(x)) = 2·log(x), then exp(2·log(x)) = x². Spec reformulation (∀ x : ℝ → ∀ x > 0) was the unblocker.",
+  "history": [
+    {
+      "project_id": "ab66ad12-dd1c-4212-ab2c-6b66aac8fc1d",
+      "submitted_at": "2026-05-01T02:17:25Z",
+      "completed_at": "2026-05-01T04:18:28Z",
+      "status": "failed",
+      "reason": "Harmonic internal error + over-strong spec (universal x)"
+    }
+  ]
+}

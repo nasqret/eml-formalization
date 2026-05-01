@@ -1,0 +1,25 @@
+{
+  "id": "030_emlterm_for_zero",
+  "title_pl": "EMLTerm dla 0",
+  "title_en": "EMLTerm whose eval is 0",
+  "paper_section": "§3 Results, EML expression catalog (0, K=7)",
+  "paper_quote": "0: K = 7 (literal tree in Supplementary).",
+  "informal_pl": "Istnieje term EML rozmiaru 7, który ewaluuje się do 0. Liczbę kroków K=7 paper podaje, ale pełnego drzewa nie umieszcza w głównym tekście — formalne stwierdzenie istnieniowe; konstruktywny term wymaga przepisania z Supplementary.",
+  "informal_en": "There exists an EML term of size 7 evaluating to 0. The paper reports K=7 but defers the literal tree to the Supplementary; we state existence and leave the witness as `sorry` until the literal tree is transcribed.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm_for_zero : ∃ t : EMLTerm, EMLTerm.eval t = 0 := by sorry",
+  "depends_on": [
+    "002_def_eml_term",
+    "003_def_eml_eval"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "c7a344e7-4df7-4865-b9c7-2cc5f017583f",
+  "submitted_at": "2026-05-01T02:17:16Z",
+  "completed_at": "2026-05-01T03:18:00Z",
+  "notes": "K=7; constructive witness available in Supplementary, not transcribed here."
+}

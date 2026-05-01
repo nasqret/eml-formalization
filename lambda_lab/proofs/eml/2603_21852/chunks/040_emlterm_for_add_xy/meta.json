@@ -1,0 +1,24 @@
+{
+  "id": "040_emlterm_for_add_xy",
+  "title_pl": "EMLTerm dla x + y",
+  "title_en": "EMLTerm₂ realising x + y",
+  "paper_section": "§3 Results, EML expression catalog (x + y, K=27)",
+  "paper_quote": "x + y: K = 27 (compiler) / K = 19 (direct search).",
+  "informal_pl": "Istnieje 2-zmienny term EML rozmiaru 27, który dla każdej pary (x,y) ewaluuje do x + y. Wymagana 2-zmienna gramatyka EMLTerm₂ (z liśćmi .varX, .varY) i nowa funkcja ewaluacji eval₂ : ℝ → ℝ → EMLTerm₂ → ℝ.",
+  "informal_en": "There exists a two-variable EML term of size 27 whose evaluation at (x,y) equals x + y. Requires a 2-variable grammar EMLTerm₂ (with .varX, .varY leaves) and an evaluation eval₂ : ℝ → ℝ → EMLTerm₂ → ℝ.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_add : ∃ t : EMLTerm₂, ∀ x y : ℝ, EMLTerm₂.eval x y t = x + y := by sorry",
+  "depends_on": [
+    "014_add_via_eml"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "37251cb0-aa2b-4ae3-807b-54f4e80d15e6",
+  "submitted_at": "2026-05-01T02:17:27Z",
+  "completed_at": "2026-05-01T04:18:28Z",
+  "notes": "Tractable in principle — Identity 1 essentially writes the term. K=19 for direct-search variant."
+}

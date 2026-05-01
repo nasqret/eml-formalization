@@ -5761,6 +5761,203 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "pl": "Brak w cache - wykonuje zapytanie do API.",
         "en": "Cache miss - calling the API.",
     },
+
+    # ---------------------------------------------------------------------
+    # EML keys — dashboard subcommand for arXiv:2603.21852 formalization.
+    # ---------------------------------------------------------------------
+    "eml.help.title": {
+        "pl": "EML - dashboard formalizacji (arXiv:2603.21852)",
+        "en": "EML - formalization dashboard (arXiv:2603.21852)",
+    },
+    "eml.help.body": {
+        "pl": (
+            "Subkomendy:\n"
+            "  eml list [--status S] [--difficulty N]   tabela kawalkow\n"
+            "  eml show <id>                            pokaz tresc kawalka i Lean\n"
+            "  eml tree                                 graf zaleznosci\n"
+            "  eml status                               podsumowanie liczbowe\n"
+            "  eml submit <id> [--all-pending] [--limit N]   wyslij do Aristotle\n"
+            "  eml watch <id> [--all]                   pobierz rozwiazanie\n"
+            "  eml verify [<id>]                        lake env lean\n"
+            "  eml combine [--pdf] [--html]             zlozony raport\n"
+            "  eml refresh-paper                        instrukcja recznej aktualizacji"
+        ),
+        "en": (
+            "Subcommands:\n"
+            "  eml list [--status S] [--difficulty N]   chunk table\n"
+            "  eml show <id>                            show chunk + Lean target\n"
+            "  eml tree                                 dependency graph\n"
+            "  eml status                               numeric summary\n"
+            "  eml submit <id> [--all-pending] [--limit N]   submit to Aristotle\n"
+            "  eml watch <id> [--all]                   download solution\n"
+            "  eml verify [<id>]                        lake env lean\n"
+            "  eml combine [--pdf] [--html]             assembled report\n"
+            "  eml refresh-paper                        manual refresh instructions"
+        ),
+    },
+    "eml.list.col.id": {"pl": "id", "en": "id"},
+    "eml.list.col.title": {"pl": "tytul", "en": "title"},
+    "eml.list.col.kind": {"pl": "rodzaj", "en": "kind"},
+    "eml.list.col.difficulty": {"pl": "trudnosc", "en": "difficulty"},
+    "eml.list.col.status": {"pl": "status", "en": "status"},
+    "eml.list.col.deps": {"pl": "zaleznosci", "en": "deps"},
+    "eml.list.col.project": {"pl": "project_id", "en": "project_id"},
+    "eml.list.title": {
+        "pl": "EML - kawalki ({count})",
+        "en": "EML - chunks ({count})",
+    },
+    "eml.list.no_chunks": {
+        "pl": "Brak kawalkow - workspace jeszcze niezasiany.",
+        "en": "No chunks yet - workspace not seeded.",
+    },
+    "eml.show.title": {
+        "pl": "EML kawalek: {chunk_id}",
+        "en": "EML chunk: {chunk_id}",
+    },
+    "eml.show.no_chunk": {
+        "pl": "Nie znalazlem kawalka pasujacego do '{prefix}'.",
+        "en": "No chunk matched '{prefix}'.",
+    },
+    "eml.show.section.paper": {"pl": "Cytat z artykulu", "en": "Paper quote"},
+    "eml.show.section.informal": {"pl": "Tresc nieformalna", "en": "Informal text"},
+    "eml.show.section.lean": {"pl": "Cel Lean", "en": "Lean target"},
+    "eml.show.section.status": {"pl": "Status", "en": "Status"},
+    "eml.show.no_target": {
+        "pl": "(brak target.lean - jeszcze nie zasiany)",
+        "en": "(no target.lean - not seeded yet)",
+    },
+    "eml.tree.title": {
+        "pl": "EML - drzewo zaleznosci",
+        "en": "EML - dependency tree",
+    },
+    "eml.tree.cycle": {
+        "pl": "(cykl wykryty)",
+        "en": "(cycle detected)",
+    },
+    "eml.tree.no_chunks": {
+        "pl": "Drzewo puste - brak kawalkow.",
+        "en": "Tree empty - no chunks.",
+    },
+    "eml.status.summary": {
+        "pl": "EML: pending={pending} submitted={submitted} complete={complete} failed={failed} (pokrycie {coverage}%, n={total})",
+        "en": "EML: pending={pending} submitted={submitted} complete={complete} failed={failed} (coverage {coverage}%, n={total})",
+    },
+    "eml.status.empty": {
+        "pl": "EML: brak kawalkow (workspace pusty).",
+        "en": "EML: no chunks (empty workspace).",
+    },
+    "eml.submit.usage": {
+        "pl": "uzycie: eml submit <chunk-id> [--all-pending] [--limit N]",
+        "en": "usage: eml submit <chunk-id> [--all-pending] [--limit N]",
+    },
+    "eml.submit.resolving": {
+        "pl": "Rozpoznaje kawalek '{prefix}'...",
+        "en": "Resolving chunk '{prefix}'...",
+    },
+    "eml.submit.submitting": {
+        "pl": "Wysylam kawalek {chunk_id} do Aristotle...",
+        "en": "Submitting chunk {chunk_id} to Aristotle...",
+    },
+    "eml.submit.ok": {
+        "pl": "Wyslano {chunk_id}; project_id={project_id}",
+        "en": "Submitted {chunk_id}; project_id={project_id}",
+    },
+    "eml.submit.err": {
+        "pl": "Blad podczas wysylki {chunk_id}: {error}",
+        "en": "Submission error for {chunk_id}: {error}",
+    },
+    "eml.submit.no_dependencies_met": {
+        "pl": "Pomijam {chunk_id}: nie wszystkie zaleznosci ukonczone ({missing}).",
+        "en": "Skipping {chunk_id}: not all dependencies complete ({missing}).",
+    },
+    "eml.submit.already_complete": {
+        "pl": "Pomijam {chunk_id}: status={status}.",
+        "en": "Skipping {chunk_id}: status={status}.",
+    },
+    "eml.submit.batch_summary": {
+        "pl": "Wysylka wsadowa: udane={ok}, pominiete={skipped}, bledy={failed}.",
+        "en": "Batch submit: ok={ok}, skipped={skipped}, failed={failed}.",
+    },
+    "eml.submit.no_target": {
+        "pl": "Brak target.lean dla {chunk_id} - kawalek nie jest gotowy.",
+        "en": "No target.lean for {chunk_id} - chunk not ready.",
+    },
+    "eml.watch.polling": {
+        "pl": "Czekam na ukonczenie {chunk_id} (project_id={project_id})...",
+        "en": "Polling for {chunk_id} (project_id={project_id})...",
+    },
+    "eml.watch.saved": {
+        "pl": "Zapisano rozwiazanie do {path}.",
+        "en": "Saved solution to {path}.",
+    },
+    "eml.watch.err": {
+        "pl": "Blad watch dla {chunk_id}: {error}",
+        "en": "Watch error for {chunk_id}: {error}",
+    },
+    "eml.watch.no_project": {
+        "pl": "Brak project_id dla {chunk_id} - najpierw uzyj 'eml submit'.",
+        "en": "No project_id for {chunk_id} - run 'eml submit' first.",
+    },
+    "eml.watch.no_lean_files": {
+        "pl": "Aristotle nie zwrocil zadnych plikow .lean dla {chunk_id}.",
+        "en": "Aristotle returned no .lean files for {chunk_id}.",
+    },
+    "eml.verify.ok": {
+        "pl": "Weryfikacja {chunk_id} OK.",
+        "en": "Verification of {chunk_id} OK.",
+    },
+    "eml.verify.err": {
+        "pl": "Weryfikacja {chunk_id} NIEPOWODZENIE (rc={rc}).",
+        "en": "Verification of {chunk_id} FAILED (rc={rc}).",
+    },
+    "eml.verify.no_artifact": {
+        "pl": "Brak pliku do weryfikacji dla {chunk_id} ({path}).",
+        "en": "No artifact to verify for {chunk_id} ({path}).",
+    },
+    "eml.verify.no_workspace": {
+        "pl": "Brak lean_workspace - nie mozna uruchomic 'lake env lean'.",
+        "en": "No lean_workspace - cannot run 'lake env lean'.",
+    },
+    "eml.combine.building": {
+        "pl": "Buduje raport: {path}",
+        "en": "Building report: {path}",
+    },
+    "eml.combine.pdf_done": {
+        "pl": "PDF gotowy: {path}",
+        "en": "PDF ready: {path}",
+    },
+    "eml.combine.html_done": {
+        "pl": "HTML gotowy: {path}",
+        "en": "HTML ready: {path}",
+    },
+    "eml.combine.no_chunks": {
+        "pl": "Brak kawalkow do zlozenia raportu.",
+        "en": "No chunks to assemble into a report.",
+    },
+    "eml.combine.no_pandoc": {
+        "pl": "Brak pandoc/xelatex - PDF pominiety.",
+        "en": "Missing pandoc/xelatex - skipping PDF.",
+    },
+    "eml.unknown_sub": {
+        "pl": "Nieznana subkomenda 'eml': {sub}",
+        "en": "Unknown 'eml' subcommand: {sub}",
+    },
+    "eml.unknown_sub_hint": {
+        "pl": "Sprobuj 'eml' (bez argumentow) zeby zobaczyc liste.",
+        "en": "Try 'eml' (no args) to see the list.",
+    },
+    "eml.no_paper": {
+        "pl": "EML workspace nie zainicjowany - uruchom setup (proofs/eml/2603_21852).",
+        "en": "EML workspace not initialized - run setup (proofs/eml/2603_21852).",
+    },
+    "eml.refresh.body": {
+        "pl": "Aktualizacja recznie: edytuj source/paper_extracted.md i uruchom decomposition.",
+        "en": "Manual fetch required, see source/paper_extracted.md.",
+    },
+    "eml.parse_err": {
+        "pl": "Blad parsowania argumentow eml: {error}",
+        "en": "Failed to parse eml arguments: {error}",
+    },
 }
 
 

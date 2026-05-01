@@ -1,0 +1,24 @@
+{
+  "id": "019_negation_in_calc3",
+  "title_pl": "Negacja w zestawie Calc-3",
+  "title_en": "Negation realised in the Calc-3 set",
+  "paper_section": "§3 Results, Table 2 row 'Calc 3'",
+  "paper_quote": "−x is realised in Calc 3 (operators {+, exp, ln, −x, 1/x}) using only +, 1/x and the standalone −x primitive — but the bootstrap formula in Identity (suc/inv) shows the operation is derivable from + and 1/x alone.",
+  "informal_pl": "Pokazujemy, że negacja −x jest osiągalna używając tylko dodawania i odwrotności (zestaw Calc 3 minus sama −x): −x = 1/(1/(1/x+1)−1) + 1, dla x ≠ 0, x ≠ −1. Pozwala to wykluczyć −x z minimalnego zestawu (krok ku Calc 2/Calc 1).",
+  "informal_en": "We show that negation −x is reachable using only addition and inversion (the Calc-3 operator set minus the standalone −x primitive): −x = 1/(1/(1/x+1)−1) + 1 for x ≠ 0, x ≠ −1. This is the step that removes −x as a primitive on the way to Calc 2/Calc 1.",
+  "kind": "calculator-equivalence",
+  "difficulty": 3,
+  "lean_imports": [
+    "Mathlib.Tactic.FieldSimp",
+    "Mathlib.Tactic.Ring"
+  ],
+  "lean_target_signature": "theorem neg_via_calc3 (x : ℝ) (hx : x ≠ 0) (hx1 : x ≠ -1) : -x = 1 / (1 / (1 / x + 1) - 1) + 1 := by sorry",
+  "depends_on": [
+    "017_successor_negation_identity"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "ff159d82-4702-460f-b1b2-58d04908492c",
+  "submitted_at": "2026-05-01T01:04:57Z",
+  "completed_at": "2026-05-01T01:17:35Z",
+  "notes": "Direction-flipped restatement of 017; same algebra. Useful for the calculator-equivalence chain."
+}

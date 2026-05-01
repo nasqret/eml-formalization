@@ -1,0 +1,19 @@
+{
+  "id": "002_def_eml_term",
+  "title_pl": "Indukcyjny typ termów EML",
+  "title_en": "Inductive type of EML terms",
+  "paper_section": "§4.2 Elementary functions as binary trees",
+  "paper_quote": "S → 1 | eml(S, S)",
+  "informal_pl": "Termy EML to pełne drzewa binarne: każdy liść jest stałą 1, a każdy węzeł wewnętrzny jest aplikacją operatora eml na dwóch poddrzewach. Język ten jest izomorficzny ze strukturami katalańskimi.",
+  "informal_en": "EML terms are full binary trees: every leaf is the constant 1, and every internal node is an application of the eml operator to two subtrees. The language is isomorphic to the Catalan structures.",
+  "kind": "definition",
+  "difficulty": 1,
+  "lean_imports": [],
+  "lean_target_signature": "inductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T00:07:16Z",
+  "notes": "Pure inductive; constant-only grammar from Section 4.2. A parameterized variant with an x-leaf is introduced in chunk 023. | Pure definition: result = target."
+}

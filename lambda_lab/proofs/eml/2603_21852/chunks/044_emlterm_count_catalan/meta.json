@@ -1,0 +1,19 @@
+{
+  "id": "044_emlterm_count_catalan",
+  "title_pl": "Liczba termów EML to liczba Catalana",
+  "title_en": "Count of EMLTerms equals the Catalan number",
+  "paper_section": "§4.2 Elementary functions as binary trees ('Catalan structures')",
+  "paper_quote": "Context-free language; isomorphic to full binary trees / Catalan structures.",
+  "informal_pl": "Liczba pełnych drzew binarnych z n liśćmi (= n+1 wewnętrznych krawędzi) to liczba Catalana C_n. Indukcyjnie: liczba EMLTerm-ów rozmiaru 2k+1 wynosi C_k. Mathlib zawiera Nat.catalan.",
+  "informal_en": "The number of full binary trees with n leaves is the Catalan number C_{n−1}. By induction, the count of EMLTerms of size 2k+1 is C_k. Mathlib has `Nat.catalan`.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": ["Mathlib.Combinatorics.Catalan"],
+  "lean_target_signature": "theorem emlterm_count_catalan (k : ℕ) : (Finset.univ.filter (fun t : EMLTerm => EMLTerm.size t = 2 * k + 1)).card = Nat.catalan k := by sorry",
+  "depends_on": ["002_def_eml_term", "020_emlterm_size"],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Requires a Fintype (or DecidableEq) instance on EMLTerm. The Finset.univ.filter approach assumes Fintype, which requires bounding terms by size — a separate small chunk we skip. Aristotle will likely need `sorry` here."
+}

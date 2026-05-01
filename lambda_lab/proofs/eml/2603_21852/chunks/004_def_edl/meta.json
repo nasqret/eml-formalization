@@ -1,0 +1,22 @@
+{
+  "id": "004_def_edl",
+  "title_pl": "Wariant EDL: exp dzielone przez logarytm",
+  "title_en": "EDL variant (Exp Divided by Log)",
+  "paper_section": "§3 Results, Identity 4b",
+  "paper_quote": "edl(x, y) = exp(x) / ln(y),  constant: e",
+  "informal_pl": "Wariant EDL operatora EML korzysta z dzielenia zamiast odejmowania: edl(x,y) = exp(x)/ln(y) i wymaga stałej e zamiast 1. Ma podobne własności uniwersalne, ale z odmiennym 'punktem startowym'.",
+  "informal_en": "The EDL variant uses division instead of subtraction: edl(x,y) = exp(x)/ln(y), with the constant e replacing 1. It has analogous universality properties but a different 'starting point'.",
+  "kind": "definition",
+  "difficulty": 1,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "def edl (x y : ℝ) : ℝ := Real.exp x / Real.log y",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": "2026-05-01T00:07:16Z",
+  "notes": "Division by zero / negative log is junk-valued, fine for the formal definition. | Pure definition: result = target."
+}
