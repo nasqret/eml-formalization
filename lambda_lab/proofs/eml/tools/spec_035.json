@@ -1,0 +1,8 @@
+{
+  "target": "I",
+  "vars": [],
+  "constraint": "True",
+  "max_size": 31,
+  "theorem_name": "emlterm_for_i",
+  "domain": "complex"
+}

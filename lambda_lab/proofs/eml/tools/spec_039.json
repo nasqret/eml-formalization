@@ -1,0 +1,7 @@
+{
+  "target": "Sqrt[x]",
+  "vars": ["x"],
+  "constraint": "x > 0",
+  "max_size": 15,
+  "theorem_name": "emlterm1_for_sqrt_x"
+}

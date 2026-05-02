@@ -12,7 +12,9 @@
       "kind": "definition",
       "difficulty": 1,
       "status": "complete",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:07:16Z",
+      "aristotle_project_id": null
     },
     {
       "id": "002_def_eml_term",
@@ -20,7 +22,9 @@
       "kind": "definition",
       "difficulty": 1,
       "status": "complete",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:07:16Z",
+      "aristotle_project_id": null
     },
     {
       "id": "003_def_eml_eval",
@@ -30,7 +34,9 @@
       "status": "complete",
       "depends_on": [
         "002_def_eml_term"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:04:51Z",
+      "aristotle_project_id": null
     },
     {
       "id": "004_def_edl",
@@ -38,7 +44,9 @@
       "kind": "definition",
       "difficulty": 1,
       "status": "complete",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:07:16Z",
+      "aristotle_project_id": null
     },
     {
       "id": "005_def_neg_eml",
@@ -46,138 +54,168 @@
       "kind": "definition",
       "difficulty": 1,
       "status": "complete",
-      "depends_on": []
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:07:16Z",
+      "aristotle_project_id": null
     },
     {
       "id": "006_eml_one_one_eq_e",
       "title_en": "eml(1,1) = e",
       "kind": "identity",
       "difficulty": 1,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T00:37:11Z",
+      "aristotle_project_id": "6bc8201a-4570-4f81-97c7-e23c91b75d06"
     },
     {
       "id": "007_eml_x_one_eq_exp",
       "title_en": "eml(x,1) = exp(x)",
       "kind": "identity",
       "difficulty": 1,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T00:37:12Z",
+      "aristotle_project_id": "de98b64b-f42f-4be5-a82d-70fca248e1d1"
     },
     {
       "id": "008_eml_one_y",
       "title_en": "eml(1,y) = e − ln(y)",
       "kind": "identity",
       "difficulty": 1,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T00:37:14Z",
+      "aristotle_project_id": "94acfe91-42cd-45aa-bc95-8ae366ed6506"
     },
     {
       "id": "009_eml_x_e",
       "title_en": "eml(x, e) = exp(x) − 1",
       "kind": "identity",
       "difficulty": 1,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T00:37:15Z",
+      "aristotle_project_id": "30ebb22a-a3f6-44d4-833a-4af14cae82fb"
     },
     {
       "id": "010_eml_pos_left",
       "title_en": "Positivity of the left exponential of eml",
       "kind": "theorem",
       "difficulty": 1,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T00:37:16Z",
+      "aristotle_project_id": "159ba0a3-d4bb-47ed-8222-18965d306400"
     },
     {
       "id": "011_ln_via_eml",
       "title_en": "Natural logarithm via EML",
       "kind": "identity",
       "difficulty": 3,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:31Z",
+      "aristotle_project_id": "9880ea74-30f6-49a9-bb47-18c0051f56a1"
     },
     {
       "id": "012_exp_via_eml",
       "title_en": "exp(x) as eml — corollary phrasing of 007",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml",
         "007_eml_x_one_eq_exp"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:32Z",
+      "aristotle_project_id": "f7d4afc4-1e1e-4cce-b757-90a27b89f643"
     },
     {
       "id": "013_sub_via_eml",
       "title_en": "Subtraction expressed via EML",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "001_def_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:34Z",
+      "aristotle_project_id": "f5b41bc8-2cc6-4a8d-9482-3a2cec15ace7"
     },
     {
       "id": "014_add_via_eml",
       "title_en": "Addition via Identity 1 (Exp-Log reduction)",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:37:18Z",
+      "aristotle_project_id": "fb64ca32-b736-4c5d-9b32-185c6e25d6ea"
     },
     {
       "id": "015_mul_via_exp_log",
       "title_en": "Multiplication via Identity 1 (Exp-Log reduction)",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:37:19Z",
+      "aristotle_project_id": "c7d7a6be-ff65-4e45-9847-bda1dda29f93"
     },
     {
       "id": "016_add_via_exp_log",
       "title_en": "Additive consequence: x + y via exp and ln (specialized)",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:37:21Z",
+      "aristotle_project_id": "9e47b118-1c8a-4122-98ca-183b87db7106"
     },
     {
       "id": "017_successor_negation_identity",
       "title_en": "Successor / negation identity",
       "kind": "identity",
       "difficulty": 2,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:37:22Z",
+      "aristotle_project_id": "d9e651d2-01dd-4bf4-b623-ff442c70f1c1"
     },
     {
       "id": "018_inv_successor_inv_inverse_simple",
       "title_en": "Algebraic simplification of inv(suc(inv x))",
       "kind": "identity",
       "difficulty": 1,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T00:37:24Z",
+      "aristotle_project_id": "2e406c3b-d89b-4402-b4da-0405e945e865"
     },
     {
       "id": "019_negation_in_calc3",
       "title_en": "Negation realised in the Calc-3 set",
       "kind": "calculator-equivalence",
       "difficulty": 3,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "017_successor_negation_identity"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:35Z",
+      "aristotle_project_id": "ff159d82-4702-460f-b1b2-58d04908492c"
     },
     {
       "id": "020_emlterm_size",
@@ -187,166 +225,235 @@
       "status": "complete",
       "depends_on": [
         "002_def_eml_term"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:04:51Z",
+      "aristotle_project_id": null
     },
     {
       "id": "021_emlterm_size_pos",
       "title_en": "EML term size is positive",
       "kind": "theorem",
       "difficulty": 2,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "020_emlterm_size"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:36Z",
+      "aristotle_project_id": "431476c5-9973-4735-88c3-6eb6dde63548"
     },
     {
       "id": "022_emlterm_e_witness",
       "title_en": "An EML term whose eval is e",
       "kind": "theorem",
       "difficulty": 2,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "003_def_eml_eval"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:38Z",
+      "aristotle_project_id": "4c72725b-e057-4f37-b2d9-4bbd6ff416fc"
     },
     {
       "id": "023_emlterm_exp_x_witness",
       "title_en": "EML term with x-leaf whose eval is exp(x)",
       "kind": "theorem",
       "difficulty": 3,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term"
-      ]
+      ],
+      "completed_at": "2026-05-01T01:17:39Z",
+      "aristotle_project_id": "8d4dd172-0333-430a-968b-ead5b2b3f1d3"
     },
     {
       "id": "024_wolfram_to_calc3",
       "title_en": "Wolfram → Calc 3 reduction",
       "kind": "calculator-equivalence",
       "difficulty": 4,
-      "status": "pending",
-      "depends_on": []
+      "status": "partial",
+      "depends_on": [],
+      "completed_at": "2026-05-02T00:52:52Z",
+      "aristotle_project_id": null,
+      "chunk_id": "024_wolfram_to_calc3",
+      "project_id": "3a3e8793-873b-4207-b527-fd53294154a7",
+      "submitted_at": "2026-05-02T00:00:37Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: First step of the reduction chain: every function expressible in the Wolfram set (real-valued subset, no `i`) is expressible in Calc 3. Statement: for every `e : Wolfram` there exists `e' : Calc3` whose evaluation matches for all `x y : ℝ`. `π` has no Calc3 primitive and `pow` requires positivity of the base, so we leave a `s"
     },
     {
       "id": "025_calc3_to_calc2",
       "title_en": "Calc 3 → Calc 2 reduction",
       "kind": "calculator-equivalence",
       "difficulty": 3,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "019_negation_in_calc3"
-      ]
+      ],
+      "completed_at": "2026-05-01T23:53:58Z",
+      "aristotle_project_id": null,
+      "chunk_id": "025_calc3_to_calc2",
+      "project_id": "e57b10e4-d628-48ea-bc0b-567a2173deea",
+      "submitted_at": "2026-05-01T19:15:18Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Canonical step: `−x` becomes `0 − x` (with `0 := varX − varX`); `+` becomes `a − (0 − b)`; `1/x` becomes `exp(0 − ln x)`. Existential statement: for every `e : Calc3` there is a `Calc2` term agreeing pointwise.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport EML.Calc\n\nna"
     },
     {
       "id": "026_calc2_to_calc1",
       "title_en": "Calc 2 → Calc 1 reduction",
       "kind": "calculator-equivalence",
       "difficulty": 3,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T23:53:58Z",
+      "aristotle_project_id": null,
+      "chunk_id": "026_calc2_to_calc1",
+      "project_id": "e3bfeffc-dc67-46f7-bd74-482f8a7c76a8",
+      "submitted_at": "2026-05-01T19:15:20Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Translation `exp a ↦ pow eConst a`, `ln a ↦ logb eConst a`, with `sub` realised via a `pow`/`logb` combination (possibly relying on `Real.log 0 = 0` junk values). Existential statement.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow"
     },
     {
       "id": "027_calc1_to_calc0",
       "title_en": "Calc 1 → Calc 0 reduction",
       "kind": "calculator-equivalence",
       "difficulty": 3,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T23:53:58Z",
+      "aristotle_project_id": null,
+      "chunk_id": "027_calc1_to_calc0",
+      "project_id": "037e8359-52a4-4b54-a956-2e13ac90778b",
+      "submitted_at": "2026-05-01T19:15:22Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Translation: `eConst ↦ exp_ (logb varX varX)`, `logb a b ↦ logb a b`, `pow a b ↦ exp_ (logb (exp_ (inv b)) a)` with `inv b` realized as `logb (exp_ b) (exp_ 1)`. Existential statement.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow."
     },
     {
       "id": "028_calc0_to_eml",
       "title_en": "Calc 0 → EML reduction",
       "kind": "calculator-equivalence",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "007_eml_x_one_eq_exp",
         "011_ln_via_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T23:53:58Z",
+      "aristotle_project_id": null,
+      "chunk_id": "028_calc0_to_eml",
+      "project_id": "b12c9ead-2686-494a-917a-2ac6d441afae",
+      "submitted_at": "2026-05-01T19:15:23Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Translation into `EMLTerm₂` (from `EML/Calc.lean`): `varX/varY` directly; `exp_ a ↦ eml a one`; `logb a b` as a deep composition using `ln`-via-eml (chunk 011). Existential statement.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport EML.Calc\n\nnamespace EML\n\n/-- **Calc 0 →"
     },
     {
       "id": "029_eml_minimality",
       "title_en": "Minimality: three primitives is the minimum",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
-      "depends_on": []
+      "status": "partial",
+      "depends_on": [],
+      "completed_at": "2026-05-01T23:26:39Z",
+      "aristotle_project_id": null
     },
     {
       "id": "030_emlterm_for_zero",
       "title_en": "EMLTerm whose eval is 0",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "003_def_eml_eval"
-      ]
+      ],
+      "completed_at": "2026-05-01T03:18:00Z",
+      "aristotle_project_id": "c7a344e7-4df7-4865-b9c7-2cc5f017583f"
     },
     {
       "id": "031_emlterm_for_neg_one",
       "title_en": "EMLTerm whose eval is −1",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "003_def_eml_eval"
-      ]
+      ],
+      "completed_at": "2026-05-01T03:18:01Z",
+      "aristotle_project_id": "a681c93a-6345-4b8f-8a56-7dd7aba9f13c"
     },
     {
       "id": "032_emlterm_for_two",
       "title_en": "EMLTerm whose eval is 2",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "003_def_eml_eval"
-      ]
+      ],
+      "completed_at": "2026-05-01T03:18:03Z",
+      "aristotle_project_id": "ea868c47-eb80-4826-b405-23a2a4b44abd"
     },
     {
       "id": "033_emlterm_for_half",
       "title_en": "EMLTerm whose eval is 1/2",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "003_def_eml_eval"
-      ]
+      ],
+      "completed_at": "2026-05-01T04:18:27Z",
+      "aristotle_project_id": "e2f0bda3-0a23-454b-ae6a-a500f900a6a7"
     },
     {
       "id": "034_emlterm_for_pi",
-      "title_en": "EMLTerm whose eval is π",
+      "title_en": "EMLTermℂ whose eval is π",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
-        "003_def_eml_eval"
-      ]
+        "003_def_eml_eval",
+        "031_emlterm_for_neg_one",
+        "032_emlterm_for_two",
+        "033_emlterm_for_half"
+      ],
+      "completed_at": "2026-04-27T00:00:00Z",
+      "aristotle_project_id": null,
+      "search_v2_outcome": "no_match real-domain (resolved by EMLTermℂ extension; see EML/Solutions/034_emlterm_for_pi.lean — verified by lake env lean, exit 0)"
     },
     {
       "id": "035_emlterm_for_i",
-      "title_en": "EMLTerm whose eval is i (imaginary unit)",
+      "title_en": "EMLTermℂ whose eval is i (imaginary unit)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [
+        "002_def_eml_term",
+        "003_def_eml_eval",
+        "031_emlterm_for_neg_one",
+        "032_emlterm_for_two",
+        "033_emlterm_for_half",
+        "036_emlterm_for_neg_x"
+      ],
+      "completed_at": "2026-04-27T00:00:00Z",
+      "aristotle_project_id": null,
+      "search_v2_outcome": "no_match real-domain (resolved by EMLTermℂ extension; see EML/Solutions/035_emlterm_for_i.lean — verified by lake env lean, exit 0)"
     },
     {
       "id": "036_emlterm_for_neg_x",
       "title_en": "EMLTerm₁ realising the function −x",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "023_emlterm_exp_x_witness"
       ],
-      "completed_at": "2026-05-01T06:19:58Z"
+      "completed_at": "2026-05-01T23:36:51Z",
+      "aristotle_project_id": "2db766ca-c43f-466c-9755-bd3ffbd2a590",
+      "chunk_id": "036_emlterm_for_neg_x",
+      "project_id": "b04b7d94-9645-49f2-bc24-c951c0918f03",
+      "submitted_at": "2026-05-01T18:55:46Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a parameterised EML term of size 57 (or 15 in the direct-search variant) whose evaluation at every x equals −x. Existential; the formal proof would lift the successor identity (017) to the term level.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n"
     },
     {
       "id": "037_emlterm_for_inv_x",
@@ -357,7 +464,8 @@
       "depends_on": [
         "023_emlterm_exp_x_witness"
       ],
-      "completed_at": "2026-05-01T17:06:09Z"
+      "completed_at": "2026-05-01T17:06:09Z",
+      "aristotle_project_id": "02bb20fa-5b48-44b5-baca-fbca3707b570"
     },
     {
       "id": "038_emlterm_for_sq_x",
@@ -368,37 +476,49 @@
       "depends_on": [
         "023_emlterm_exp_x_witness"
       ],
-      "completed_at": "2026-05-01T11:05:36Z"
+      "completed_at": "2026-05-01T11:05:36Z",
+      "aristotle_project_id": "a73627ff-56d7-4ae5-bb67-0f8e5b8fd877"
     },
     {
       "id": "039_emlterm_for_sqrt_x",
       "title_en": "EMLTerm₁ realising the function √x",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "023_emlterm_exp_x_witness"
-      ]
+      ],
+      "completed_at": "2026-05-02T02:37:27Z",
+      "aristotle_project_id": null,
+      "search_v2_outcome": "no_match (max_size=15, 26.7k unique signatures, ~2s); paper K_directSearch>43; size 17+ exceeds memory budget",
+      "chunk_id": "039_emlterm_for_sqrt_x",
+      "project_id": "acada945-a266-4ebc-a4eb-cc6af254dded",
+      "submitted_at": "2026-05-02T00:22:18Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a parameterised EML term of size 139 whose evaluation equals √x for x ≥ 0. PROBABLE PERMANENT SORRY: 139-node literal tree beyond the manual-transcription budget.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow.Real\n\nnam"
     },
     {
       "id": "040_emlterm_for_add_xy",
       "title_en": "EMLTerm₂ realising x + y",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "014_add_via_eml"
-      ]
+      ],
+      "completed_at": "2026-05-01T04:18:28Z",
+      "aristotle_project_id": "37251cb0-aa2b-4ae3-807b-54f4e80d15e6"
     },
     {
       "id": "041_emlterm_for_mul_xy",
       "title_en": "EMLTerm₂ realising x · y",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "015_mul_via_exp_log"
-      ]
+      ],
+      "completed_at": "2026-05-01T03:18:04Z",
+      "aristotle_project_id": "920cc79d-50c7-4345-8581-8650959fc31b"
     },
     {
       "id": "042_emlterm_for_pow_xy",
@@ -409,261 +529,62 @@
       "depends_on": [
         "015_mul_via_exp_log"
       ],
-      "completed_at": "2026-05-01T18:12:37Z"
+      "completed_at": "2026-05-01T18:12:37Z",
+      "aristotle_project_id": "628e3e06-0a6b-4667-b33a-47d6eb4bfb5c"
     },
     {
       "id": "043_master_formula_param_count",
       "title_en": "Master-formula parameter count at level n",
       "kind": "definition",
       "difficulty": 2,
-      "status": "pending",
-      "depends_on": []
+      "status": "complete",
+      "depends_on": [],
+      "completed_at": "2026-05-01T20:01:01Z",
+      "aristotle_project_id": null,
+      "chunk_id": "043_master_formula_param_count",
+      "project_id": "1b56eff5-3077-4670-b4e2-801beab92ef9",
+      "submitted_at": "2026-05-01T18:54:35Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The level-n master formula has 5·2^n − 6 parameters. We define parametrCount n := 5·2^n − 6 and check small values (n=1: 4, n=2: 14, n=3: 34).\n\nimport Mathlib.Algebra.GroupPower.Basic\n\nnamespace EML\n\n/-- Total parameter count of the level-n EML master formula:\n`5 · 2^n − 6` (Section 4.3). -/\ndef masterParamCount (n : ℕ) : ℤ :"
     },
     {
       "id": "044_emlterm_count_catalan",
       "title_en": "Count of EMLTerms equals the Catalan number",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "002_def_eml_term",
         "020_emlterm_size"
-      ]
+      ],
+      "completed_at": "2026-05-01T23:36:51Z",
+      "aristotle_project_id": null,
+      "chunk_id": "044_emlterm_count_catalan",
+      "project_id": "9e6dfdff-267f-4c6b-9e31-9d5f88e81e69",
+      "submitted_at": "2026-05-01T18:54:36Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The number of full binary trees with n leaves is the Catalan number C_{n−1}. By induction, the count of EMLTerms of size 2k+1 is C_k. Mathlib has `Nat.catalan`.\n\nimport Mathlib.Combinatorics.Catalan\n\nnamespace EML\n\ninductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm\n  deriving Repr\n\ndef EMLTerm.si"
     },
     {
       "id": "045_main_completeness_stub",
-      "title_en": "Main completeness theorem — stub",
+      "title_en": "Main completeness theorem — eleven-conjunct umbrella",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "030_emlterm_for_zero",
         "031_emlterm_for_neg_one",
         "032_emlterm_for_two",
         "033_emlterm_for_half",
+        "022_emlterm_e_witness",
         "036_emlterm_for_neg_x",
         "037_emlterm_for_inv_x",
         "038_emlterm_for_sq_x",
         "040_emlterm_for_add_xy",
         "041_emlterm_for_mul_xy",
         "042_emlterm_for_pow_xy"
-      ]
-    },
-    {
-      "chunk_id": "006_eml_one_one_eq_e",
-      "project_id": "6bc8201a-4570-4f81-97c7-e23c91b75d06",
-      "submitted_at": "2026-05-01T00:08:35Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Applying the EML operator to two unit arguments yields Euler's number: eml(1,1) = exp(1) − ln(1) = e − 0 = e. The simplest of the fundamental examples.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ndef eml (x y : ℝ) : ℝ := Real.exp x - Real.log y\n\ntheorem eml_",
-      "completed_at": "2026-05-01T00:37:11Z"
-    },
-    {
-      "chunk_id": "007_eml_x_one_eq_exp",
-      "project_id": "de98b64b-f42f-4be5-a82d-70fca248e1d1",
-      "submitted_at": "2026-05-01T00:08:37Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Setting the second argument to 1 collapses ln(1) to zero, so eml(x,1) = exp(x) for every real x. This shows that the exponential is immediately reachable in EML.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ndef eml (x y : ℝ) : ℝ := Real.exp x - Real.log y\n\nth",
-      "completed_at": "2026-05-01T00:37:12Z"
-    },
-    {
-      "chunk_id": "008_eml_one_y",
-      "project_id": "94acfe91-42cd-45aa-bc95-8ae366ed6506",
-      "submitted_at": "2026-05-01T00:08:39Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Setting the first argument to 1 reduces exp(1) to the constant e, giving eml(1,y) = e − ln(y). The hypothesis y > 0 is not formally required (Real.log is junk-valued elsewhere) but we keep it for semantic clarity.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n",
-      "completed_at": "2026-05-01T00:37:14Z"
-    },
-    {
-      "chunk_id": "009_eml_x_e",
-      "project_id": "30ebb22a-a3f6-44d4-833a-4af14cae82fb",
-      "submitted_at": "2026-05-01T00:10:03Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Substituting y = e yields ln(e) = 1, so eml(x,e) = exp(x) − 1. The value exp(x) − 1 appears throughout analysis (Taylor expansions, etc.) so it is worth isolating.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ndef eml (x y : ℝ) : ℝ := Real.exp x - Real.log y\n\n",
-      "completed_at": "2026-05-01T00:37:15Z"
-    },
-    {
-      "chunk_id": "010_eml_pos_left",
-      "project_id": "159ba0a3-d4bb-47ed-8222-18965d306400",
-      "submitted_at": "2026-05-01T00:10:05Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The left summand of EML, exp(x), is always strictly positive. This trivial lemma underpins later positivity arguments (e.g. for the log argument in chunk 011).\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\n\nnamespace EML\n\ntheorem eml_left_pos (x y : ℝ) : 0 < Real.exp x := by\n  sorry\n\nend EML",
-      "completed_at": "2026-05-01T00:37:16Z"
-    },
-    {
-      "chunk_id": "014_add_via_eml",
-      "project_id": "fb64ca32-b736-4c5d-9b32-185c6e25d6ea",
-      "submitted_at": "2026-05-01T00:10:06Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Addition arises from the exp homomorphism: x + y = ln(exp x · exp y). A canonical transcendental identity; in Mathlib it follows from Real.log_mul plus Real.log_exp.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ntheorem add_via_exp_log (x y : ℝ) :\n    x + y = ",
-      "completed_at": "2026-05-01T00:37:18Z"
-    },
-    {
-      "chunk_id": "015_mul_via_exp_log",
-      "project_id": "c7d7a6be-ff65-4e45-9847-bda1dda29f93",
-      "submitted_at": "2026-05-01T00:10:08Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The product of positive reals is recovered by exponentiating the sum of logs: x · y = exp(ln x + ln y) for x, y > 0. The multiplicative half of Identity 1.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ntheorem mul_via_exp_log (x y : ℝ) (hx : 0 < x) (hy : 0 < y",
-      "completed_at": "2026-05-01T00:37:19Z"
-    },
-    {
-      "chunk_id": "016_add_via_exp_log",
-      "project_id": "9e47b118-1c8a-4122-98ca-183b87db7106",
-      "submitted_at": "2026-05-01T00:10:10Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: A re-statement of chunk 014 split out so that Aristotle can use either (log_mul + log_exp) or a direct combined lemma. Useful for the calculator-equivalence chain in Group 6.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ntheorem add_eq_log_mul_exp (x y : ℝ) :\n",
-      "completed_at": "2026-05-01T00:37:21Z"
-    },
-    {
-      "chunk_id": "017_successor_negation_identity",
-      "project_id": "d9e651d2-01dd-4bf4-b623-ff442c70f1c1",
-      "submitted_at": "2026-05-01T00:10:12Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Identity: 1/(1/(1/x + 1) − 1) + 1 = −x. A single `field_simp; ring` should close it; the side conditions are x ≠ 0 and x ≠ −1 to keep all denominators alive.\n\nimport Mathlib.Tactic.FieldSimp\nimport Mathlib.Tactic.Ring\n\nnamespace EML\n\ntheorem successor_negation_identity (x : ℝ) (hx : x ≠ 0) (hx1 : x ≠ -1) :\n    1 / (1 / (1 / x",
-      "completed_at": "2026-05-01T00:37:22Z"
-    },
-    {
-      "chunk_id": "018_inv_successor_inv_inverse_simple",
-      "project_id": "2e406c3b-d89b-4402-b4da-0405e945e865",
-      "submitted_at": "2026-05-01T00:10:13Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Auxiliary algebraic lemma: 1/(1/x + 1) = x/(1+x) for x ≠ 0 and 1+x ≠ 0. Used as an intermediate step in 017 and 019.\n\nimport Mathlib.Tactic.FieldSimp\nimport Mathlib.Tactic.Ring\n\nnamespace EML\n\ntheorem inv_successor_inv (x : ℝ) (hx : x ≠ 0) (hx1 : x + 1 ≠ 0) :\n    1 / (1 / x + 1) = x / (1 + x) := by\n  sorry\n\nend EML",
-      "completed_at": "2026-05-01T00:37:24Z"
-    },
-    {
-      "chunk_id": "011_ln_via_eml",
-      "project_id": "9880ea74-30f6-49a9-bb47-18c0051f56a1",
-      "submitted_at": "2026-05-01T01:04:52Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The natural log expands as a triple-nested EML application: ln(z) = eml(1, eml(eml(1, z), 1)). The proof unfolds eml repeatedly and uses Real.log_one, Real.log_exp plus arithmetic. For z > 0 all the inner Real.log arguments are positive.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Lo",
-      "completed_at": "2026-05-01T01:17:31Z"
-    },
-    {
-      "chunk_id": "012_exp_via_eml",
-      "project_id": "f7d4afc4-1e1e-4cce-b757-90a27b89f643",
-      "submitted_at": "2026-05-01T01:04:54Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: A re-statement of chunk 007 in 'definitional' direction: exp(x) is exactly eml(x,1). The proof typically just inherits via `(eml_x_one x).symm`.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ndef eml (x y : ℝ) : ℝ := Real.exp x - Real.log y\n\ntheorem exp_via_eml",
-      "completed_at": "2026-05-01T01:17:32Z"
-    },
-    {
-      "chunk_id": "013_sub_via_eml",
-      "project_id": "f5b41bc8-2cc6-4a8d-9482-3a2cec15ace7",
-      "submitted_at": "2026-05-01T01:04:56Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The subtraction x − y can be written as eml(ln x, exp y) = exp(ln x) − ln(exp y) = x − y when x > 0 (the ln(exp y) = y simplification needs no positivity, but exp(ln x) = x needs x > 0).\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ndef eml (x y : ℝ) : ℝ := Re",
-      "completed_at": "2026-05-01T01:17:34Z"
-    },
-    {
-      "chunk_id": "019_negation_in_calc3",
-      "project_id": "ff159d82-4702-460f-b1b2-58d04908492c",
-      "submitted_at": "2026-05-01T01:04:57Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: We show that negation −x is reachable using only addition and inversion (the Calc-3 operator set minus the standalone −x primitive): −x = 1/(1/(1/x+1)−1) + 1 for x ≠ 0, x ≠ −1. This is the step that removes −x as a primitive on the way to Calc 2/Calc 1.\n\nimport Mathlib.Tactic.FieldSimp\nimport Mathlib.Tactic.Ring\n\nnamespace EM",
-      "completed_at": "2026-05-01T01:17:35Z"
-    },
-    {
-      "chunk_id": "021_emlterm_size_pos",
-      "project_id": "431476c5-9973-4735-88c3-6eb6dde63548",
-      "submitted_at": "2026-05-01T01:04:59Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: For every EML term, size t ≥ 1. Inductive proof: leaves have size 1; nodes have 1 + size t + size u ≥ 1.\n\nnamespace EML\n\ninductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm\n  deriving Repr\n\ndef EMLTerm.size : EMLTerm → ℕ\n  | .one => 1\n  | .eml t u => 1 + EMLTerm.size t + EMLTerm.size u\n\ntheorem EM",
-      "completed_at": "2026-05-01T01:17:36Z"
-    },
-    {
-      "chunk_id": "022_emlterm_e_witness",
-      "project_id": "4c72725b-e057-4f37-b2d9-4bbd6ff416fc",
-      "submitted_at": "2026-05-01T01:05:01Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: The EML term eml(.one, .one) evaluates to exp(1) − ln(1) = e. A constructive witness that e lies in the image of eval. The term's size is 3 (one node + two leaves), matching the K column in the paper's catalogue.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ni",
-      "completed_at": "2026-05-01T01:17:38Z"
-    },
-    {
-      "chunk_id": "023_emlterm_exp_x_witness",
-      "project_id": "8d4dd172-0333-430a-968b-ead5b2b3f1d3",
-      "submitted_at": "2026-05-01T01:05:02Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: To realise exp(x) as an EML term we add a .var leaf representing the variable x; the evaluation at x gives EMLTerm₁.eval x (.eml .var .one) = exp(x). We introduce a separate type EMLTerm₁ to avoid disturbing the original (constants-only) EMLTerm.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFun",
-      "completed_at": "2026-05-01T01:17:39Z"
-    },
-    {
-      "chunk_id": "030_emlterm_for_zero",
-      "project_id": "c7a344e7-4df7-4865-b9c7-2cc5f017583f",
-      "submitted_at": "2026-05-01T02:17:16Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists an EML term of size 7 evaluating to 0. The paper reports K=7 but defers the literal tree to the Supplementary; we state existence and leave the witness as `sorry` until the literal tree is transcribed.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n",
-      "completed_at": "2026-05-01T03:18:00Z"
-    },
-    {
-      "chunk_id": "031_emlterm_for_neg_one",
-      "project_id": "a681c93a-6345-4b8f-8a56-7dd7aba9f13c",
-      "submitted_at": "2026-05-01T02:17:17Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists an EML term of size 17 evaluating to −1. Existential; the literal tree is in the Supplementary.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm\n  deriving Repr\n\ndef EML",
-      "completed_at": "2026-05-01T03:18:01Z"
-    },
-    {
-      "chunk_id": "032_emlterm_for_two",
-      "project_id": "ea868c47-eb80-4826-b405-23a2a4b44abd",
-      "submitted_at": "2026-05-01T02:17:19Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists an EML term of size 27 evaluating to 2. Existential; the direct-search variant has K=19.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm\n  deriving Repr\n\ndef EMLTerm.ev",
-      "completed_at": "2026-05-01T03:18:03Z"
-    },
-    {
-      "chunk_id": "033_emlterm_for_half",
-      "project_id": "e2f0bda3-0a23-454b-ae6a-a500f900a6a7",
-      "submitted_at": "2026-05-01T02:17:20Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists an EML term of size 91 evaluating to 1/2. Existential; the direct-search variant has K=29.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm : Type\n  | one : EMLTerm\n  | eml : EMLTerm → EMLTerm → EMLTerm\n  deriving Repr\n\ndef EMLTerm.",
-      "completed_at": "2026-05-01T04:18:27Z"
-    },
-    {
-      "chunk_id": "036_emlterm_for_neg_x",
-      "project_id": "2db766ca-c43f-466c-9755-bd3ffbd2a590",
-      "submitted_at": "2026-05-01T02:17:22Z",
-      "status": "partial",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a parameterised EML term of size 57 (or 15 in the direct-search variant) whose evaluation at every x equals −x. Existential; the formal proof would lift the successor identity (017) to the term level.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n",
-      "completed_at": "2026-05-01T06:19:58Z"
-    },
-    {
-      "chunk_id": "037_emlterm_for_inv_x",
-      "project_id": "02bb20fa-5b48-44b5-baca-fbca3707b570",
-      "submitted_at": "2026-05-01T16:18:32Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a parameterised EML term of size 65 (or 15 direct-search) whose evaluation equals 1/x for every nonzero x. Existential; the x ≠ 0 constraint is semantic — Real has junk values at 0.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm₁ ",
-      "completed_at": "2026-05-01T17:06:09Z"
-    },
-    {
-      "chunk_id": "038_emlterm_for_sq_x",
-      "project_id": "a73627ff-56d7-4ae5-bb67-0f8e5b8fd877",
-      "submitted_at": "2026-05-01T10:33:13Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a parameterised EML term of size 75 (or 17 direct-search) whose evaluation equals x² for every x. Existential.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm₁ : Type\n  | one : EMLTerm₁\n  | var : EMLTerm₁\n  | eml : EMLTerm₁ → EMLTe",
-      "completed_at": "2026-05-01T11:05:36Z"
-    },
-    {
-      "chunk_id": "040_emlterm_for_add_xy",
-      "project_id": "37251cb0-aa2b-4ae3-807b-54f4e80d15e6",
-      "submitted_at": "2026-05-01T02:17:27Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a two-variable EML term of size 27 whose evaluation at (x,y) equals x + y. Requires a 2-variable grammar EMLTerm₂ (with .varX, .varY leaves) and an evaluation eval₂ : ℝ → ℝ → EMLTerm₂ → ℝ.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- Two-vari",
-      "completed_at": "2026-05-01T04:18:28Z"
-    },
-    {
-      "chunk_id": "041_emlterm_for_mul_xy",
-      "project_id": "920cc79d-50c7-4345-8581-8650959fc31b",
-      "submitted_at": "2026-05-01T02:17:28Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a two-variable EML term of size 41 whose evaluation equals x · y for x, y > 0 (Identity 1). Existential.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\ninductive EMLTerm₂ : Type\n  | one : EMLTerm₂\n  | varX : EMLTerm₂\n  | varY : EMLTerm₂\n  | eml : E",
-      "completed_at": "2026-05-01T03:18:04Z"
-    },
-    {
-      "chunk_id": "042_emlterm_for_pow_xy",
-      "project_id": "628e3e06-0a6b-4667-b33a-47d6eb4bfb5c",
-      "submitted_at": "2026-05-01T16:18:34Z",
-      "status": "complete",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a two-variable EML term of size 49 (or 25 direct-search) whose evaluation equals x^y = exp(y · ln x) for x > 0. Existential.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow.Real\n\nnamespace EML\n\ninductive EMLTerm₂ : Type\n",
-      "completed_at": "2026-05-01T18:12:37Z"
+      ],
+      "completed_at": "2026-05-01T23:59:56Z",
+      "aristotle_project_id": null,
+      "notes": "11-conjunct existential umbrella: 0, -1, 2, 1/2, e, -x, 1/x (x>0), x^2 (x>0), x+y, x*y (x,y>0), x^y (x,y>0). Self-contained 514-line proof in EML/Solutions/045_main_completeness_stub.lean. Excludes π/i/√x (permanent sorries)."
     }
   ],
   "stats": {
@@ -680,6 +601,11 @@
       "identity": 12,
       "theorem": 20,
       "calculator-equivalence": 6
+    },
+    "by_status": {
+      "complete": 32,
+      "pending": 12,
+      "partial": 1
     }
   }
 }

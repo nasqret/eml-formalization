@@ -4,16 +4,20 @@
   "title_en": "Minimality: three primitives is the minimum",
   "paper_section": "§3 Results (concluding remark on Table 2)",
   "paper_quote": "Three primitives is the minimum: any further reduction would either drop the constant (leaving an unsatisfiable arity equation) or merge eml with another operation in a way that loses expressiveness.",
-  "informal_pl": "Stwierdzenie, że nie istnieje konfiguracja kalkulatora z mniejszym niż trzy prymitywami zachowująca pełną elementarną wyrażalność. Pełny dowód argumentu wymaga formalnego pojęcia 'kalkulatora' i 'wyrażalności'; tutaj zostawiamy stub.",
-  "informal_en": "States that no calculator configuration with fewer than three primitives retains full elementary expressiveness. A formal proof requires defining 'calculator' and 'expressible'; we leave a stub.",
+  "informal_pl": "Twierdzenie negatywne: nie istnieje konfiguracja kalkulatora z mniej niż trzema prymitywami zachowująca pełną elementarną wyrażalność. Otwartym problemem; formalizujemy operacyjny korelat dla podzbioru `{1}` (bez `eml`).",
+  "informal_en": "Negative claim: no calculator with fewer than three primitives retains full elementary expressiveness. Open in the paper; we formalise one operational corollary for the subset `{1}` (without `eml`).",
   "kind": "theorem",
   "difficulty": 5,
-  "lean_imports": [],
-  "lean_target_signature": "theorem eml_minimality_stub : True := by sorry",
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "EML.Calc"
+  ],
+  "lean_target_signature": "theorem eml_only_one_cannot_represent_identity : ¬ ∃ t : EMLOnlyOne, ∀ x : ℝ, EMLOnlyOne.eval t = x  ∧  theorem eml_minimality_universal : True := by sorry",
   "depends_on": [],
-  "status": "pending",
+  "status": "partial",
   "aristotle_project_id": null,
   "submitted_at": null,
-  "completed_at": null,
-  "notes": "Open / philosophical claim in the paper; we keep it as `True` placeholder."
+  "completed_at": "2026-05-01T23:26:39Z",
+  "notes": "Permanent `sorry` stub for the universal claim — it is an open problem in the paper. The single-constant corollary `eml_only_one_cannot_represent_identity` is fully proven (no `sorry`). NOT submitted to Aristotle: the universal claim has no formal definition of 'calculator with k primitives' yet, and submitting `True := by sorry` is not informative. | DELIVERED a provable single-constant corollary (`eml_only_one_cannot_represent_identity`) showing that without the binary `eml` operator, the constant `1` alone cannot represent the identity function. Universal minimality (paper's full claim — no 2-primitive subset of any natural calculator suffices) remains open and is preserved as `eml_minimality_universal := True`. This is the most we can claim without exhaustive case analysis over alternative 2-primitive calculators."
 }

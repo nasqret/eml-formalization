@@ -8,19 +8,21 @@
 > From Calc 3 {exp, ln, −x, 1/x, +} we drop −x, 1/x and replace + with − to obtain Calc 2 {exp, ln, −} (4 symbols).
 
 ## Informal (PL)
-Krok kanoniczny: −x usuwamy przez successor identity (chunk 019); 1/x przez tożsamości algebraiczne; + zostaje zastąpione − bo a + b = a − (−b) i −b mamy z 019. Stwierdzenie istnieniowe.
+Krok kanoniczny: `−x` zastępujemy przez `0 − x` (a `0 := varX − varX`); `+` przez `a + b = a − (0 − b)`; `1/x` przez `exp(0 − ln x)` (poprawnie dla `x > 0`; poza tym domeną zgadza się dzięki konwencji Mathliba). `exp` i `ln` przekładają się tożsamościowo. Stwierdzenie: dla każdego `e : Calc3` istnieje `e' : Calc2` taki, że `Calc2.eval x y e' = Calc3.eval x y e` dla wszystkich `x y`.
 
 ## Informal (EN)
-Canonical step: −x is removed via the successor identity (chunk 019); 1/x via algebraic identities; + is replaced by − because a + b = a − (−b) and −b is now available. Stated as a placeholder existential.
+Canonical step: `−x` becomes `0 − x` (with `0 := varX − varX`); `+` becomes `a + b = a − (0 − b)`; `1/x` becomes `exp(0 − ln x)` (correct for `x > 0`; on the rest of the domain the equality is preserved by Mathlib's `Real.log 0 = 0` convention). `exp` and `ln` translate identically. Statement: for every `e : Calc3` there exists `e' : Calc2` with `Calc2.eval x y e' = Calc3.eval x y e` for all `x y`.
 
 ## Formal target
 
 ```lean
-theorem calc3_subset_calc2 : True := by sorry
+theorem calc3_to_calc2 :
+    ∀ e : Calc3, ∃ e' : Calc2,
+      ∀ x y : ℝ, Calc2.eval x y e' = Calc3.eval x y e := by sorry
 ```
 
 ## Dependencies
-019_negation_in_calc3
+019_negation_in_calc3 (informally — provides the −x = 0 − x identity at the level of Calc3 evaluation)
 
 ## Aristotle status
-pending (project_id: null)
+pending (project_id: null) — submitted to Aristotle in this round.

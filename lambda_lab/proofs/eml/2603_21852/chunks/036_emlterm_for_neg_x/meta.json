@@ -16,9 +16,18 @@
   "depends_on": [
     "023_emlterm_exp_x_witness"
   ],
-  "status": "partial",
-  "aristotle_project_id": "2db766ca-c43f-466c-9755-bd3ffbd2a590",
-  "submitted_at": "2026-05-01T02:17:22Z",
-  "completed_at": "2026-05-01T06:19:58Z",
-  "notes": "Re-uses EMLTerm₁ from chunk 023. Side conditions on x ≠ 0, x ≠ −1 dropped because Real.log is junk-valued. | Aristotle returned COMPLETE_WITH_ERRORS. Original theorem left with `sorry`. Aristotle claims no EMLTerm₁ of size ≤ 15 evaluates to -x (exhaustive search over 109,824 terms) — BUT paper's tree has K=57 (~28 nodes), beyond Aristotle's search budget; claim suspect. Aristotle also delivered a verified proof in a richer grammar `EMLTerm₂` with `const : ℝ → EMLTerm₂` using `Real.log 2` as a parameter. Needs human review."
+  "status": "complete",
+  "aristotle_project_id": "b04b7d94-9645-49f2-bc24-c951c0918f03",
+  "submitted_at": "2026-05-01T18:55:46Z",
+  "completed_at": "2026-05-01T23:36:51Z",
+  "notes": "Re-uses EMLTerm₁ from chunk 023. Side conditions on x ≠ 0, x ≠ −1 dropped because Real.log is junk-valued. | Aristotle returned COMPLETE_WITH_ERRORS. Original theorem left with `sorry`. Aristotle claims no EMLTerm₁ of size ≤ 15 evaluates to -x (exhaustive search over 109,824 terms) — BUT paper's tree has K=57 (~28 nodes), beyond Aristotle's search budget; claim suspect. Aristotle also delivered a verified proof in a richer grammar `EMLTerm₂` with `const : ℝ → EMLTerm₂` using `Real.log 2` as a parameter. Needs human review. | RESOLVED on retry. Aristotle returned COMPLETE for the construction hint. Witness: neg_x_term = eml(eml(1, eml(eml(1, eml(var, eml(var, one))), one)), eml(eml(var, one), one)) i.e. exp(log(exp(x) - x)) - exp(x) = -x for ALL real x. Verified clean by lake env lean.",
+  "history": [
+    {
+      "project_id": "2db766ca-c43f-466c-9755-bd3ffbd2a590",
+      "submitted_at": "2026-05-01T02:17:22Z",
+      "completed_at": "2026-05-01T06:19:58Z",
+      "status": "partial",
+      "reason": "First attempt left main theorem with sorry; claimed unprovable in EMLTerm₁. Chunk 037's partial later contained a complete EMLTerm₁ witness — Aristotle contradicted itself. Resubmit with explicit construction hint."
+    }
+  ]
 }

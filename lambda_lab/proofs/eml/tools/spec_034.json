@@ -1,0 +1,7 @@
+{
+  "target": "Pi",
+  "vars": [],
+  "constraint": "True",
+  "max_size": 31,
+  "theorem_name": "emlterm_for_pi"
+}

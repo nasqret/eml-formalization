@@ -1,20 +1,24 @@
-import Mathlib.Analysis.SpecialFunctions.Exp
-import Mathlib.Analysis.SpecialFunctions.Complex.Log
+import Mathlib
 
 namespace EML
 
-/-- Complex-valued EML term grammar (placeholder). -/
+/-- Complex-valued EML term grammar (extended from the real-valued version). -/
 inductive EMLTermℂ : Type
   | one : EMLTermℂ
   | eml : EMLTermℂ → EMLTermℂ → EMLTermℂ
   deriving Repr
 
-/-- Evaluation of a complex EML term. -/
-def EMLTermℂ.eval : EMLTermℂ → ℂ
+/-- Evaluation over ℂ using `Complex.log` (principal branch) and `Complex.exp`. -/
+noncomputable def EMLTermℂ.eval : EMLTermℂ → ℂ
   | .one => 1
-  | .eml t u => Complex.exp (EMLTermℂ.eval t) - Complex.log (EMLTermℂ.eval u)
+  | .eml t u => Complex.exp (eval t) - Complex.log (eval u)
 
-/-- Existential: i is reachable. PERMANENT SORRY pending the 131-node tree. -/
+/-- The imaginary unit `i` is reachable as a complex EML term.
+
+The full witness is constructed in `lean_workspace/EML/Solutions/035_emlterm_for_i.lean`
+using `i = −exp(Lg(−1)/2)`, with the final negation realised via the
+chunk-036 trick `(exp z − z) − exp z = −z`, branch-safe because
+`(−i).im = −1 ∈ (−π, π]` strictly. -/
 theorem emlterm_for_i : ∃ t : EMLTermℂ, EMLTermℂ.eval t = Complex.I := by
   sorry
 

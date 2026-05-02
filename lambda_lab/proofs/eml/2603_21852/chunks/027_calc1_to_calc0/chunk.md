@@ -8,19 +8,21 @@
 > From Calc 1 {e, x^y, log_x(y)} we drop the constant and replace x^y with exp(x), reaching Calc 0 {exp, log_x(y)} (3 symbols).
 
 ## Informal (PL)
-Pomocniczy krok: zastępujemy x^y przez exp(y · ln x), używając exp jako jedynej operacji unarnej, i odzyskujemy stałą e jako exp(1). Wymaga binarnego log_x(y) i unarnego exp.
+Tłumaczenie: `eConst` → `exp_ (logb varX varX)` (jako `e^1`), `logb a b` → `logb a b`, `pow a b` → `exp_ (logb (exp_ (inv b)) a)` gdzie `inv b := logb (exp_ b) (exp_ 1)` daje `ln(e)/ln(e^b) = 1/b`. Wówczas `logb (exp_ (1/b)) a = b · ln a`, a `exp_ (b · ln a) = a^b`. Stwierdzenie istnieniowe w naturalnej domenie dodatniości.
 
 ## Informal (EN)
-Substitute x^y by exp(y · ln x), keeping exp as the only unary, and recover e as exp(1). Requires the binary log_x(y) and the unary exp.
+Translation: `eConst` ↦ `exp_ (logb varX varX)` (yielding `e^1`); `logb a b` ↦ `logb a b`; `pow a b` ↦ `exp_ (logb (exp_ (inv b)) a)` with `inv b := logb (exp_ b) (exp_ 1)` evaluating to `ln(e)/ln(e^b) = 1/b`. Then `logb (exp_ (1/b)) a = b · ln a` and `exp_ (b · ln a) = a^b`. Existential statement, valid on the natural positivity domain.
 
 ## Formal target
 
 ```lean
-theorem calc1_subset_calc0 : True := by sorry
+theorem calc1_to_calc0 :
+    ∀ e : Calc1, ∃ e' : Calc0,
+      ∀ x y : ℝ, Calc0.eval x y e' = Calc1.eval x y e := by sorry
 ```
 
 ## Dependencies
-(none)
+(none — builds on `EML/Calc.lean`)
 
 ## Aristotle status
-pending (project_id: null)
+pending (project_id: null) — submitted in this round.

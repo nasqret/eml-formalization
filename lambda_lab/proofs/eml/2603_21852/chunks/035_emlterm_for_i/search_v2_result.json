@@ -1,0 +1,10 @@
+{
+	"ok":false,
+	"reason":"no match up to size 31",
+	"max_size":31,
+	"total_generated":3793331,
+	"total_unique_signatures":3086040,
+	"numeric_matches":0,
+	"symbolic_checks":0,
+	"domain":"complex"
+}

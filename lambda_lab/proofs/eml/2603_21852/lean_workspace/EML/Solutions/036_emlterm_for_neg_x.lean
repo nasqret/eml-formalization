@@ -13,91 +13,69 @@ noncomputable def EMLTerm₁.eval (x : ℝ) : EMLTerm₁ → ℝ
   | .var => x
   | .eml t u => Real.exp (EMLTerm₁.eval x t) - Real.log (EMLTerm₁.eval x u)
 
-/-!
-## Analysis of `emlterm1_for_neg_x`
-
-The theorem as stated with the `EMLTerm₁` type appears to be **unprovable** (likely
-false). Exhaustive computational search over all 109,824 EML₁ terms of size ≤ 15
-confirmed that no term evaluates to exactly `−x`.
-
-### Why no finite EML₁ term can represent `−x`
-
-For `eml A B` to equal `−x`, we need `log(eval B) = exp(eval A) + x`, hence
-`eval B = exp(exp(eval A) + x)`. Building `exp(c) + x` (for any constant `c`) as a
-sub-term requires **either**:
-1. `−x` itself (circular), or
-2. A constant like `Real.log 2` that is not in the closure of `{0, 1}` under
-   `exp` and `(a, b) ↦ exp(a) − log(b)`.
-
-The set of achievable constants `c` such that `c + x` is EML₁-representable was
-computationally verified to be `{0, ±(e−1), ±(exp(e)−e), …}` — none equal to `1`.
-
-### Corrected version
-
-The informal description mentions a "parameterised" EML term. Adding a `const : ℝ →`
-constructor (yielding `EMLTerm₂` below) makes the theorem provable, as shown in
-`emlterm2_for_neg_x`.
+/-
+Key helper: exp(x) - x > 0 for all real x
 -/
+lemma exp_sub_x_pos (x : ℝ) : Real.exp x - x > 0 := by
+  linarith [ Real.add_one_le_exp x ]
 
--- Original theorem — left with sorry as it appears to be false for EMLTerm₁.
+/-
+Key helper: log(exp(e) / a) = e - log(a) when a > 0
+-/
+lemma log_exp_div (e : ℝ) (a : ℝ) (ha : a > 0) :
+    Real.log (Real.exp e / a) = e - Real.log a := by
+      rw [ Real.log_div ( by positivity ) ( by positivity ), Real.log_exp ]
+
+-- The witness term and its evaluation
+-- w     := eml var (eml var one)           -- exp(x) - log(exp(x) - log(1)) = exp(x) - x
+-- expx  := eml var one                     -- exp(x) - log(1) = exp(x)
+-- eml one w := exp(1) - log(exp(x) - x)
+-- eml (eml one w) one := exp(exp(1) - log(exp(x) - x)) - log(1)
+--                       = exp(exp(1) - log(exp(x) - x))
+--                       = exp(exp(1)) / (exp(x) - x)
+-- logw  := eml one (eml (eml one w) one)   -- exp(1) - log(exp(exp(1))/(exp(x)-x))
+--                                          = exp(1) - (exp(1) - log(exp(x)-x))
+--                                          = log(exp(x) - x)
+-- eml expx one := exp(exp(x)) - log(1) = exp(exp(x))
+-- neg_x := eml logw (eml expx one)        -- exp(log(exp(x)-x)) - log(exp(exp(x)))
+--                                          = (exp(x) - x) - exp(x) = -x
+
+private def w : EMLTerm₁ := .eml .var (.eml .var .one)
+private def expx : EMLTerm₁ := .eml .var .one
+private def logw : EMLTerm₁ := .eml .one (.eml (.eml .one w) .one)
+private def neg_x_term : EMLTerm₁ := .eml logw (.eml expx .one)
+
+lemma eval_w (x : ℝ) : EMLTerm₁.eval x w = Real.exp x - x := by
+  simp [w, EMLTerm₁.eval, Real.log_one, Real.log_exp]
+
+lemma eval_expx (x : ℝ) : EMLTerm₁.eval x expx = Real.exp x := by
+  simp [expx, EMLTerm₁.eval, Real.log_one]
+
+lemma eval_eml_one_w (x : ℝ) :
+    EMLTerm₁.eval x (.eml .one w) = Real.exp 1 - Real.log (Real.exp x - x) := by
+  simp [EMLTerm₁.eval, eval_w]
+
+lemma eval_eml_eml_one_w_one (x : ℝ) :
+    EMLTerm₁.eval x (.eml (.eml .one w) .one) =
+    Real.exp (Real.exp 1 - Real.log (Real.exp x - x)) := by
+  simp [EMLTerm₁.eval, eval_w, Real.log_one]
+
+lemma eval_logw (x : ℝ) : EMLTerm₁.eval x logw = Real.log (Real.exp x - x) := by
+  unfold logw; simp +decide [ EMLTerm₁.eval ] ;
+  rw [ eval_w ]
+
+lemma eval_eml_expx_one (x : ℝ) :
+    EMLTerm₁.eval x (.eml expx .one) = Real.exp (Real.exp x) := by
+  simp [expx, EMLTerm₁.eval, Real.log_one]
+
+lemma eval_neg_x (x : ℝ) : EMLTerm₁.eval x neg_x_term = -x := by
+  -- By definition of $neg_x_term$, we have $neg_x_term = .eml logw (.eml expx .one)$.
+  have h_neg_x_term : EMLTerm₁.eval x neg_x_term = Real.exp (EMLTerm₁.eval x logw) - Real.log (EMLTerm₁.eval x (.eml expx .one)) := by
+    rfl;
+  rw [ h_neg_x_term, eval_logw, eval_eml_expx_one, Real.exp_log ( by linarith [ exp_sub_x_pos x ] ), Real.log_exp ] ; ring
+
 theorem emlterm1_for_neg_x :
     ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = -x := by
-  sorry
-
--- ============================================================
--- Verified building blocks for EMLTerm₁
--- ============================================================
-
-/-- `eml one (eml (eml one one) one)` evaluates to `0` for all `x`. -/
-def zeroTerm : EMLTerm₁ := .eml .one (.eml (.eml .one .one) .one)
-
-lemma eval_zeroTerm (x : ℝ) : zeroTerm.eval x = 0 := by
-  simp [zeroTerm, EMLTerm₁.eval, Real.log_one, Real.log_exp]
-
-/-- `eml zeroTerm (eml var one)` evaluates to `1 − x` for all `x`. -/
-def oneMinusX : EMLTerm₁ := .eml zeroTerm (.eml .var .one)
-
-lemma eval_oneMinusX (x : ℝ) : oneMinusX.eval x = 1 - x := by
-  simp [oneMinusX, EMLTerm₁.eval, zeroTerm, Real.log_one, Real.log_exp, Real.exp_zero]
-
--- ============================================================
--- Corrected (parameterised) EML type and proof
--- ============================================================
-
-/-- Extended EML term type with a `const` constructor for real-valued parameters. -/
-inductive EMLTerm₂ : Type
-  | const : ℝ → EMLTerm₂
-  | var : EMLTerm₂
-  | eml : EMLTerm₂ → EMLTerm₂ → EMLTerm₂
-
-noncomputable def EMLTerm₂.eval (x : ℝ) : EMLTerm₂ → ℝ
-  | .const c => c
-  | .var => x
-  | .eml t u => Real.exp (EMLTerm₂.eval x t) - Real.log (EMLTerm₂.eval x u)
-
-/-- There exists a parameterised EML term whose evaluation at every `x` equals `−x`.
-
-**Construction** (using the parameter `Real.log 2`):
-
-| Sub-term | Evaluates to |
-|---|---|
-| `onemx := eml (const 0) (eml var (const 1))` | `1 − x` |
-| `onepx := eml (const (log 2)) (eml onemx (const 1))` | `1 + x` |
-| `negx  := eml (const 0) (eml onepx (const 1))` | `−x` |
-
-**Identity chain**:
-- `exp(0) − log(1) = 1` and `exp(x) − log(1) = exp(x)`, so `onemx = 1 − x`.
-- `exp(log 2) − log(exp(1−x)) = 2 − (1−x) = 1 + x`, so `onepx = 1 + x`.
-- `exp(0) − log(exp(1+x)) = 1 − (1+x) = −x`, so `negx = −x`. -/
-theorem emlterm2_for_neg_x :
-    ∃ t : EMLTerm₂, ∀ x : ℝ, EMLTerm₂.eval x t = -x := by
-  let onemx : EMLTerm₂ := .eml (.const 0) (.eml .var (.const 1))
-  let onepx : EMLTerm₂ := .eml (.const (Real.log 2)) (.eml onemx (.const 1))
-  let negx : EMLTerm₂ := .eml (.const 0) (.eml onepx (.const 1))
-  exact ⟨negx, fun x => by
-    simp only [negx, onepx, onemx, EMLTerm₂.eval]
-    simp [Real.log_one, Real.log_exp, Real.exp_zero,
-          Real.exp_log (by positivity : (0 : ℝ) < 2)]
-    ring⟩
+  exact ⟨neg_x_term, eval_neg_x⟩
 
 end EML
