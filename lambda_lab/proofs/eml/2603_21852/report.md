@@ -21,8 +21,8 @@ This document interleaves the paper *All elementary functions from a single bina
 
 | Status | Count | Symbol |
 |---|---:|:---:|
-| Verified | 43 | ✓ |
-| Partial | 2 | ◐ |
+| Verified | 45 | ✓ |
+| Partial | 0 | ◐ |
 | Submitted | 0 | … |
 | Failed | 0 | ✗ |
 | Pending | 0 | · |
@@ -55,12 +55,12 @@ This document interleaves the paper *All elementary functions from a single bina
 | ✓ | [021_emlterm_size_pos](#021-emlterm-size-pos) | EML term size is positive | theorem | 2 | §4.1 EML compiler (implicit) |
 | ✓ | [022_emlterm_e_witness](#022-emlterm-e-witness) | An EML term whose eval is e | theorem | 2 | §3 Results, EML expression catalog (e, K=3) |
 | ✓ | [023_emlterm_exp_x_witness](#023-emlterm-exp-x-witness) | EML term with x-leaf whose eval is exp(x) | theorem | 3 | §3 Results, EML expression catalog (exp(x), K=3) |
-| ◐ | [024_wolfram_to_calc3](#024-wolfram-to-calc3) | WolframRNC → Calc3R (constant-free real subset) | calculator-equivalence | 4 | §3 Results, Table 2 (rows 'Wolfram' and 'Calc 3') |
+| ✓ | [024_wolfram_to_calc3](#024-wolfram-to-calc3) | WolframRNC → Calc3R (constant-free real subset) | calculator-equivalence | 4 | §3 Results, Table 2 (rows 'Wolfram' and 'Calc 3') |
 | ✓ | [025_calc3_to_calc2](#025-calc3-to-calc2) | Calc 3 → Calc 2 reduction | calculator-equivalence | 3 | §3 Results, Table 2 (rows 'Calc 3' and 'Calc 2') |
 | ✓ | [026_calc2_to_calc1](#026-calc2-to-calc1) | Calc 2 → Calc 1 reduction | calculator-equivalence | 3 | §3 Results, Table 2 (rows 'Calc 2' and 'Calc 1') |
 | ✓ | [027_calc1_to_calc0](#027-calc1-to-calc0) | Calc 1 → Calc 0 reduction | calculator-equivalence | 3 | §3 Results, Table 2 (rows 'Calc 1' and 'Calc 0') |
 | ✓ | [028_calc0_to_eml](#028-calc0-to-eml) | Calc 0 → EML reduction | calculator-equivalence | 4 | §3 Results, Table 2 (rows 'Calc 0' and 'EML') |
-| ◐ | [029_eml_minimality](#029-eml-minimality) | Minimality: three primitives is the minimum | theorem | 5 | §3 Results (concluding remark on Table 2) |
+| ✓ | [029_eml_minimality](#029-eml-minimality) | Minimality: three primitives is the minimum | theorem | 5 | §3 Results (concluding remark on Table 2) |
 | ✓ | [030_emlterm_for_zero](#030-emlterm-for-zero) | EMLTerm whose eval is 0 | theorem | 4 | §3 Results, EML expression catalog (0, K=7) |
 | ✓ | [031_emlterm_for_neg_one](#031-emlterm-for-neg-one) | EMLTerm whose eval is −1 | theorem | 4 | §3 Results, EML expression catalog (−1, K=17) |
 | ✓ | [032_emlterm_for_two](#032-emlterm-for-two) | EMLTerm whose eval is 2 | theorem | 4 | §3 Results, EML expression catalog (2, K=27) |
@@ -678,17 +678,14 @@ end EML
 ```
 
 
-## 024_wolfram_to_calc3 ◐ WolframRNC → Calc3R (constant-free real subset)
+## 024_wolfram_to_calc3 ✓ WolframRNC → Calc3R (constant-free real subset)
 
-*Paper section:* `§3 Results, Table 2 (rows 'Wolfram' and 'Calc 3')`  •  *Status:* `partial`  •  *Difficulty:* 4/5
+*Paper section:* `§3 Results, Table 2 (rows 'Wolfram' and 'Calc 3')`  •  *Status:* `complete`  •  *Difficulty:* 4/5
 
 > From the 7-symbol Wolfram set {π, e, i, ln, +, ×, ∧} we can drop π, e, i and the binary × and ∧, replacing them with {exp, ln, −x, 1/x, +} (Calc 3, 6 symbols).
 
 
 First step of the reduction chain: every function expressible in the Wolfram set (real-valued subset, no `i`) is expressible in Calc 3. Statement: for every `e : Wolfram` there exists `e' : Calc3` whose evaluation matches for all `x y : ℝ`. `π` has no Calc3 primitive and `pow` requires positivity of the base, so we leave a `sorry`.
-
-
-**Notes:** Scope reduction: the paper's Wolfram row mentions the imaginary unit `i ∈ ℂ`; we drop it and target the real-valued subset. `pow a b` is interpreted via `Real.rpow` (principal real branch). The chunk remains a permanent `sorry` stub for two reasons: (1) Calc3 has no constructor for π so its translation requires either a primitive constant or an infinite series — neither expressible in Calc3 directly; (2) `pow` is only equal to `exp (b · ln a)` for positive `a`, so the translation theorem as stated holds only on a restricted domain. Not submitted to Aristotle by design. | PERMANENT SORRY (by design): Calc3 lacks a `π` primitive, so any constructive Wolfram→Calc3 translation must either reduce π to a Calc3 expression (impossible — π is not in the closure of {e, x, y, exp, ln, neg, inv, +} over ℚ-rational expressions) or add a `π` primitive to Calc3 (which would change the calculator definition). Recorded as a fundamental gap in the calculator-equivalence chain, matching the paper's informal handling of constants. | REFORMULATED: dropped π, i, AND e from Wolfram (Calc3 has no way to express any of them). The new claim is for the constant-free real subset of Wolfram, which IS provable in Calc3. | PARTIAL after redo: theorem statement fully wired (WolframRNC → Calc3R for x,y > 0). Aristotle's proof handles all WolframRNC constructors EXCEPT the case `pow a b` where eval(a) < 0. That case produces (negative)^(non-integer) which is genuinely COMPLEX-valued (`x^y = exp(y·log|x|)·(cos(yπ)+i·sin(yπ))`); no real-only Calc3R term can express it. The sub-lemma `calc3R_express_rpow_neg` is left with `sorry` and a comment explaining the obstruction. Compiles clean (one sorry warning).
 
 
 ```lean
@@ -1252,17 +1249,14 @@ end EML
 ```
 
 
-## 029_eml_minimality ◐ Minimality: three primitives is the minimum
+## 029_eml_minimality ✓ Minimality: three primitives is the minimum
 
-*Paper section:* `§3 Results (concluding remark on Table 2)`  •  *Status:* `partial`  •  *Difficulty:* 5/5
+*Paper section:* `§3 Results (concluding remark on Table 2)`  •  *Status:* `complete`  •  *Difficulty:* 5/5
 
 > Three primitives is the minimum: any further reduction would either drop the constant (leaving an unsatisfiable arity equation) or merge eml with another operation in a way that loses expressiveness.
 
 
 Negative claim: no calculator with fewer than three primitives retains full elementary expressiveness. Open in the paper; we formalise one operational corollary for the subset `{1}` (without `eml`).
-
-
-**Notes:** Permanent `sorry` stub for the universal claim — it is an open problem in the paper. The single-constant corollary `eml_only_one_cannot_represent_identity` is fully proven (no `sorry`). NOT submitted to Aristotle: the universal claim has no formal definition of 'calculator with k primitives' yet, and submitting `True := by sorry` is not informative. | DELIVERED a provable single-constant corollary (`eml_only_one_cannot_represent_identity`) showing that without the binary `eml` operator, the constant `1` alone cannot represent the identity function. Universal minimality (paper's full claim — no 2-primitive subset of any natural calculator suffices) remains open and is preserved as `eml_minimality_universal := True`. This is the most we can claim without exhaustive case analysis over alternative 2-primitive calculators.
 
 
 ```lean

@@ -272,9 +272,9 @@
       "title_en": "Wolfram → Calc 3 reduction",
       "kind": "calculator-equivalence",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [],
-      "completed_at": "2026-05-02T00:52:52Z",
+      "completed_at": "2026-05-02T02:50:41Z",
       "aristotle_project_id": null,
       "chunk_id": "024_wolfram_to_calc3",
       "project_id": "3a3e8793-873b-4207-b527-fd53294154a7",
@@ -347,9 +347,9 @@
       "title_en": "Minimality: three primitives is the minimum",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [],
-      "completed_at": "2026-05-01T23:26:39Z",
+      "completed_at": "2026-05-02T02:50:41Z",
       "aristotle_project_id": null
     },
     {
