@@ -20,9 +20,9 @@
     "052_emlterm_for_half_x",
     "053_emlterm_for_log_xy"
   ],
-  "status": "pending",
-  "aristotle_project_id": null,
-  "submitted_at": null,
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 32. We adopt the complex-log form rather than the paper's arsinh∘tanh∘arsinh chain because the latter requires arcsin, which is built downstream — see decomposition note on circularity."
+  "status": "partial",
+  "aristotle_project_id": "73001aef-e131-4691-9b5b-19cf2d602a8f",
+  "submitted_at": "2026-05-03T01:47:52Z",
+  "completed_at": "2026-05-03T07:14:38Z",
+  "notes": "Round 2 chunk; Table S2 step 32. We adopt the complex-log form rather than the paper's arsinh∘tanh∘arsinh chain because the latter requires arcsin, which is built downstream — see decomposition note on circularity. | PARTIAL. Same structural blocker as 062-064 — pure EMLTermℂ₁ can't produce periodic functions from real input."
 }

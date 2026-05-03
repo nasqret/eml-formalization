@@ -857,7 +857,7 @@
       "title_en": "EMLTermℂ₁ realising arctan(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "035_emlterm_for_i",
         "036_emlterm_for_neg_x",
@@ -866,7 +866,7 @@
         "052_emlterm_for_half_x",
         "053_emlterm_for_log_xy"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T07:13:14Z",
       "aristotle_project_id": null,
       "chunk_id": "065_emlterm_for_arctan_x",
       "project_id": "73001aef-e131-4691-9b5b-19cf2d602a8f",
@@ -1004,8 +1004,8 @@
     },
     "by_status": {
       "complete": 61,
-      "partial": 3,
-      "submitted": 2
+      "partial": 4,
+      "submitted": 1
     }
   }
 }
