@@ -52,3 +52,7 @@ lake-packages/
 
 # Lab scratch
 lambda_lab/_scratch/
+
+
+# Acorn standard library — cloned from acornprover/acornlib, not vendored
+lambda_lab/proofs/acorn_lib/

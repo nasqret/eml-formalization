@@ -5958,6 +5958,187 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "pl": "Blad parsowania argumentow eml: {error}",
         "en": "Failed to parse eml arguments: {error}",
     },
+
+    # ---- Acorn keys ----
+    "ac.help.title": {
+        "pl": "ac (acorn)",
+        "en": "ac (acorn)",
+    },
+    "ac.help.body": {
+        "pl": (
+            "[bold]ac[/bold] (alias [bold]acorn[/bold]) — Acorn theorem prover (Rust + lokalny AI).\n\n"
+            "Podkomendy:\n"
+            "  [accent]key[/accent]  | keys           — sciezka binarki, wersja, biblioteka, liczba modulow\n"
+            "  [accent]list[/accent]                  — lista modulow w acornlib\n"
+            "  [accent]verify[/accent] <modul|plik>   — weryfikacja (modul po nazwie albo plik .ac)\n"
+            "  [accent]check[/accent]  <modul>        — strict check (kazdy goal musi byc cached)\n"
+            "  [accent]docs[/accent]   <modul>        — wygeneruj dokumentacje (HTML w build/docs)\n"
+            "  [accent]demo[/accent]                  — twierdzenie one_plus_one z nat/basic_addition.ac\n"
+            "  [accent]scratch[/accent] <snippet>     — pipe snippetu na stdin → acorn verify -\n\n"
+            "[muted]Trick stdin: `ac scratch \"theorem t { 1 + 1 = 2 }\"` -> snippet\n"
+            "ladowany jako pseudo-modul. Prowadzi to do `acorn verify -`.[/muted]\n\n"
+            "[muted]W planach (jeszcze nie wystawione): serve (LSP), reprove, select, clean.[/muted]"
+        ),
+        "en": (
+            "[bold]ac[/bold] (alias [bold]acorn[/bold]) — Acorn theorem prover (Rust + local AI).\n\n"
+            "Subcommands:\n"
+            "  [accent]key[/accent]  | keys           — binary path, version, library path, module count\n"
+            "  [accent]list[/accent]                  — list modules in acornlib\n"
+            "  [accent]verify[/accent] <module|file>  — run verifier (module name or .ac file)\n"
+            "  [accent]check[/accent]  <module>       — strict check (every goal must be cached)\n"
+            "  [accent]docs[/accent]   <module>       — generate documentation (HTML in build/docs)\n"
+            "  [accent]demo[/accent]                  — one_plus_one theorem from nat/basic_addition.ac\n"
+            "  [accent]scratch[/accent] <snippet>     — pipe snippet to stdin -> acorn verify -\n\n"
+            "[muted]stdin trick: `ac scratch \"theorem t { 1 + 1 = 2 }\"` -> snippet\n"
+            "is fed to `acorn verify -` so you can prototype without a file.[/muted]\n\n"
+            "[muted]Coming later (not wired yet): serve (LSP), reprove, select, clean.[/muted]"
+        ),
+    },
+    "ac.no_binary": {
+        "pl": (
+            "Nie znalazlem binarki acorn. Sprawdzilem:\n{candidates}\n\n"
+            "Zainstaluj Acorn i upewnij sie, ze ktorys z tych katalogow jest na PATH."
+        ),
+        "en": (
+            "Could not find the acorn binary. Checked:\n{candidates}\n\n"
+            "Install Acorn and ensure one of these directories is on PATH."
+        ),
+    },
+    "ac.no_lib": {
+        "pl": "Brak katalogu biblioteki Acorn: {path}. Sklonuj acornlib do tej lokalizacji.",
+        "en": "Acorn library directory missing: {path}. Clone acornlib into that location.",
+    },
+    "ac.no_output": {
+        "pl": "brak wyjscia",
+        "en": "no output",
+    },
+    "ac.spinner.interrupted": {
+        "pl": "Przerwano (Ctrl-C).",
+        "en": "Interrupted (Ctrl-C).",
+    },
+    "ac.argparse_err": {
+        "pl": "Blad parsowania argumentow: {error}",
+        "en": "Argument parse error: {error}",
+    },
+    "ac.unknown_sub": {
+        "pl": "Nieznana podkomenda:",
+        "en": "Unknown subcommand:",
+    },
+    "ac.unknown_sub_hint": {
+        "pl": "Wpisz `ac`, by zobaczyc liste.",
+        "en": "Type `ac` to see the list.",
+    },
+    "ac.key.title": {
+        "pl": "Acorn — info",
+        "en": "Acorn — info",
+    },
+    "ac.key.body": {
+        "pl": (
+            "[bold]Binarka:[/bold] {binary}\n"
+            "[bold]Wersja:[/bold]  {version}\n"
+            "[bold]Biblioteka:[/bold] {lib}\n"
+            "[bold]Modulow .ac:[/bold] {modules}"
+        ),
+        "en": (
+            "[bold]Binary:[/bold]  {binary}\n"
+            "[bold]Version:[/bold] {version}\n"
+            "[bold]Library:[/bold] {lib}\n"
+            "[bold].ac modules:[/bold] {modules}"
+        ),
+    },
+    "ac.list.title": {
+        "pl": "Moduly acornlib ({count})",
+        "en": "acornlib modules ({count})",
+    },
+    "ac.list.col.module": {
+        "pl": "modul",
+        "en": "module",
+    },
+    "ac.verify.usage": {
+        "pl": "Uzycie: ac verify <modul-lub-plik>",
+        "en": "Usage: ac verify <module-or-file>",
+    },
+    "ac.verify.running": {
+        "pl": "acorn verify {target}",
+        "en": "acorn verify {target}",
+    },
+    "ac.verify.ok": {
+        "pl": "verify OK · {target}",
+        "en": "verify OK · {target}",
+    },
+    "ac.verify.fail": {
+        "pl": "verify FAIL · {target} (rc={rc})",
+        "en": "verify FAIL · {target} (rc={rc})",
+    },
+    "ac.check.usage": {
+        "pl": "Uzycie: ac check <modul>",
+        "en": "Usage: ac check <module>",
+    },
+    "ac.check.running": {
+        "pl": "acorn check {target}",
+        "en": "acorn check {target}",
+    },
+    "ac.check.ok": {
+        "pl": "check OK · {target}",
+        "en": "check OK · {target}",
+    },
+    "ac.check.fail": {
+        "pl": "check FAIL · {target} (rc={rc})",
+        "en": "check FAIL · {target} (rc={rc})",
+    },
+    "ac.docs.usage": {
+        "pl": "Uzycie: ac docs <modul>",
+        "en": "Usage: ac docs <module>",
+    },
+    "ac.docs.running": {
+        "pl": "acorn docs -> {out}",
+        "en": "acorn docs -> {out}",
+    },
+    "ac.docs.ok": {
+        "pl": "Dokumentacja zapisana w: {out}\n\n[dim]{tail}[/dim]",
+        "en": "Docs written to: {out}\n\n[dim]{tail}[/dim]",
+    },
+    "ac.demo.title": {
+        "pl": "ac demo — one_plus_one",
+        "en": "ac demo — one_plus_one",
+    },
+    "ac.demo.body": {
+        "pl": (
+            "[bold]Demo Acorn[/bold] — najmniejsze, dydaktyczne twierdzenie z biblioteki standardowej.\n\n"
+            "Twierdzenie [accent]{theorem}[/accent] zyje w module [bold]{module}[/bold]\n"
+            "(plik: [muted]{file}[/muted]).\n\n"
+            "Acorn weryfikuje arytmetyke Peana lokalnym solverem AI. Po wywolaniu zobaczysz\n"
+            "modul w cale — `1 + 1 = 2` to pierwszy z setki faktow z dodawania jednocyfrowego."
+        ),
+        "en": (
+            "[bold]Acorn demo[/bold] — the smallest, didactic theorem from the standard library.\n\n"
+            "Theorem [accent]{theorem}[/accent] lives in module [bold]{module}[/bold]\n"
+            "(file: [muted]{file}[/muted]).\n\n"
+            "Acorn verifies Peano arithmetic with its built-in local AI solver. After this run\n"
+            "you will see the whole module — `1 + 1 = 2` is the first of a hundred single-digit\n"
+            "addition facts."
+        ),
+    },
+    "ac.demo.running": {
+        "pl": "acorn verify {module} (demo)",
+        "en": "acorn verify {module} (demo)",
+    },
+    "ac.scratch.usage": {
+        "pl": (
+            "Uzycie: ac scratch \"<snippet .ac>\"\n"
+            "Snippet trafia na stdin do `acorn verify -`. Przyklad:\n"
+            "  ac scratch \"theorem t { 1 + 1 = 2 }\""
+        ),
+        "en": (
+            "Usage: ac scratch \"<.ac snippet>\"\n"
+            "The snippet is piped on stdin to `acorn verify -`. Example:\n"
+            "  ac scratch \"theorem t { 1 + 1 = 2 }\""
+        ),
+    },
+    "ac.scratch.running": {
+        "pl": "acorn verify - (stdin)",
+        "en": "acorn verify - (stdin)",
+    },
 }
 
 
