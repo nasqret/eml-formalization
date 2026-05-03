@@ -15,9 +15,9 @@
   "depends_on": [
     "029_eml_minimality"
   ],
-  "status": "pending",
-  "aristotle_project_id": null,
-  "submitted_at": null,
-  "completed_at": null,
-  "notes": "Round 2 chunk; generalises chunk 029. The target file states two theorems (binary and unary variants); main theorem is two_prim_cannot_represent_identity, the unary variant follows the same shape."
+  "status": "complete",
+  "aristotle_project_id": "77cd3653-c2fb-488f-98a2-1d4fefc5f284",
+  "submitted_at": "2026-05-03T01:47:58Z",
+  "completed_at": "2026-05-03T02:53:25Z",
+  "notes": "Round 2 chunk; generalises chunk 029. The target file states two theorems (binary and unary variants); main theorem is two_prim_cannot_represent_identity, the unary variant follows the same shape. | Aristotle returned a clean proof. Verified."
 }

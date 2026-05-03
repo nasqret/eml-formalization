@@ -19,9 +19,9 @@
     "056_emlterm_for_cosh_x",
     "057_emlterm_for_sinh_x"
   ],
-  "status": "submitted",
+  "status": "partial",
   "aristotle_project_id": "4180f8ba-faba-4da3-9968-04ee456577b5",
   "submitted_at": "2026-05-02T21:06:41Z",
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 23. Stepping-stone for artanh, gd, etc."
+  "completed_at": "2026-05-03T02:53:25Z",
+  "notes": "Round 2 chunk; Table S2 step 23. Stepping-stone for artanh, gd, etc. | PARTIAL. Aristotle returned COMPLETE_WITH_ERRORS — primed variant in extended grammar; pure target sorry. Compose manually if needed."
 }

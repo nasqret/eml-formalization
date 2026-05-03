@@ -16,9 +16,9 @@
     "035_emlterm_for_i",
     "056_emlterm_for_cosh_x"
   ],
-  "status": "submitted",
+  "status": "partial",
   "aristotle_project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
   "submitted_at": "2026-05-02T22:20:36Z",
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar)."
+  "completed_at": "2026-05-03T02:53:25Z",
+  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar). | PARTIAL. Aristotle returned COMPLETE_WITH_ERRORS — primed variant; pure EMLTermℂ target sorry."
 }

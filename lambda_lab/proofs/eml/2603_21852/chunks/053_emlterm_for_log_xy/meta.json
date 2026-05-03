@@ -17,9 +17,9 @@
     "011_ln_via_eml",
     "050_emlterm_for_div_xy"
   ],
-  "status": "submitted",
+  "status": "complete",
   "aristotle_project_id": "11aba8b5-73b3-41b7-96c1-bd48644621a9",
   "submitted_at": "2026-05-02T21:06:34Z",
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 17. Stepping-stone for chunks 059 (arsinh) and 061 (artanh)."
+  "completed_at": "2026-05-03T02:53:25Z",
+  "notes": "Round 2 chunk; Table S2 step 17. Stepping-stone for chunks 059 (arsinh) and 061 (artanh). | Aristotle returned a clean proof. Verified."
 }

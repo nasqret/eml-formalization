@@ -642,12 +642,12 @@
       "title_en": "EMLTerm₂ realising log_x y",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "complete",
       "depends_on": [
         "011_ln_via_eml",
         "050_emlterm_for_div_xy"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T02:53:25Z",
       "aristotle_project_id": null,
       "chunk_id": "053_emlterm_for_log_xy",
       "project_id": "11aba8b5-73b3-41b7-96c1-bd48644621a9",
@@ -730,13 +730,13 @@
       "title_en": "EMLTerm₁ realising tanh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "050_emlterm_for_div_xy",
         "056_emlterm_for_cosh_x",
         "057_emlterm_for_sinh_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T02:53:25Z",
       "aristotle_project_id": null,
       "chunk_id": "058_emlterm_for_tanh_x",
       "project_id": "4180f8ba-faba-4da3-9968-04ee456577b5",
@@ -785,14 +785,14 @@
       "title_en": "EMLTerm₁ realising artanh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "complete",
       "depends_on": [
         "011_ln_via_eml",
         "040_emlterm_for_add_xy",
         "050_emlterm_for_div_xy",
         "052_emlterm_for_half_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T02:53:25Z",
       "aristotle_project_id": null,
       "chunk_id": "061_emlterm_for_artanh_x",
       "project_id": "cc872678-e444-4493-ae5d-8211c5d5ecb9",
@@ -804,12 +804,12 @@
       "title_en": "EMLTermℂ₁ realising cos(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "035_emlterm_for_i",
         "056_emlterm_for_cosh_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T02:53:25Z",
       "aristotle_project_id": null,
       "chunk_id": "062_emlterm_for_cos_x",
       "project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
@@ -919,11 +919,11 @@
       "title_en": "Universal minimality (strengthening of chunk 029)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "029_eml_minimality"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T02:53:25Z",
       "aristotle_project_id": null
     },
     {
@@ -998,8 +998,9 @@
       "chunk_id": "069_universal_minimality",
       "project_id": "77cd3653-c2fb-488f-98a2-1d4fefc5f284",
       "submitted_at": "2026-05-03T01:47:58Z",
-      "status": "submitted",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Every {constant + n-ary function} configuration (n ∈ {1,2}) fails to express the identity as a function of one variable; every closed term evaluates to a constant.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 029 (which only ruled out the constant-1-only\ncalculator). Here we formalise the FULL universal minimality cla"
+      "status": "complete",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Every {constant + n-ary function} configuration (n ∈ {1,2}) fails to express the identity as a function of one variable; every closed term evaluates to a constant.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 029 (which only ruled out the constant-1-only\ncalculator). Here we formalise the FULL universal minimality cla",
+      "completed_at": "2026-05-03T02:53:25Z"
     }
   ],
   "stats": {
@@ -1018,10 +1019,10 @@
       "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 51,
+      "complete": 55,
       "submitted": 9,
-      "partial": 0,
-      "pending": 6
+      "partial": 2,
+      "pending": 5
     }
   }
 }
