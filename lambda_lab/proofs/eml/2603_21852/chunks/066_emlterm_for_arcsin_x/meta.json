@@ -18,9 +18,9 @@
     "050_emlterm_for_div_xy",
     "065_emlterm_for_arctan_x"
   ],
-  "status": "pending",
-  "aristotle_project_id": null,
-  "submitted_at": null,
-  "completed_at": null,
+  "status": "complete",
+  "aristotle_project_id": "e88efb23-869b-41c3-a7bf-667b7e8c5b46",
+  "submitted_at": "2026-05-03T01:47:53Z",
+  "completed_at": "2026-05-03T04:17:25Z",
   "notes": "Round 2 chunk; Table S2 step 31. RECIPE ADJUSTMENT: paper writes arcsin = π/2 − arccos but our chain has arccos depending on arcsin, so we use arctan(x/√(1−x²)) instead — equivalent on the open interval (−1, 1). The flaky-witness discussion in §1.3 of the supplement also notes this circular dependency."
 }
