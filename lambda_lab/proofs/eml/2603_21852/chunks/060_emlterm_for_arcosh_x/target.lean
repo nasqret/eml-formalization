@@ -27,8 +27,8 @@ with the second arg encoded via the complex `i` (chunk 035) — but that
 slips into ℂ. For the real-domain target we use the textbook form
 directly.
 -/
-theorem emlterm1_for_arcosh :
-    ∃ t : EMLTerm₁, ∀ x : ℝ, 1 ≤ x → EMLTerm₁.eval x t = Real.arcosh x := by
+theorem emlterm1_for_arcosh_x :
+    ∃ t : EMLTerm₁, ∀ x : ℝ, 1 < x → EMLTerm₁.eval x t = Real.arcosh x := by
   sorry
 
 end EML

@@ -4,8 +4,8 @@
   "title_en": "EMLTerm₁ realising x² (for x > 0)",
   "paper_section": "§3 Results, EML expression catalog (x², K=75)",
   "paper_quote": "x²: K = 75 (compiler) / K = 17 (direct search).",
-  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 75 (lub 17 direct-search) ewaluujący do x² dla każdego x. Stwierdzenie istnieniowe.",
-  "informal_en": "There exists a parameterised EML term of size 75 (or 17 direct-search) whose evaluation equals x² for every x. Existential.",
+  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 75 (lub 17 direct-search) ewaluujący do x² dla każdego x > 0. Wersja uniwersalna (∀ x : ℝ) jest nieosiągalna w czystym EMLTerm₁: konstrukcja exp(2·log x) działa tylko dla x > 0, ponieważ Real.log zwraca wartość śmieciową 0 dla x ≤ 0, a w domknięciu {1, x, exp, log, –} brak wartości bezwzględnej i nieograniczonego mnożenia.",
+  "informal_en": "There exists a parameterised EML term of size 75 (or 17 direct-search) whose evaluation equals x² for every x > 0. Universal-x (∀ x : ℝ) is unreachable in pure EMLTerm₁: the natural construction exp(2·log x) works only for x > 0 because Real.log returns its junk value 0 on x ≤ 0, and the closure of {1, x, exp, log, –} contains neither absolute value nor unrestricted multiplication.",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
@@ -20,7 +20,7 @@
   "aristotle_project_id": "a73627ff-56d7-4ae5-bb67-0f8e5b8fd877",
   "submitted_at": "2026-05-01T10:33:13Z",
   "completed_at": "2026-05-01T11:05:36Z",
-  "notes": "Reformulated to positive domain after first attempt failed (Harmonic internal error AND over-strong universal-x spec). Paper K=17 (direct) suggests ~9 nodes for the positive case. Now well inside Aristotle's reach. | RESOLVED on retry. Aristotle returned COMPLETE_WITH_ERRORS but the Lean source compiles clean (exit 0). Construction: 7-step bottom-up `sqTerm` building 2·log(x) via the identity x - (x - 2·log(x)) = 2·log(x), then exp(2·log(x)) = x². Spec reformulation (∀ x : ℝ → ∀ x > 0) was the unblocker.",
+  "notes": "Reformulated to positive domain after first attempt failed (Harmonic internal error AND over-strong universal-x spec). Paper K=17 (direct) suggests ~9 nodes for the positive case. | RESOLVED on retry. Aristotle returned COMPLETE_WITH_ERRORS but the Lean source compiles clean (exit 0). Construction: 7-step bottom-up `sqTerm` building 2·log(x) via the identity x - (x - 2·log(x)) = 2·log(x), then exp(2·log(x)) = x². | 2026-04-27 universality investigation: attempted to tighten to ∀ x : ℝ. NOT REACHABLE with the existing witness — direct check shows `sqTerm.eval 0 = 1 ≠ 0` and `sqTerm.eval (-1) = exp(1 - exp(-1)) ≈ 1.88 ≠ 1`. The 0 ≤ x fallback also fails (x = 0 case requires multiplication or |x|, neither in the closure of {1, x, exp, log, –}). Universality is a genuine structural obstruction, not a search-budget issue: any EMLTerm that funnels through `Real.log x` is junk-extended to x ≤ 0 in a way that does not coincide with x². Compare chunk 036 (-x), which IS universal because -x is reachable via (exp x − x) − exp x with no `log x` involved. Kept signature at `0 < x`; no proof changes; added file-header documentation of the obstruction.",
   "history": [
     {
       "project_id": "ab66ad12-dd1c-4212-ab2c-6b66aac8fc1d",
@@ -28,6 +28,12 @@
       "completed_at": "2026-05-01T04:18:28Z",
       "status": "failed",
       "reason": "Harmonic internal error + over-strong spec (universal x)"
+    },
+    {
+      "investigation": "tighten to ∀ x : ℝ",
+      "date": "2026-04-27",
+      "outcome": "blocked-structural",
+      "reason": "Real.log junk at x ≤ 0; no |x| or unrestricted multiplication in EMLTerm₁ closure. Even 0 ≤ x is not reachable with the present witness (sqTerm.eval 0 = 1)."
     }
   ]
 }

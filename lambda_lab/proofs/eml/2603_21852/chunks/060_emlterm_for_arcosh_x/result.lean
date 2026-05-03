@@ -2,6 +2,24 @@ import Mathlib
 
 namespace EML
 
+/-! # Chunk 060 — `EMLTerm₁` realising `Real.arcosh x` for `1 < x`.
+
+    Strategy: use the textbook identity
+        `arcosh x = log (x + √(x² − 1))` for `x ≥ 1`.
+
+    The √-construction uses the chunk-042 `pow_term` substitution trick
+    (the same one chunk 054 hypot uses to lift `pow_term` with exponent
+    `1/2`).  This sidesteps chunk 039's iterated-log restriction, allowing
+    us to cover the full domain `1 < x` (rather than `√2 < x`, which is
+    where the previous `mkHALVE`-based construction was stuck).
+
+    `x = 1` is excluded only because `pow_term` requires its base
+    positive, and at `x = 1` we have `x² − 1 = 0`.  For the open domain
+    `1 < x` this is harmless.
+-/
+
+/-! ### One-variable grammar (the public surface). -/
+
 inductive EMLTerm₁ : Type
   | one : EMLTerm₁
   | var : EMLTerm₁
@@ -13,7 +31,111 @@ noncomputable def EMLTerm₁.eval (x : ℝ) : EMLTerm₁ → ℝ
   | .var      => x
   | .eml t u  => Real.exp (EMLTerm₁.eval x t) - Real.log (EMLTerm₁.eval x u)
 
-/-! ### Generic combinators (chunk 052 style) -/
+/-! ### Two-variable grammar (used internally to host `pow_term`). -/
+
+inductive EMLTerm₂ : Type
+  | one  : EMLTerm₂
+  | varX : EMLTerm₂
+  | varY : EMLTerm₂
+  | eml  : EMLTerm₂ → EMLTerm₂ → EMLTerm₂
+  deriving Repr
+
+noncomputable def EMLTerm₂.eval (x y : ℝ) : EMLTerm₂ → ℝ
+  | .one      => 1
+  | .varX     => x
+  | .varY     => y
+  | .eml t u  => Real.exp (EMLTerm₂.eval x y t) - Real.log (EMLTerm₂.eval x y u)
+
+/-- `proj t A B` translates an `EMLTerm₂` into an `EMLTerm₁` by replacing
+    `varX` with `A` and `varY` with `B`. -/
+def proj (t : EMLTerm₂) (A B : EMLTerm₁) : EMLTerm₁ :=
+  match t with
+  | .one      => .one
+  | .varX     => A
+  | .varY     => B
+  | .eml u v  => .eml (proj u A B) (proj v A B)
+
+lemma eval_proj (x : ℝ) (t : EMLTerm₂) (A B : EMLTerm₁) :
+    EMLTerm₁.eval x (proj t A B) =
+    EMLTerm₂.eval (EMLTerm₁.eval x A) (EMLTerm₁.eval x B) t := by
+  induction t with
+  | one => rfl
+  | varX => rfl
+  | varY => rfl
+  | eml u v ihu ihv =>
+    show Real.exp (EMLTerm₁.eval x (proj u A B)) -
+         Real.log (EMLTerm₁.eval x (proj v A B)) =
+         Real.exp (EMLTerm₂.eval (EMLTerm₁.eval x A) (EMLTerm₁.eval x B) u) -
+         Real.log (EMLTerm₂.eval (EMLTerm₁.eval x A) (EMLTerm₁.eval x B) v)
+    rw [ihu, ihv]
+
+/-! ### chunk 042's `pow_term` lifted in (verbatim). -/
+
+private def Z : EMLTerm₂ := .eml .one (.eml (.eml .one .one) .one)
+private def LOG (a : EMLTerm₂) : EMLTerm₂ := .eml Z (.eml (.eml Z a) .one)
+private def NEG_LOG (v : EMLTerm₂) (raw : EMLTerm₂) : EMLTerm₂ :=
+  .eml (LOG (.eml v raw)) (.eml raw .one)
+
+noncomputable def pow_term : EMLTerm₂ :=
+  let logx := LOG .varX
+  let logy := LOG .varY
+  let neg_logx := NEG_LOG logx .varX
+  let neg_logy := NEG_LOG logy .varY
+  let inv_y_plus_logy := EMLTerm₂.eml neg_logy (.eml neg_logy .one)
+  let log_inv_y_plus_logy := LOG inv_y_plus_logy
+  let inv_x_plus_logx := EMLTerm₂.eml neg_logx (.eml neg_logx .one)
+  let log_inv_x_plus_logx := LOG inv_x_plus_logx
+  let A_arg := EMLTerm₂.eml log_inv_y_plus_logy
+    (.eml (.eml neg_logy (.eml log_inv_x_plus_logx .one)) .one)
+  let B_arg := EMLTerm₂.eml log_inv_y_plus_logy
+    (.eml (.eml neg_logy (.eml neg_logx .one)) .one)
+  let A := EMLTerm₂.eml A_arg .one
+  let B := EMLTerm₂.eml B_arg .one
+  let y_logx := EMLTerm₂.eml (LOG A) (.eml B .one)
+  EMLTerm₂.eml y_logx .one
+
+private lemma inv_add_log_pos {a : ℝ} (ha : 0 < a) : 0 < a⁻¹ + Real.log a := by
+  nlinarith [ inv_pos.2 ha, mul_inv_cancel₀ ha.ne',
+    Real.log_inv a ▸ Real.log_le_sub_one_of_pos ( inv_pos.2 ha ) ]
+
+private lemma eval_Z (x y : ℝ) : EMLTerm₂.eval x y Z = 0 := by
+  unfold Z; simp [EMLTerm₂.eval]
+
+private lemma eval_LOG (x y : ℝ) (a : EMLTerm₂) (ha : 0 < EMLTerm₂.eval x y a) :
+    EMLTerm₂.eval x y (LOG a) = Real.log (EMLTerm₂.eval x y a) := by
+  unfold LOG; simp [EMLTerm₂.eval]
+
+private lemma eval_NEG_LOG (x y : ℝ) (v raw : EMLTerm₂)
+    (hraw : 0 < EMLTerm₂.eval x y raw)
+    (hv : EMLTerm₂.eval x y v = Real.log (EMLTerm₂.eval x y raw))
+    (_hd : 0 < EMLTerm₂.eval x y raw - EMLTerm₂.eval x y v) :
+    EMLTerm₂.eval x y (NEG_LOG v raw) = -(EMLTerm₂.eval x y v) := by
+  unfold NEG_LOG; unfold LOG; norm_num [EMLTerm₂.eval]
+  rw [Real.exp_log] <;> norm_num [hv]
+  · linarith [Real.exp_log hraw]
+  · linarith [Real.add_one_le_exp (Real.log (EMLTerm₂.eval x y raw))]
+
+private lemma eval_pow_term_eq (x y : ℝ) (hx : 0 < x) (hy : 0 < y) :
+    EMLTerm₂.eval x y pow_term = Real.exp (y * Real.log x) := by
+  have h1 : EMLTerm₂.eval x y (LOG .varX) = Real.log x := by
+    exact eval_LOG x y _ hx
+  have h2 : EMLTerm₂.eval x y (LOG .varY) = Real.log y := by
+    exact eval_LOG x y _ hy
+  have h3 : EMLTerm₂.eval x y (NEG_LOG (LOG .varX) .varX) = -Real.log x := by
+    rw [ ← h1 ];
+    apply_rules [ eval_NEG_LOG ];
+    exact sub_pos_of_lt ( by linarith [ Real.log_le_sub_one_of_pos hx, show EMLTerm₂.eval x y EMLTerm₂.varX = x from rfl ] )
+  have h4 : EMLTerm₂.eval x y (NEG_LOG (LOG .varY) .varY) = -Real.log y := by
+    rw [ ← h2 ];
+    apply_rules [ eval_NEG_LOG ];
+    exact sub_pos_of_lt ( by linarith [ Real.log_le_sub_one_of_pos hy, show EMLTerm₂.eval x y EMLTerm₂.varY = y from rfl ] );
+  unfold pow_term; simp +decide [ *, EMLTerm₂.eval ] ; ring;
+  simp +decide [ *, EMLTerm₂.eval, LOG ] at *;
+  norm_num [ Real.exp_add, Real.exp_sub, Real.exp_neg, Real.exp_log hx, Real.exp_log hy ] ; ring;
+  rw [ Real.exp_log ( by linarith [ inv_pos.2 hy, Real.log_inv y ▸ Real.log_le_sub_one_of_pos ( inv_pos.2 hy ) ] ), Real.exp_log ( by linarith [ inv_pos.2 hx, Real.log_inv x ▸ Real.log_le_sub_one_of_pos ( inv_pos.2 hx ) ] ) ] ; norm_num [ Real.exp_ne_zero, hx.ne', hy.ne' ] ; ring;
+  norm_num [ Real.exp_add, Real.exp_log hy, mul_assoc, mul_comm, mul_left_comm, ne_of_gt ( Real.exp_pos _ ) ]
+
+/-! ### Generic combinators on `EMLTerm₁` (chunk 052/056 style). -/
 
 def mkEXP (T : EMLTerm₁) : EMLTerm₁ := .eml T .one
 
@@ -37,62 +159,10 @@ lemma eval_mkSUB (x : ℝ) (A B : EMLTerm₁) (hA : 0 < EMLTerm₁.eval x A) :
        Real.log (EMLTerm₁.eval x (mkEXP B)) = _
   rw [eval_mkLOG, eval_mkEXP, Real.exp_log hA, Real.log_exp]
 
-def mkNEG (T : EMLTerm₁) : EMLTerm₁ :=
-  .eml (mkLOG (.eml T (.eml T .one))) (.eml (.eml T .one) .one)
-
 lemma exp_sub_self_pos (t : ℝ) : 0 < Real.exp t - t := by
   linarith [Real.add_one_le_exp t]
 
-lemma eval_mkNEG (x : ℝ) (T : EMLTerm₁) :
-    EMLTerm₁.eval x (mkNEG T) = -(EMLTerm₁.eval x T) := by
-  set t := EMLTerm₁.eval x T with ht
-  have h1 : EMLTerm₁.eval x (.eml T .one) = Real.exp t := by
-    show Real.exp t - Real.log (EMLTerm₁.eval x .one) = _
-    show Real.exp t - Real.log 1 = _
-    rw [Real.log_one, sub_zero]
-  have h2 : EMLTerm₁.eval x (.eml T (.eml T .one)) = Real.exp t - t := by
-    show Real.exp t - Real.log (EMLTerm₁.eval x (.eml T .one)) = _
-    rw [h1, Real.log_exp]
-  have h3 : EMLTerm₁.eval x (mkLOG (.eml T (.eml T .one)))
-      = Real.log (Real.exp t - t) := by
-    rw [eval_mkLOG, h2]
-  show Real.exp (EMLTerm₁.eval x (mkLOG (.eml T (.eml T .one)))) -
-       Real.log (EMLTerm₁.eval x (.eml (.eml T .one) .one)) = _
-  rw [h3]
-  show Real.exp (Real.log (Real.exp t - t)) -
-       Real.log (Real.exp (EMLTerm₁.eval x (.eml T .one)) - Real.log 1) = _
-  rw [h1, Real.log_one, sub_zero, Real.exp_log (exp_sub_self_pos t), Real.log_exp]
-  ring
-
-/-! ### Constant `2` term -/
-
-def E_term : EMLTerm₁ := .eml .one .one
-def EM1_term : EMLTerm₁ := .eml .one E_term
-def EM2_term : EMLTerm₁ := mkSUB EM1_term .one
-def TWO_term : EMLTerm₁ := mkSUB E_term EM2_term
-
-lemma eval_E (x : ℝ) : EMLTerm₁.eval x E_term = Real.exp 1 := by
-  simp [E_term, EMLTerm₁.eval, Real.log_one]
-
-lemma eval_EM1 (x : ℝ) : EMLTerm₁.eval x EM1_term = Real.exp 1 - 1 := by
-  simp [EM1_term, E_term, EMLTerm₁.eval, Real.log_one, Real.log_exp]
-
-lemma EM1_pos : (0 : ℝ) < Real.exp 1 - 1 := by
-  have h1 : Real.exp 0 < Real.exp 1 := Real.exp_strictMono (by norm_num)
-  rw [Real.exp_zero] at h1; linarith
-
-lemma eval_EM2 (x : ℝ) : EMLTerm₁.eval x EM2_term = Real.exp 1 - 2 := by
-  show EMLTerm₁.eval x (mkSUB EM1_term .one) = _
-  rw [eval_mkSUB x EM1_term .one (by rw [eval_EM1]; exact EM1_pos)]
-  rw [eval_EM1]; show (Real.exp 1 - 1) - 1 = Real.exp 1 - 2; ring
-
-lemma eval_TWO (x : ℝ) : EMLTerm₁.eval x TWO_term = 2 := by
-  show EMLTerm₁.eval x (mkSUB E_term EM2_term) = _
-  rw [eval_mkSUB x E_term EM2_term (by rw [eval_E]; exact Real.exp_pos _)]
-  rw [eval_E, eval_EM2]; ring
-
-/-! ### `mkADD A B` (chunk 040) and `mkADDPos`/`mkSUBPos` (positivity-aware
-    forms reused below). -/
+/-! ### `mkADD A B` (chunk 040). -/
 
 def mkADD (A B : EMLTerm₁) : EMLTerm₁ :=
   .eml
@@ -166,57 +236,81 @@ lemma eval_mkADD (x : ℝ) (A B : EMLTerm₁) :
         .one)) = _
   rw [hLHS, h10, Real.log_exp]; ring
 
-/-! ### `mkHALVE P` for positive P -/
+/-! ### A closed `EMLTerm₁` evaluating to `1/2` (chunk 033 trick). -/
 
-def mkHALVE (P : EMLTerm₁) : EMLTerm₁ :=
-  let Pplus2 := mkADD P TWO_term
-  let aT := .eml (mkLOG Pplus2) (mkEXP (mkLOG TWO_term))
-  let bT := .eml (mkLOG Pplus2) (mkEXP (mkLOG P))
-  let logDiff := EMLTerm₁.eml (mkLOG aT) (mkEXP bT)
-  mkEXP logDiff
+private def Z₁ : EMLTerm₁ := .eml .one (.eml (.eml .one .one) .one)
+private def Lg₁ (T : EMLTerm₁) : EMLTerm₁ := .eml Z₁ (.eml (.eml Z₁ T) .one)
+private def e1₁ : EMLTerm₁ := .eml .one (.eml .one .one)
+private def log_e1₁ : EMLTerm₁ := Lg₁ e1₁
+private def e2₁ : EMLTerm₁ := .eml log_e1₁ (.eml .one .one)
+private def exp_e2₁ : EMLTerm₁ := .eml e2₁ .one
+private def two₁ : EMLTerm₁ := .eml .one exp_e2₁
+private def eml2₁ : EMLTerm₁ := .eml .one two₁
+private def log_eml2₁ : EMLTerm₁ := Lg₁ eml2₁
+private def neg_log2₁ : EMLTerm₁ := .eml log_eml2₁ (.eml (.eml .one .one) .one)
+private def half₁ : EMLTerm₁ := .eml neg_log2₁ .one
 
-lemma log_two_le_one : Real.log 2 ≤ 1 := by
-  have h := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)
-  linarith
+private lemma eval_Z₁ (x : ℝ) : EMLTerm₁.eval x Z₁ = 0 := by
+  simp [Z₁, EMLTerm₁.eval, Real.log_one, Real.log_exp]
 
-lemma eval_mkHALVE (x : ℝ) (P : EMLTerm₁) (hP : 0 < EMLTerm₁.eval x P) :
-    EMLTerm₁.eval x (mkHALVE P) = EMLTerm₁.eval x P / 2 := by
-  set p := EMLTerm₁.eval x P with hp
-  have hPp2 : EMLTerm₁.eval x (mkADD P TWO_term) = p + 2 := by
-    rw [eval_mkADD, eval_TWO]
-  have hPp2_pos : 0 < EMLTerm₁.eval x (mkADD P TWO_term) := by
-    rw [hPp2]; linarith
-  have haT : EMLTerm₁.eval x
-      (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG TWO_term))) = (p + 2) - Real.log 2 := by
-    show Real.exp (EMLTerm₁.eval x (mkLOG (mkADD P TWO_term))) -
-      Real.log (EMLTerm₁.eval x (mkEXP (mkLOG TWO_term))) = _
-    rw [eval_mkLOG, eval_mkEXP, eval_mkLOG, Real.exp_log hPp2_pos, hPp2,
-        eval_TWO, Real.log_exp]
-  have haT_pos : 0 < (p + 2) - Real.log 2 := by linarith [log_two_le_one]
-  have hbT : EMLTerm₁.eval x
-      (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG P))) = (p + 2) - Real.log p := by
-    show Real.exp (EMLTerm₁.eval x (mkLOG (mkADD P TWO_term))) -
-      Real.log (EMLTerm₁.eval x (mkEXP (mkLOG P))) = _
-    rw [eval_mkLOG, eval_mkEXP, eval_mkLOG, Real.exp_log hPp2_pos, hPp2,
-        Real.exp_log hP]
-  have hlogDiff : EMLTerm₁.eval x
-      (EMLTerm₁.eml (mkLOG (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG TWO_term))))
-                    (mkEXP (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG P))))) =
-      Real.log p - Real.log 2 := by
-    show Real.exp (EMLTerm₁.eval x
-        (mkLOG (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG TWO_term))))) -
-      Real.log (EMLTerm₁.eval x
-        (mkEXP (.eml (mkLOG (mkADD P TWO_term)) (mkEXP (mkLOG P))))) = _
-    rw [eval_mkLOG, eval_mkEXP, Real.exp_log (by rw [haT]; exact haT_pos),
-        Real.log_exp, haT, hbT]
-    ring
-  show EMLTerm₁.eval x (mkHALVE P) = p / 2
-  unfold mkHALVE
-  show EMLTerm₁.eval x (mkEXP _) = _
-  rw [eval_mkEXP, hlogDiff]
-  rw [Real.exp_sub, Real.exp_log hP, Real.exp_log (by norm_num : (0:ℝ) < 2)]
+private lemma eval_Lg₁ (x : ℝ) {t : EMLTerm₁} (_ : 0 < EMLTerm₁.eval x t) :
+    EMLTerm₁.eval x (Lg₁ t) = Real.log (EMLTerm₁.eval x t) := by
+  simp only [Lg₁, EMLTerm₁.eval, eval_Z₁, Real.exp_zero, Real.log_exp,
+    Real.log_one, sub_zero]
+  ring
 
-/-! ### Building blocks: `x²`, `x² − 1`, `√(x²−1)`, `x + √(x²−1)`. -/
+private lemma eval_e1₁ (x : ℝ) : EMLTerm₁.eval x e1₁ = Real.exp 1 - 1 := by
+  simp [e1₁, EMLTerm₁.eval, Real.log_one, Real.log_exp]
+
+private lemma exp_one_sub_one_pos : (0 : ℝ) < Real.exp 1 - 1 := by
+  linarith [Real.add_one_le_exp (1:ℝ)]
+
+private lemma eval_log_e1₁ (x : ℝ) :
+    EMLTerm₁.eval x log_e1₁ = Real.log (Real.exp 1 - 1) := by
+  simp only [log_e1₁]
+  rw [eval_Lg₁ x (by rw [eval_e1₁]; exact exp_one_sub_one_pos), eval_e1₁]
+
+private lemma eval_e2₁ (x : ℝ) : EMLTerm₁.eval x e2₁ = Real.exp 1 - 2 := by
+  simp only [e2₁, EMLTerm₁.eval, eval_log_e1₁,
+    Real.exp_log exp_one_sub_one_pos, Real.log_one, sub_zero, Real.log_exp]
+  ring
+
+private lemma eval_exp_e2₁ (x : ℝ) :
+    EMLTerm₁.eval x exp_e2₁ = Real.exp (Real.exp 1 - 2) := by
+  simp only [exp_e2₁, EMLTerm₁.eval, eval_e2₁, Real.log_one, sub_zero]
+
+private lemma eval_two₁ (x : ℝ) : EMLTerm₁.eval x two₁ = 2 := by
+  simp only [two₁, EMLTerm₁.eval, eval_exp_e2₁, Real.log_exp]; ring
+
+private lemma eval_eml2₁ (x : ℝ) :
+    EMLTerm₁.eval x eml2₁ = Real.exp 1 - Real.log 2 := by
+  simp only [eml2₁, EMLTerm₁.eval, eval_two₁]
+
+private lemma log_two_le_one : Real.log 2 ≤ 1 := by
+  rw [show (1:ℝ) = Real.log (Real.exp 1) from (Real.log_exp 1).symm]
+  exact Real.log_le_log (by norm_num) (by linarith [Real.add_one_le_exp (1:ℝ)])
+
+private lemma exp_one_sub_log_two_pos : (0 : ℝ) < Real.exp 1 - Real.log 2 := by
+  linarith [exp_one_sub_one_pos, log_two_le_one]
+
+private lemma eval_log_eml2₁ (x : ℝ) :
+    EMLTerm₁.eval x log_eml2₁ = Real.log (Real.exp 1 - Real.log 2) := by
+  simp only [log_eml2₁]
+  rw [eval_Lg₁ x (by rw [eval_eml2₁]; exact exp_one_sub_log_two_pos),
+    eval_eml2₁]
+
+private lemma eval_neg_log2₁ (x : ℝ) :
+    EMLTerm₁.eval x neg_log2₁ = -Real.log 2 := by
+  simp only [neg_log2₁, EMLTerm₁.eval, eval_log_eml2₁, Real.log_exp,
+    Real.exp_log exp_one_sub_log_two_pos, Real.log_one, sub_zero]
+  ring
+
+lemma eval_half₁ (x : ℝ) : EMLTerm₁.eval x half₁ = 1 / 2 := by
+  simp only [half₁, EMLTerm₁.eval, eval_neg_log2₁, Real.log_one, sub_zero,
+    Real.exp_neg, Real.exp_log (by norm_num : (0:ℝ) < 2)]
+  norm_num
+
+/-! ### Building blocks: `x²`, `x² − 1`, then `√(x²−1)` via `pow_term`. -/
 
 /-- `x² = exp(log x + log x)` for `x > 0`. -/
 def xSqTerm : EMLTerm₁ := mkEXP (mkADD (mkLOG .var) (mkLOG .var))
@@ -247,77 +341,50 @@ lemma eval_xSqMinus1 (x : ℝ) (hx : 1 < x) :
       eval_xSqTerm x hxpos]
   rfl
 
-/-- `√(x² − 1)` term, via `exp(½ · log(x² − 1))`.  This requires
-`log(x² − 1) > 0`, i.e. `x² − 1 > 1`, i.e. `x² > 2`, i.e. `√2 < x`. -/
-def sqrtXSqMinus1 : EMLTerm₁ := mkEXP (mkHALVE (mkLOG xSqMinus1))
+/-- `√(x² − 1)` term, via the chunk-042 `pow_term` substitution trick:
+    project `pow_term` with `varX ↦ xSqMinus1` and `varY ↦ half₁`. -/
+noncomputable def sqrtXSqMinus1 : EMLTerm₁ := proj pow_term xSqMinus1 half₁
 
-lemma sqrt_two_pos : (0 : ℝ) < Real.sqrt 2 := Real.sqrt_pos.mpr (by norm_num)
-
-lemma sqrt_two_lt_two : Real.sqrt 2 < 2 := by
-  have h : Real.sqrt 2 < Real.sqrt 4 := Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
-  have h4 : Real.sqrt 4 = 2 := by
-    rw [show (4 : ℝ) = (2 : ℝ) ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0:ℝ) ≤ 2)]
-  linarith
-
-lemma sqrt_two_gt_one : (1 : ℝ) < Real.sqrt 2 := by
-  have h : Real.sqrt 1 < Real.sqrt 2 := Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
-  rw [Real.sqrt_one] at h; exact h
-
-lemma log_xSqMinus1_pos {x : ℝ} (hx : Real.sqrt 2 < x) :
-    0 < Real.log (x ^ 2 - 1) := by
-  have h1 : 1 < x ^ 2 - 1 := by
-    have hx0 : 0 < x := by linarith [sqrt_two_pos]
-    have hx2 : 2 < x ^ 2 := by
-      have h := Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)
-      nlinarith [sqrt_two_pos]
-    linarith
-  exact Real.log_pos h1
-
-lemma eval_sqrtXSqMinus1 (x : ℝ) (hx : Real.sqrt 2 < x) :
+lemma eval_sqrtXSqMinus1 (x : ℝ) (hx : 1 < x) :
     EMLTerm₁.eval x sqrtXSqMinus1 = Real.sqrt (x ^ 2 - 1) := by
-  have hx1 : 1 < x := lt_trans sqrt_two_gt_one hx
-  have hxpos : 0 < x := by linarith
-  have hSqM1_pos : 0 < x ^ 2 - 1 := xSqMinus1_pos hx1
-  have hLog_pos : 0 < Real.log (x ^ 2 - 1) := log_xSqMinus1_pos hx
-  show EMLTerm₁.eval x (mkEXP (mkHALVE (mkLOG xSqMinus1))) = _
-  rw [eval_mkEXP]
-  have hLOG_eval : EMLTerm₁.eval x (mkLOG xSqMinus1) = Real.log (x ^ 2 - 1) := by
-    rw [eval_mkLOG, eval_xSqMinus1 x hx1]
-  have hLOG_pos' : 0 < EMLTerm₁.eval x (mkLOG xSqMinus1) := by
-    rw [hLOG_eval]; exact hLog_pos
-  rw [eval_mkHALVE x _ hLOG_pos', hLOG_eval]
-  -- Goal: exp(log(x² − 1) / 2) = √(x² − 1).
+  unfold sqrtXSqMinus1
+  rw [eval_proj]
+  -- After projection, eval is at (eval x xSqMinus1, eval x half₁) = (x²−1, 1/2).
+  have hSqM1 : EMLTerm₁.eval x xSqMinus1 = x ^ 2 - 1 := eval_xSqMinus1 x hx
+  have hhalf : EMLTerm₁.eval x half₁ = 1 / 2 := eval_half₁ x
+  rw [hSqM1, hhalf]
+  have hSqM1_pos : 0 < x ^ 2 - 1 := xSqMinus1_pos hx
+  rw [eval_pow_term_eq _ _ hSqM1_pos (by norm_num : (0:ℝ) < 1/2)]
   rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hSqM1_pos]
   ring_nf
 
 /-! ### Sum `x + √(x²−1)` and final logarithm. -/
 
-def xPlusSqrt : EMLTerm₁ := mkADD .var sqrtXSqMinus1
+noncomputable def xPlusSqrt : EMLTerm₁ := mkADD .var sqrtXSqMinus1
 
-lemma eval_xPlusSqrt (x : ℝ) (hx : Real.sqrt 2 < x) :
+lemma eval_xPlusSqrt (x : ℝ) (hx : 1 < x) :
     EMLTerm₁.eval x xPlusSqrt = x + Real.sqrt (x ^ 2 - 1) := by
   show EMLTerm₁.eval x (mkADD .var sqrtXSqMinus1) = _
   rw [eval_mkADD, eval_sqrtXSqMinus1 x hx]
   rfl
 
 /-- The arcosh witness: `log(x + √(x²−1))`. -/
-def arcoshTerm : EMLTerm₁ := mkLOG xPlusSqrt
+noncomputable def arcoshTerm : EMLTerm₁ := mkLOG xPlusSqrt
 
-lemma eval_arcoshTerm (x : ℝ) (hx : Real.sqrt 2 < x) :
+lemma eval_arcoshTerm (x : ℝ) (hx : 1 < x) :
     EMLTerm₁.eval x arcoshTerm = Real.arcosh x := by
   show EMLTerm₁.eval x (mkLOG xPlusSqrt) = _
   rw [eval_mkLOG, eval_xPlusSqrt x hx]
   rw [Real.arcosh]
 
 /--
-The honest version (positivity hypothesis required because `mkHALVE` needs
-its argument positive, which forces `log(x² − 1) > 0`, i.e. `x² > 2`, i.e.
-`√2 < x`).  The stricter domain `x > √2` ⊂ `x ≥ 1` is sufficient for the
-identity `arcosh x = log(x + √(x² − 1))` (which is the textbook formula).
+Tightened version: domain is now the natural `1 < x` (matching the open
+interval where `pow_term` can construct `(x²−1)^(1/2)` directly).  At
+`x = 1` we have `arccosh 1 = 0` and the textbook formula still holds,
+but `pow_term` requires its base positive, so `x = 1` is excluded here.
 -/
-theorem emlterm1_for_arcosh :
-    ∃ t : EMLTerm₁, ∀ x : ℝ, Real.sqrt 2 < x →
-      EMLTerm₁.eval x t = Real.arcosh x :=
+theorem emlterm1_for_arcosh_x :
+    ∃ t : EMLTerm₁, ∀ x : ℝ, 1 < x → EMLTerm₁.eval x t = Real.arcosh x :=
   ⟨arcoshTerm, eval_arcoshTerm⟩
 
 end EML

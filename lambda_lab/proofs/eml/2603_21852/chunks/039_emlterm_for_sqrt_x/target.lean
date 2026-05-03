@@ -16,35 +16,26 @@ noncomputable def EMLTerm₁.eval (x : ℝ) : EMLTerm₁ → ℝ
   | .eml t u => Real.exp (EMLTerm₁.eval x t) - Real.log (EMLTerm₁.eval x u)
 
 /-
-Reformulated to `x > 1` (was: x > 0).
+Resealed for the FULL positive domain (`0 < x`, replacing the previous `1 < x`).
 
-A previous Aristotle attempt produced the witness construction
-    sqrt_term = EXP (EXP (SUB (LOG (LOG var)) (LOG TWO)))
-which uses `log(log x)`. This is well-defined only for `x > 1`
-(where `log x > 0`); for `0 < x ≤ 1`, `Real.log` returns its
-junk value 0 inside the second log, breaking the identity.
+Construction (the `pow_term` substitution trick from chunk 054 hypot):
 
-Restricting the spec to `x > 1` (where the construction IS valid)
-makes the theorem provable. The general `0 < x` form likely needs
-the paper's 139-RPN supplementary tree.
+  1. Lift in chunk 042's `pow_term : EMLTerm₂` (two variables x, y), which
+     evaluates to `x^y` for `0 < x ∧ 0 < y`.
+  2. Build a closed `half_term : EMLTerm₁` that evaluates to `1/2` (chunk 033).
+  3. Define `proj : EMLTerm₂ → EMLTerm₁ → EMLTerm₁ → EMLTerm₁` substituting
+     `varX ↦ A`, `varY ↦ B`, with the corresponding eval lemma.
+  4. Set `sqrt_term := proj pow_term .var half_term`.
 
-Construction (provided as a hint to the prover):
-    LOG T  := eml(1, eml(eml(1, T), 1))         -- log T
-    EXP T  := eml(T, 1)                          -- exp T
-    SUB A B := eml(LOG A, EXP B)                 -- A − B (for A > 0)
-    E      := eml(1, 1)                          -- e
-    E_MINUS_ONE := eml(1, E)                     -- e − 1 (positive)
-    E_MINUS_TWO := SUB E_MINUS_ONE 1             -- e − 2
-    TWO    := SUB E E_MINUS_TWO                  -- 2
-    halfLogTerm := EXP (SUB (LOG (LOG var)) (LOG TWO))
-                                                  -- = (log x)/2 for x > 1
-    sqrt_term   := EXP halfLogTerm               -- = √x
+Then `eval x sqrt_term = pow_term @ (x, 1/2) = exp((1/2) log x) = x^(1/2) = √x`
+for any `0 < x`, since both `pow_term` arguments stay strictly positive.
 
-For x > 1: log x > 0, so LOG var well-defined; LOG (LOG var) well-defined;
-the SUB and EXP chain gives exp((log x)/2) = √x.
+This sidesteps the iterated-log construction (which required `log(log x)` to
+be well-defined, hence `x > 1`). The key Mathlib bridges are
+`Real.sqrt_eq_rpow` and `Real.rpow_def_of_pos`.
 -/
-theorem emlterm1_for_sqrt_x_gt_one :
-    ∃ t : EMLTerm₁, ∀ x : ℝ, 1 < x → EMLTerm₁.eval x t = Real.sqrt x := by
+theorem emlterm1_for_sqrt_x_pos :
+    ∃ t : EMLTerm₁, ∀ x : ℝ, 0 < x → EMLTerm₁.eval x t = Real.sqrt x := by
   sorry
 
 end EML

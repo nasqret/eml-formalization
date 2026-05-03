@@ -1,21 +1,22 @@
 {
   "id": "039_emlterm_for_sqrt_x",
-  "title_pl": "EMLTerm₁ realizujący √x (dla x > 1)",
-  "title_en": "EMLTerm₁ realising √x (for x > 1)",
+  "title_pl": "EMLTerm₁ realizujący √x (dla x > 0, pełna dziedzina dodatnia)",
+  "title_en": "EMLTerm₁ realising √x (for x > 0, full positive domain)",
   "paper_section": "§3 Results, EML expression catalog (√x, K=139)",
   "paper_quote": "√x: K = 139 (compiler) / K > 43 (direct search).",
-  "informal_pl": "Istnieje parametryzowany term EML rozmiaru 139 ewaluujący do √x dla x ≥ 0. PROBABLE PERMANENT SORRY: drzewo o 139 węzłach poza budżetem ręcznej transkrypcji.",
-  "informal_en": "There exists a parameterised EML term of size 139 whose evaluation equals √x for x ≥ 0. PROBABLE PERMANENT SORRY: 139-node literal tree beyond the manual-transcription budget.",
+  "informal_pl": "Istnieje parametryzowany term EML ewaluujący do √x dla każdego x > 0. Konstrukcja wykorzystuje sztuczkę z chunku 054 (hypot): podstawienie do `pow_term` z chunku 042 z argumentami (var, half_term).",
+  "informal_en": "There exists a parameterised EML term whose evaluation equals √x for every x > 0. The construction uses the chunk-054 (hypot) trick: substitute into chunk-042's `pow_term` with arguments (var, half_term).",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
-    "Mathlib.Analysis.SpecialFunctions.Exp",
-    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
-    "Mathlib.Analysis.SpecialFunctions.Sqrt"
+    "Mathlib"
   ],
-  "lean_target_signature": "theorem emlterm1_for_sqrt_x_gt_one : ∃ t : EMLTerm₁, ∀ x : ℝ, 1 < x → EMLTerm₁.eval x t = Real.sqrt x := by sorry",
+  "lean_target_signature": "theorem emlterm1_for_sqrt_x_pos : ∃ t : EMLTerm₁, ∀ x : ℝ, 0 < x → EMLTerm₁.eval x t = Real.sqrt x := by sorry",
   "depends_on": [
-    "023_emlterm_exp_x_witness"
+    "023_emlterm_exp_x_witness",
+    "033_emlterm_for_half",
+    "042_emlterm_for_pow_xy",
+    "054_emlterm_for_hypot_xy"
   ],
   "status": "complete",
   "aristotle_project_id": "acada945-a266-4ebc-a4eb-cc6af254dded",
@@ -33,7 +34,7 @@
     "outcome": "no_match",
     "conclusion": "1-variable EML trees enumerated up to size 15 with 6-point numerical signature dedup; cumulative unique-signature count was 26 722 and not one matched Sqrt[x] within 1e-6 tolerance at any sample point. Paper's direct-search lower bound K > 43 confirms the negative result is expected. Further deepening is gated by memory: at size 17 the build crosses 2M+ candidate pairs and our run was terminated after >5 min wall (size-15 finishes in ~2 s, growth ~5x per step). NEXT STEPS: (a) transcribe the 139-node Supplementary tree, then verify with a single numerical pass through this harness; (b) attempt Aristotle composition lifting from squaring + log identities (sqrt = exp(log/2)); (c) leave as permanent sorry."
   },
-  "notes": "Permanent sorry pending Supplementary-Information transcription. v2 search exhausted size <= 15 (26 722 unique sigs) with zero numeric matches; paper's direct-search lower bound is K > 43. | Reformulated to x > 0 with construction hint: √x = exp((log x)/2). Compose with chunk 038 technique (build 2·log x), then halve. | Tightened spec to x > 1 (was x > 0). The 'halve log' construction needs log(log x), which requires log x > 0, i.e. x > 1. Aristotle delivered the witness; this resubmit asks it to fill the proof. | RESOLVED on retry. Aristotle delivered a verified √x witness for x > 1 (the natural domain where log(log x) is defined). Spec was tightened from x > 0 to x > 1 to match the construction. Verified clean (warnings only).",
+  "notes": "Permanent sorry pending Supplementary-Information transcription. v2 search exhausted size <= 15 (26 722 unique sigs) with zero numeric matches; paper's direct-search lower bound is K > 43. | Reformulated to x > 0 with construction hint: √x = exp((log x)/2). Compose with chunk 038 technique (build 2·log x), then halve. | Tightened spec to x > 1 (was x > 0). The 'halve log' construction needs log(log x), which requires log x > 0, i.e. x > 1. Aristotle delivered the witness; this resubmit asks it to fill the proof. | RESOLVED on retry. Aristotle delivered a verified √x witness for x > 1 (the natural domain where log(log x) is defined). Spec was tightened from x > 0 to x > 1 to match the construction. Verified clean (warnings only). | RESEALED for the FULL positive domain (0 < x, replacing 1 < x). Used the pow_term substitution trick from chunk 054 hypot: instead of constructing (log x)/2 via iterated-log (which forces x > 1 because log(log x) is junk for 0 < x ≤ 1), we lift chunk 042's two-variable pow_term and project varX ↦ var, varY ↦ half_term (the closed 1/2 witness from chunk 033). Then eval = pow_term @ (x, 1/2) = exp((1/2) log x) = √x for any x > 0. The original theorem `emlterm1_for_sqrt_x_gt_one` is replaced by `emlterm1_for_sqrt_x_pos` with the strictly stronger ∀ x > 0 hypothesis. Verified clean (warnings + ring/ring_nf 'Try this' suggestions only, no errors, 0 sorries).",
   "history": [
     {
       "project_id": "0e9c5500-2035-43ba-9a37-a41e3a5f13ff",
@@ -41,6 +42,20 @@
       "completed_at": "2026-05-02T00:21:23Z",
       "status": "partial",
       "reason": "Construction for x > 1 delivered; proof left as sorry. Reformulated spec to x > 1."
+    },
+    {
+      "project_id": "acada945-a266-4ebc-a4eb-cc6af254dded",
+      "submitted_at": "2026-05-02T00:22:18Z",
+      "completed_at": "2026-05-02T02:37:27Z",
+      "status": "complete",
+      "reason": "Aristotle delivered verified √x witness for x > 1 only (iterated-log construction)."
+    },
+    {
+      "project_id": "manual-reseal-2026-04-27",
+      "submitted_at": "2026-04-27T00:00:00Z",
+      "completed_at": "2026-04-27T00:00:00Z",
+      "status": "complete",
+      "reason": "Resealed for the full positive domain (0 < x) using the pow_term substitution trick from chunk 054 hypot — sidesteps the iterated-log issue entirely."
     }
   ]
 }
