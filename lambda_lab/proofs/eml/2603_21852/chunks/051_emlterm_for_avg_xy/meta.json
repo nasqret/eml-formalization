@@ -17,9 +17,9 @@
     "040_emlterm_for_add_xy",
     "052_emlterm_for_half_x"
   ],
-  "status": "submitted",
+  "status": "partial",
   "aristotle_project_id": "54ab71d2-7c33-47a8-bd64-549f9850a82a",
   "submitted_at": "2026-05-02T21:06:32Z",
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 14. Composition `half ∘ add` may require positivity bookkeeping when x+y ≤ 0; the paper-level identity is unconditional."
+  "completed_at": "2026-05-03T05:02:36Z",
+  "notes": "Round 2 chunk; Table S2 step 14. Composition `half ∘ add` may require positivity bookkeeping when x+y ≤ 0; the paper-level identity is unconditional. | PARTIAL. Aristotle returned with main theorem sorry; helpers delivered. Manual composition possible."
 }

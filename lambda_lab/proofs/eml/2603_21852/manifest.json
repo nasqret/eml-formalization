@@ -608,12 +608,12 @@
       "title_en": "EMLTerm₂ realising avg(x, y)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "040_emlterm_for_add_xy",
         "052_emlterm_for_half_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T05:02:36Z",
       "aristotle_project_id": null,
       "chunk_id": "051_emlterm_for_avg_xy",
       "project_id": "54ab71d2-7c33-47a8-bd64-549f9850a82a",
@@ -821,13 +821,13 @@
       "title_en": "EMLTermℂ₁ realising sin(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "034_emlterm_for_pi",
         "052_emlterm_for_half_x",
         "062_emlterm_for_cos_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T05:02:36Z",
       "aristotle_project_id": null,
       "chunk_id": "063_emlterm_for_sin_x",
       "project_id": "656c1b34-f0d4-4f6e-a5a8-40620b1b7969",
@@ -839,13 +839,13 @@
       "title_en": "EMLTermℂ₁ realising tan(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "050_emlterm_for_div_xy",
         "062_emlterm_for_cos_x",
         "063_emlterm_for_sin_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T05:02:36Z",
       "aristotle_project_id": null,
       "chunk_id": "064_emlterm_for_tan_x",
       "project_id": "6d82e14e-be0f-4850-90bf-241d2ea42730",
@@ -1004,8 +1004,8 @@
     },
     "by_status": {
       "complete": 57,
-      "submitted": 5,
-      "partial": 3,
+      "partial": 6,
+      "submitted": 2,
       "pending": 1
     }
   }
