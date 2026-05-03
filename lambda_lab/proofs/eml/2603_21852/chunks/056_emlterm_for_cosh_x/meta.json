@@ -1,0 +1,27 @@
+{
+  "id": "056_emlterm_for_cosh_x",
+  "title_pl": "EMLTerm₁ dla cosh(x)",
+  "title_en": "EMLTerm₁ realising cosh(x)",
+  "paper_section": "§Sup. Table S2 step 21",
+  "paper_quote": "21  cosh(x)    K=6    avg(exp x, exp(-x))",
+  "informal_pl": "Cosinus hiperboliczny via średnia exp x i exp(-x); identyczność dla każdego x.",
+  "informal_en": "Hyperbolic cosine via average of exp x and exp(-x); identity holds for every x.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_cosh : ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = Real.cosh x := by sorry",
+  "depends_on": [
+    "023_emlterm_exp_x_witness",
+    "036_emlterm_for_neg_x",
+    "051_emlterm_for_avg_xy"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "0e3d36d9-8b0b-4a25-a9d1-eaa3e269a5fa",
+  "submitted_at": "2026-05-02T21:06:37Z",
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 21. Stepping-stone for sinh, tanh, arsinh, arcosh. | MANUALLY SEALED 2026-04-27: pure EMLTerm₁ witness `coshTerm = mkHALVE(mkADD(expxTerm, expnegxTerm))` with generic combinators: `mkADD` (chunk 040), `mkHALVE` (chunk 052 trick lifted, halves any positive term via `log p − log 2`), and `mkNEG` (chunk 036). Identity used: `cosh(x) = (exp(x) + exp(−x))/2`. Verified via `lake env lean EML/Solutions/056_emlterm_for_cosh_x.lean` (exit 0, no sorry)."
+}

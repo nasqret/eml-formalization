@@ -625,12 +625,12 @@
       "title_en": "EMLTerm₁ realising x / 2",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "033_emlterm_for_half",
         "041_emlterm_for_mul_xy"
       ],
-      "completed_at": "2026-05-03T01:30:18Z",
+      "completed_at": "2026-04-27T00:00:00Z",
       "aristotle_project_id": null,
       "chunk_id": "052_emlterm_for_half_x",
       "project_id": "3f187a65-9e23-44e6-9d35-7d74d1da62dc",
@@ -659,13 +659,13 @@
       "title_en": "EMLTerm₂ realising hypot(x, y)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "038_emlterm_for_sq_x",
         "039_emlterm_for_sqrt_x",
         "040_emlterm_for_add_xy"
       ],
-      "completed_at": "2026-05-03T01:31:54Z",
+      "completed_at": "2026-04-27T00:00:00Z",
       "aristotle_project_id": null,
       "chunk_id": "054_emlterm_for_hypot_xy",
       "project_id": "68a2a337-7a25-45c3-9559-85ee846449e5",
@@ -677,13 +677,13 @@
       "title_en": "EMLTerm₁ realising σ(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "022_emlterm_e_witness",
         "036_emlterm_for_neg_x",
         "037_emlterm_for_inv_x"
       ],
-      "completed_at": "2026-05-03T01:30:18Z",
+      "completed_at": "2026-04-27T00:00:00Z",
       "aristotle_project_id": null,
       "chunk_id": "055_emlterm_for_sigmoid_x",
       "project_id": "331e3a4e-aa91-4c8e-95aa-f6e83eb46792",
@@ -695,13 +695,13 @@
       "title_en": "EMLTerm₁ realising cosh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "023_emlterm_exp_x_witness",
         "036_emlterm_for_neg_x",
         "051_emlterm_for_avg_xy"
       ],
-      "completed_at": "2026-05-03T01:30:18Z",
+      "completed_at": "2026-04-27T00:00:00Z",
       "aristotle_project_id": null,
       "chunk_id": "056_emlterm_for_cosh_x",
       "project_id": "0e3d36d9-8b0b-4a25-a9d1-eaa3e269a5fa",
@@ -713,12 +713,12 @@
       "title_en": "EMLTerm₁ realising sinh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "023_emlterm_exp_x_witness",
         "056_emlterm_for_cosh_x"
       ],
-      "completed_at": "2026-05-03T01:30:18Z",
+      "completed_at": "2026-04-27T00:00:00Z",
       "aristotle_project_id": null,
       "chunk_id": "057_emlterm_for_sinh_x",
       "project_id": "a3cf1102-e6fb-48ed-858a-8ae724278055",
@@ -965,6 +965,41 @@
       ],
       "completed_at": null,
       "aristotle_project_id": null
+    },
+    {
+      "chunk_id": "065_emlterm_for_arctan_x",
+      "project_id": "73001aef-e131-4691-9b5b-19cf2d602a8f",
+      "submitted_at": "2026-05-03T01:47:52Z",
+      "status": "submitted",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: arctan via complex formula (1/(2i))·ln((1+ix)/(1−ix)); paper gives the equivalent arsinh∘tanh∘arsinh chain.\n\nimport Mathlib\n\nnamespace EML\n\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : EMLTermℂ₁ → EMLTermℂ₁ → EMLTermℂ₁\n  deriving Repr\n\nnoncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ\n  "
+    },
+    {
+      "chunk_id": "066_emlterm_for_arcsin_x",
+      "project_id": "e88efb23-869b-41c3-a7bf-667b7e8c5b46",
+      "submitted_at": "2026-05-03T01:47:53Z",
+      "status": "submitted",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: arcsin x = arctan(x/√(1−x²)) on (-1,1); witness avoids arccos to break circularity (chunk 067 depends on arcsin).\n\nimport Mathlib\n\nnamespace EML\n\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : EMLTermℂ₁ → EMLTermℂ₁ → EMLTermℂ₁\n  deriving Repr\n\nnoncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ "
+    },
+    {
+      "chunk_id": "067_emlterm_for_arccos_x",
+      "project_id": "4e691c8f-979b-41dd-8c18-a2001771fb66",
+      "submitted_at": "2026-05-03T01:47:55Z",
+      "status": "submitted",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: arccos x = π/2 − arcsin x; paper's arcosh∘cos∘arcosh recipe is equivalent but extends arcosh outside [1,∞).\n\nimport Mathlib\n\nnamespace EML\n\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : EMLTermℂ₁ → EMLTermℂ₁ → EMLTermℂ₁\n  deriving Repr\n\nnoncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ\n  "
+    },
+    {
+      "chunk_id": "068_wolfram_pow_complex",
+      "project_id": "fa212881-5b96-4d00-b5a4-39a42d19f3f4",
+      "submitted_at": "2026-05-03T01:47:56Z",
+      "status": "submitted",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Generalises chunk 024: Wolfram → Calc 3 reduction with full pow in ℂ; pow a b = exp(b·log a) on the principal branch.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 024 (Wolfram → Calc 3 over ℝ) to the *complex* domain,\nadmitting the FULL `pow` constructor with no positivity precondition on\nthe base. The complex Calc3 v"
+    },
+    {
+      "chunk_id": "069_universal_minimality",
+      "project_id": "77cd3653-c2fb-488f-98a2-1d4fefc5f284",
+      "submitted_at": "2026-05-03T01:47:58Z",
+      "status": "submitted",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Every {constant + n-ary function} configuration (n ∈ {1,2}) fails to express the identity as a function of one variable; every closed term evaluates to a constant.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 029 (which only ruled out the constant-1-only\ncalculator). Here we formalise the FULL universal minimality cla"
     }
   ],
   "stats": {
@@ -983,9 +1018,9 @@
       "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 46,
+      "complete": 51,
       "submitted": 9,
-      "partial": 5,
+      "partial": 0,
       "pending": 6
     }
   }

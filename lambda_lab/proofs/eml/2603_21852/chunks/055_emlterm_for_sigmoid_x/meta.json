@@ -1,0 +1,26 @@
+{
+  "id": "055_emlterm_for_sigmoid_x",
+  "title_pl": "EMLTerm₁ dla σ(x) (sigmoid)",
+  "title_en": "EMLTerm₁ realising σ(x)",
+  "paper_section": "§Sup. Table S2 step 20",
+  "paper_quote": "20  σ(x)    K=6    1 / eml(-x, exp(-1))",
+  "informal_pl": "Sigmoid logistyczny σ(x) = 1/(1+e^{-x}); przepis EML wykorzystuje identyczność eml(-x, e^{-1}) = e^{-x}+1.",
+  "informal_en": "Logistic sigmoid σ(x) = 1/(1+e^{-x}); EML recipe uses identity eml(-x, e^{-1}) = e^{-x}+1.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_sigmoid : ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = 1 / (1 + Real.exp (-x)) := by sorry",
+  "depends_on": [
+    "022_emlterm_e_witness",
+    "036_emlterm_for_neg_x",
+    "037_emlterm_for_inv_x"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "331e3a4e-aa91-4c8e-95aa-f6e83eb46792",
+  "submitted_at": "2026-05-02T21:06:36Z",
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 20. The EML identity eml(-x, e^{-1}) = e^{-x}+1 is the key macro. | MANUALLY SEALED 2026-04-27: pure EMLTerm₁ witness `sigmoidTerm = mkEXP(mkNEG(mkLOG(mkADD .one (mkEXP (mkNEG .var)))))`. Identity used: `σ(x) = 1/(1+exp(−x)) = exp(−log(1+exp(−x)))`. Generic combinators: `mkNEG` (chunk 036 generalized to any term, works for all reals); `mkADD` (chunk 040). Verified via `lake env lean EML/Solutions/055_emlterm_for_sigmoid_x.lean` (exit 0, no sorry)."
+}

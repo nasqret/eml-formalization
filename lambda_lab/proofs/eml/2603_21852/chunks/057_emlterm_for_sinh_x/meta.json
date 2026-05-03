@@ -1,0 +1,26 @@
+{
+  "id": "057_emlterm_for_sinh_x",
+  "title_pl": "EMLTerm₁ dla sinh(x)",
+  "title_en": "EMLTerm₁ realising sinh(x)",
+  "paper_section": "§Sup. Table S2 step 22",
+  "paper_quote": "22  sinh(x)    K=5    eml(x, exp(cosh x))",
+  "informal_pl": "Sinus hiperboliczny via tożsamość eml(x, e^{cosh x}) = exp x − cosh x.",
+  "informal_en": "Hyperbolic sine via identity eml(x, e^{cosh x}) = exp x − cosh x.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_sinh : ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = Real.sinh x := by sorry",
+  "depends_on": [
+    "023_emlterm_exp_x_witness",
+    "056_emlterm_for_cosh_x"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "a3cf1102-e6fb-48ed-858a-8ae724278055",
+  "submitted_at": "2026-05-02T21:06:39Z",
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 22. Direct EML macro: eml(x, e^{cosh x}). | MANUALLY SEALED 2026-04-27: pure EMLTerm₁ witness `sinhTerm = mkSUB(mkHALVE expxTerm, mkHALVE expnegxTerm)`. Identity used: `sinh(x) = exp(x)/2 − exp(−x)/2`. Both halves are positive so `mkSUB` precondition holds. Verified via `lake env lean EML/Solutions/057_emlterm_for_sinh_x.lean` (exit 0, no sorry)."
+}

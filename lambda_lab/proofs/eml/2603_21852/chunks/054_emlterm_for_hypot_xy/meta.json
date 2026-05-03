@@ -1,0 +1,27 @@
+{
+  "id": "054_emlterm_for_hypot_xy",
+  "title_pl": "EMLTerm₂ dla hypot(x,y)",
+  "title_en": "EMLTerm₂ realising hypot(x, y)",
+  "paper_section": "§Sup. Table S2 step 19",
+  "paper_quote": "19  hypot(x,y)    K=6    √(x² + y²)",
+  "informal_pl": "Hipotenuza prostokątnego trójkąta o przyprostokątnych x, y. Świadek to złożenie sq + add + sqrt; x, y > 0.",
+  "informal_en": "Right-triangle hypotenuse of legs x, y. Witness composes sq + add + sqrt; needs x, y > 0.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Pow.Real"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_hypot : ∃ t : EMLTerm₂, ∀ x y : ℝ, 0 < x → 0 < y → EMLTerm₂.eval x y t = Real.sqrt (x ^ 2 + y ^ 2) := by sorry",
+  "depends_on": [
+    "038_emlterm_for_sq_x",
+    "039_emlterm_for_sqrt_x",
+    "040_emlterm_for_add_xy"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "68a2a337-7a25-45c3-9559-85ee846449e5",
+  "submitted_at": "2026-05-02T22:20:34Z",
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 19. Inherits chunk-039's permanent-sorry risk (139-node sqrt tree). | MANUALLY SEALED 2026-04-27: pure EMLTerm₂ witness via substitution into chunk-042's `pow_term`. Construction: `subst pow_term sumSqTerm half_term` where sumSqTerm = mkADD(mkSQ varX, mkSQ varY) (chunk 040 + 038 trick) and half_term is a closed EMLTerm₂ evaluating to 1/2 (chunk 033 lifted). Identity used: `√(x²+y²) = (x²+y²)^(1/2)`. Verified via `lake env lean EML/Solutions/054_emlterm_for_hypot_xy.lean` (exit 0, no sorry)."
+}

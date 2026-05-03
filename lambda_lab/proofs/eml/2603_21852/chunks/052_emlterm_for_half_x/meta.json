@@ -1,0 +1,25 @@
+{
+  "id": "052_emlterm_for_half_x",
+  "title_pl": "EMLTerm₁ dla x/2 (half)",
+  "title_en": "EMLTerm₁ realising x / 2",
+  "paper_section": "§Sup. Table S2 step 13",
+  "paper_quote": "13  x/2    K=2    x × (1/2)",
+  "informal_pl": "Funkcja half: x ↦ x/2 = x · (1/2). Świadek to 1-zmienny term; wymaga x>0 (mnożenie via chunk 041).",
+  "informal_en": "Function half: x ↦ x/2 = x · (1/2). Witness is a one-variable term; requires x>0 (multiplication via chunk 041).",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_half : ∃ t : EMLTerm₁, ∀ x : ℝ, 0 < x → EMLTerm₁.eval x t = x / 2 := by sorry",
+  "depends_on": [
+    "033_emlterm_for_half",
+    "041_emlterm_for_mul_xy"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "3f187a65-9e23-44e6-9d35-7d74d1da62dc",
+  "submitted_at": "2026-05-02T21:06:31Z",
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 13. Stepping-stone for chunks 051 (avg) and 061 (artanh). | MANUALLY SEALED 2026-04-27: pure EMLTerm₁ witness `halfXTerm = mkEXP(logDiffTerm)` where `logDiffTerm` evaluates to `log x − log 2` via chunk 050's `(x+y) − log y` / `(x+y) − log x` trick (with y := 2 closed term). Identity used: `x/2 = exp(log x − log 2)`. Verified via `lake env lean EML/Solutions/052_emlterm_for_half_x.lean` (exit 0, no sorry)."
+}
