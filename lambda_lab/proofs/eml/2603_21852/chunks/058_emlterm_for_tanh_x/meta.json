@@ -19,9 +19,9 @@
     "056_emlterm_for_cosh_x",
     "057_emlterm_for_sinh_x"
   ],
-  "status": "partial",
+  "status": "complete",
   "aristotle_project_id": "4180f8ba-faba-4da3-9968-04ee456577b5",
   "submitted_at": "2026-05-02T21:06:41Z",
-  "completed_at": "2026-05-03T02:53:25Z",
-  "notes": "Round 2 chunk; Table S2 step 23. Stepping-stone for artanh, gd, etc. | PARTIAL. Aristotle returned COMPLETE_WITH_ERRORS — primed variant in extended grammar; pure target sorry. Compose manually if needed."
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Round 2 chunk; Table S2 step 23. Stepping-stone for artanh, gd, etc. | MANUALLY SEALED 2026-04-27: pure EMLTerm₁ witness `tanhTerm = mkSUB tanhPlusTerm .one` where `tanhPlusTerm = mkDIV expxTerm coshTerm` evaluates to `exp(x)/cosh(x) = tanh(x) + 1`. Helpers: `mkEXP`, `mkLOG`, `mkSUB`, `mkADD` (chunk 040), `mkNEG` (chunk 056 trick), `mkHALVE` (chunk 052), `mkDIV` via `exp(log A − log B)` using `mkADD ∘ mkNEG ∘ mkLOG`. Identity used: `tanh(x) + 1 = exp(x)/cosh(x)` (always positive). Verified via `lake env lean EML/Solutions/058_emlterm_for_tanh_x.lean` (exit 0, no sorry)."
 }

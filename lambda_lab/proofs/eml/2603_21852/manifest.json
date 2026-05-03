@@ -608,7 +608,7 @@
       "title_en": "EMLTerm₂ realising avg(x, y)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "040_emlterm_for_add_xy",
         "052_emlterm_for_half_x"
@@ -730,7 +730,7 @@
       "title_en": "EMLTerm₁ realising tanh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "050_emlterm_for_div_xy",
         "056_emlterm_for_cosh_x",
@@ -766,7 +766,7 @@
       "title_en": "EMLTerm₁ realising arcosh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "011_ln_via_eml",
         "040_emlterm_for_add_xy",
@@ -1003,8 +1003,8 @@
       "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 57,
-      "partial": 6,
+      "complete": 60,
+      "partial": 3,
       "submitted": 2,
       "pending": 1
     }

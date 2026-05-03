@@ -20,5 +20,5 @@
   "aristotle_project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
   "submitted_at": "2026-05-02T22:20:36Z",
   "completed_at": "2026-05-03T02:53:25Z",
-  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar). | PARTIAL. Aristotle returned COMPLETE_WITH_ERRORS — primed variant; pure EMLTermℂ target sorry."
+  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar). | PARTIAL — STRUCTURAL BLOCKER (verified 2026-04-27): the target requires `(EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x` for all real x, but the EMLTermℂ₁ grammar only has `one`, `var = (x:ℂ)`, and `eml(t,u) = exp(eval t) − Complex.log(eval u)`. With purely real input z = (x:ℂ), every intermediate value has imaginary part that is a constant (multiple of π from log of negative reals) — never linear in x. Hence `Re(eval x t)` is never a periodic function of x, so cannot equal cos(x). The paper's `cosh(i·x)` recipe needs multiplication by i (chunk 035 builds the constant i but cannot multiply it by var), which is not a primitive. Aristotle's primed variant `EMLTermℂ₁'` adds `imI` and `mul`; the pure-grammar target stays sorry."
 }
