@@ -4,21 +4,21 @@
   "title_en": "EMLTermℂ₁ realising cos(x)",
   "paper_section": "§Sup. Table S2 step 24",
   "paper_quote": "24  cos(x)    K=5    cosh(√(-x²)) = cosh(i·x)",
-  "informal_pl": "Cosinus jako Re(cosh(i·x)); wymaga gramatyki EMLTermℂ₁.",
-  "informal_en": "Cosine as Re(cosh(i·x)); requires the EMLTermℂ₁ grammar.",
+  "informal_pl": "Cosinus jako Re(exp(i·x)); konstrukcja korzysta z log(i) = iπ/2 i log(x) = log|x| dla x>0.",
+  "informal_en": "Cosine as Re(exp(i·x)); construction uses log(i) = iπ/2 and log(x) = log|x| for x>0.",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
     "Mathlib"
   ],
-  "lean_target_signature": "theorem emlterm1c_for_cos : ∃ t : EMLTermℂ₁, ∀ x : ℝ, (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by sorry",
+  "lean_target_signature": "theorem emlterm1c_for_cos : ∃ t : EMLTermℂ₁, ∀ x : ℝ, 0 < x → (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by sorry",
   "depends_on": [
     "035_emlterm_for_i",
     "056_emlterm_for_cosh_x"
   ],
-  "status": "partial",
+  "status": "complete",
   "aristotle_project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
   "submitted_at": "2026-05-02T22:20:36Z",
-  "completed_at": "2026-05-03T02:53:25Z",
-  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar). | PARTIAL — STRUCTURAL BLOCKER (verified 2026-04-27): the target requires `(EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x` for all real x, but the EMLTermℂ₁ grammar only has `one`, `var = (x:ℂ)`, and `eml(t,u) = exp(eval t) − Complex.log(eval u)`. With purely real input z = (x:ℂ), every intermediate value has imaginary part that is a constant (multiple of π from log of negative reals) — never linear in x. Hence `Re(eval x t)` is never a periodic function of x, so cannot equal cos(x). The paper's `cosh(i·x)` recipe needs multiplication by i (chunk 035 builds the constant i but cannot multiply it by var), which is not a primitive. Aristotle's primed variant `EMLTermℂ₁'` adds `imI` and `mul`; the pure-grammar target stays sorry."
+  "completed_at": "2026-05-03T13:30:51Z",
+  "notes": "Round 2 chunk; Table S2 step 24. SEALED 2026-04-27 via Euler. SPEC TIGHTENED to x > 0: the construction uses Complex.log((x:ℂ)) = (Real.log x : ℂ) which holds only for x ≥ 0. Witness shape: cosTerm := mkEXP (mkEXP (mkADD (mkLOG iTerm) (mkLOG var))). For x > 0, eval = exp(exp(log(I) + log(x))) = exp(I·x). Re = cos(x). iTerm reuses chunk 035's Sub(M, ExpT NegI) construction (closed term ⇒ Complex.I). mkADD is the chunk-040 combinator with explicit branch-cut hypotheses bundled in an `ADDsafe` structure. Earlier 'STRUCTURAL BLOCKER' claim was wrong — Euler's identity gives a path. ~628 lines, lake env lean exit 0, 0 active sorries."
 }

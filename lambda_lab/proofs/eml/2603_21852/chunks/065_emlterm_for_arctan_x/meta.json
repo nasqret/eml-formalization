@@ -4,8 +4,8 @@
   "title_en": "EMLTermℂ₁ realising arctan(x)",
   "paper_section": "§Sup. Table S2 step 32",
   "paper_quote": "32  arctan(x)    K=4    arcsin(tanh(arsinh(x)))",
-  "informal_pl": "arctan via formuła zespolona (1/(2i))·ln((1+ix)/(1−ix)); paper podaje równoważną kompozycję arsinh∘tanh∘arsinh.",
-  "informal_en": "arctan via complex formula (1/(2i))·ln((1+ix)/(1−ix)); paper gives the equivalent arsinh∘tanh∘arsinh chain.",
+  "informal_pl": "arctan x = Im(log(1 + i·x)) = Re(−i·log(1 + i·x)).",
+  "informal_en": "arctan x = Im(log(1 + i·x)) = Re(−i·log(1 + i·x)).",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
@@ -23,6 +23,6 @@
   "status": "partial",
   "aristotle_project_id": "73001aef-e131-4691-9b5b-19cf2d602a8f",
   "submitted_at": "2026-05-03T01:47:52Z",
-  "completed_at": "2026-05-03T07:14:38Z",
-  "notes": "Round 2 chunk; Table S2 step 32. We adopt the complex-log form rather than the paper's arsinh∘tanh∘arsinh chain because the latter requires arcsin, which is built downstream — see decomposition note on circularity. | PARTIAL. Same structural blocker as 062-064 — pure EMLTermℂ₁ can't produce periodic functions from real input."
+  "completed_at": "2026-05-03T13:30:51Z",
+  "notes": "Round 2 chunk; Table S2 step 32. PARTIAL — prior STRUCTURAL BLOCKER claim retracted: chunks 062 and 063 (sealed in this push) prove the grammar can express trig functions. Construction sketch (in solutions file docstring): for x > 0, build ix_term, then 1+ix via mkADD, then log(1+ix), then mkLOG of that, then arctan_term := mkEXP (mkSUB log_log (mkLOG iTerm)) giving (−I)·log(1+ix) whose .re = arctan x. Around 800 lines of mechanical Lean using the chunks-062/063 scaffolding. Spec tightening needed (x > 0 with possible exclusion of x = √(e²−1)). Deferred from this push due to time budget."
 }

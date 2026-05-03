@@ -4,8 +4,8 @@
   "title_en": "EMLTermℂ₁ realising arccos(x)",
   "paper_section": "§Sup. Table S2 step 29",
   "paper_quote": "29  arccos(x)    K=4    arcosh(cos(arcosh(x)))",
-  "informal_pl": "arccos x = π/2 − arcsin x; recepta paper'a (arcosh∘cos∘arcosh) jest równoważna ale wymaga arcosh poza [1,∞).",
-  "informal_en": "arccos x = π/2 − arcsin x; paper's arcosh∘cos∘arcosh recipe is equivalent but extends arcosh outside [1,∞).",
+  "informal_pl": "arccos x = -i·log(x + i·√(1−x²)); konstrukcja na (-1,1).",
+  "informal_en": "arccos x = -i·log(x + i·√(1−x²)); construction on (-1,1).",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
@@ -21,6 +21,6 @@
   "status": "partial",
   "aristotle_project_id": "4e691c8f-979b-41dd-8c18-a2001771fb66",
   "submitted_at": "2026-05-03T01:47:55Z",
-  "completed_at": "2026-05-03T07:55:28Z",
-  "notes": "Round 2 chunk; Table S2 step 29. RECIPE ADJUSTMENT: paper writes arccos = arcosh(cos(arcosh x)) but that demands arcosh on the unit interval (outside its real domain [1,∞)). We adopt arccos = π/2 − arcsin, breaking the circularity from chunk 066's note. Inherits chunk 034's permanent-sorry risk. | PARTIAL. Cancelled after 6h+ at 18% (same structural blocker as 062/063/064/065 — pure EMLTermℂ₁ cannot produce periodic functions from purely real input). Resolvable only by extending the grammar."
+  "completed_at": "2026-05-03T13:30:51Z",
+  "notes": "Round 2 chunk; Table S2 step 29. PARTIAL — prior STRUCTURAL BLOCKER claim retracted (see 062/063 sealed in this push). Construction sketch (in solutions file docstring): build sqrt_one_minus_sq via chunk-039 sqrt lifted to ℂ, then i_times_sqrt = mkEXP(mkADD(mkLOG iTerm)(mkLOG sqrt_one_minus_sq)), then x_plus_iSqrt = mkADD(.var)(i_times_sqrt) with modulus 1 in upper half-plane, then mkLOG gives i·arccos(x), then arccos_term := mkEXP(mkSUB(mkLOG of that)(mkLOG iTerm)) extracts arccos(x) as the real part. Around 1500 lines of mechanical Lean. Deferred from this push due to time budget."
 }

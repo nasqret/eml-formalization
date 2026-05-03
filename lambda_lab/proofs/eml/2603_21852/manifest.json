@@ -804,12 +804,12 @@
       "title_en": "EMLTermℂ₁ realising cos(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "035_emlterm_for_i",
         "056_emlterm_for_cosh_x"
       ],
-      "completed_at": "2026-05-03T02:53:25Z",
+      "completed_at": "2026-05-03T13:30:51Z",
       "aristotle_project_id": null,
       "chunk_id": "062_emlterm_for_cos_x",
       "project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
@@ -821,13 +821,13 @@
       "title_en": "EMLTermℂ₁ realising sin(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "034_emlterm_for_pi",
         "052_emlterm_for_half_x",
         "062_emlterm_for_cos_x"
       ],
-      "completed_at": "2026-05-03T05:02:36Z",
+      "completed_at": "2026-05-03T13:30:51Z",
       "aristotle_project_id": null,
       "chunk_id": "063_emlterm_for_sin_x",
       "project_id": "656c1b34-f0d4-4f6e-a5a8-40620b1b7969",

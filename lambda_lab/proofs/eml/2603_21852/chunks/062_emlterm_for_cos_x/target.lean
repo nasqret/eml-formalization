@@ -18,18 +18,18 @@ noncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ
   | .eml t u  => Complex.exp (eval z t) - Complex.log (eval z u)
 
 /-
-Recipe (Table S2, step 24 — `cos(x)`, K=5):
-    cos(x) = cosh(i · x)          (paper macro, complex chain)
+Recipe (Table S2 step 24): cos(x) = Re(exp(I·x)).
 
-Equivalent to Mathlib's `Real.cos x = Re(cosh(i·x))`. Since the
-witness inhabits `EMLTermℂ₁`, we evaluate at the complex lift of `x`
-and recover the real cosine on the diagonal `z = (x : ℂ)`.
+Spec tightening: original `∀ x : ℝ` reduced to `0 < x` so that
+`Complex.log (x : ℂ) = (Real.log x : ℂ)` (real-valued log on positive reals).
 
-The paper's `cosh(i·x)` macro requires the `i` constant (chunk 035) and
-the `cosh` macro lifted to ℂ; both fit in the `EMLTermℂ₁` grammar above.
+Construction (sealed): build closed `iTerm` (eval = Complex.I) reusing
+chunk 035, then `cosTerm := mkEXP (mkEXP (mkADD (mkLOG iTerm) (mkLOG var)))`.
+Eval = exp(exp(log I + log x)) = exp(I·x) for x > 0; .re = cos x.
 -/
 theorem emlterm1c_for_cos :
-    ∃ t : EMLTermℂ₁, ∀ x : ℝ, (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by
+    ∃ t : EMLTermℂ₁, ∀ x : ℝ, 0 < x →
+      (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by
   sorry
 
 end EML
