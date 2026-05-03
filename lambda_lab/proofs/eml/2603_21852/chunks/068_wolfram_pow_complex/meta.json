@@ -18,9 +18,9 @@
     "034_emlterm_for_pi",
     "035_emlterm_for_i"
   ],
-  "status": "pending",
-  "aristotle_project_id": null,
-  "submitted_at": null,
-  "completed_at": null,
-  "notes": "Round 2 chunk; broader claim from §1.4 of the supplement. Branch-cut bookkeeping is the chief obstacle. Inherits chunks 034/035 permanent-sorry risks."
+  "status": "complete",
+  "aristotle_project_id": "fa212881-5b96-4d00-b5a4-39a42d19f3f4",
+  "submitted_at": "2026-05-03T01:47:56Z",
+  "completed_at": "2026-05-03T03:39:58Z",
+  "notes": "Round 2 chunk; broader claim from §1.4 of the supplement. Branch-cut bookkeeping is the chief obstacle. Inherits chunks 034/035 permanent-sorry risks. | Aristotle returned the proof in WolframCalc3.lean (separate file in archive); extracted manually. Verified clean (no sorry)."
 }

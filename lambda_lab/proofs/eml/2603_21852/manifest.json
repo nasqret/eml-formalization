@@ -748,13 +748,13 @@
       "title_en": "EMLTerm₁ realising arsinh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "complete",
       "depends_on": [
         "011_ln_via_eml",
         "040_emlterm_for_add_xy",
         "054_emlterm_for_hypot_xy"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T03:39:58Z",
       "aristotle_project_id": null,
       "chunk_id": "059_emlterm_for_arsinh_x",
       "project_id": "274547c5-23e9-4cda-8321-83e40d1f8351",
@@ -766,14 +766,14 @@
       "title_en": "EMLTerm₁ realising arcosh(x)",
       "kind": "theorem",
       "difficulty": 4,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "011_ln_via_eml",
         "040_emlterm_for_add_xy",
         "054_emlterm_for_hypot_xy",
         "059_emlterm_for_arsinh_x"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T03:39:58Z",
       "aristotle_project_id": null,
       "chunk_id": "060_emlterm_for_arcosh_x",
       "project_id": "5c1f557c-e6b0-4f62-b8a8-98ca2ace30b4",
@@ -904,14 +904,14 @@
       "title_en": "Wolfram → Calc 3 (complex, full pow)",
       "kind": "calculator-equivalence",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "022_emlterm_e_witness",
         "024_wolfram_to_calc3",
         "034_emlterm_for_pi",
         "035_emlterm_for_i"
       ],
-      "completed_at": null,
+      "completed_at": "2026-05-03T03:39:58Z",
       "aristotle_project_id": null
     },
     {
@@ -991,8 +991,9 @@
       "chunk_id": "068_wolfram_pow_complex",
       "project_id": "fa212881-5b96-4d00-b5a4-39a42d19f3f4",
       "submitted_at": "2026-05-03T01:47:56Z",
-      "status": "submitted",
-      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Generalises chunk 024: Wolfram → Calc 3 reduction with full pow in ℂ; pow a b = exp(b·log a) on the principal branch.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 024 (Wolfram → Calc 3 over ℝ) to the *complex* domain,\nadmitting the FULL `pow` constructor with no positivity precondition on\nthe base. The complex Calc3 v"
+      "status": "complete",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Generalises chunk 024: Wolfram → Calc 3 reduction with full pow in ℂ; pow a b = exp(b·log a) on the principal branch.\n\nimport Mathlib\n\nnamespace EML\n\n/-\nGeneralises chunk 024 (Wolfram → Calc 3 over ℝ) to the *complex* domain,\nadmitting the FULL `pow` constructor with no positivity precondition on\nthe base. The complex Calc3 v",
+      "completed_at": "2026-05-03T03:39:58Z"
     },
     {
       "chunk_id": "069_universal_minimality",
@@ -1019,10 +1020,10 @@
       "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 55,
-      "submitted": 9,
-      "partial": 2,
-      "pending": 5
+      "complete": 58,
+      "submitted": 6,
+      "partial": 3,
+      "pending": 4
     }
   }
 }

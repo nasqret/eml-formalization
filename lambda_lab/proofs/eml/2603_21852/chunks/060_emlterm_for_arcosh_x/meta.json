@@ -21,9 +21,9 @@
     "054_emlterm_for_hypot_xy",
     "059_emlterm_for_arsinh_x"
   ],
-  "status": "submitted",
+  "status": "partial",
   "aristotle_project_id": "5c1f557c-e6b0-4f62-b8a8-98ca2ace30b4",
   "submitted_at": "2026-05-02T22:20:33Z",
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 28. Paper's recipe via complex i diverges from the strictly-real Lean form; we adopt textbook ln(x+√(x²-1)) under x ≥ 1."
+  "completed_at": "2026-05-03T03:39:58Z",
+  "notes": "Round 2 chunk; Table S2 step 28. Paper's recipe via complex i diverges from the strictly-real Lean form; we adopt textbook ln(x+√(x²-1)) under x ≥ 1. | PARTIAL. Aristotle returned COMPLETE_WITH_ERRORS — primed variant; pure target sorry."
 }
