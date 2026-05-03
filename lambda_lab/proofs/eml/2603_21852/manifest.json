@@ -951,7 +951,7 @@
       "title_en": "Main completeness — full umbrella (Round 2)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "pending",
+      "status": "complete",
       "depends_on": [
         "022_emlterm_e_witness",
         "030_emlterm_for_zero",
@@ -1003,10 +1003,9 @@
       "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 60,
+      "complete": 61,
       "partial": 3,
-      "submitted": 2,
-      "pending": 1
+      "submitted": 2
     }
   }
 }

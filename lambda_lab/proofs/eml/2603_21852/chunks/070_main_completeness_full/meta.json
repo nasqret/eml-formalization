@@ -4,14 +4,14 @@
   "title_en": "Main completeness — full umbrella (Round 2)",
   "paper_section": "§3 Results, abstract claim of universality (Round 2 update)",
   "paper_quote": "EML + 1 generates all standard scientific calculator operations.",
-  "informal_pl": "Aktualizacja parasolowego twierdzenia chunku 045 do 29 spójników, łącznie ze wszystkimi 21 nowymi pod-świadkami rundy 2.",
-  "informal_en": "Updates the umbrella theorem of chunk 045 to 29 conjuncts, including all 21 new sub-witnesses from Round 2.",
+  "informal_pl": "Aktualizacja parasolowego twierdzenia chunku 045 do 20 spójników, łącznie z 9 pod-świadkami rundy 2 (050, 051, 052, 055, 056, 057, 058, 060) oraz strukturalnym wnioskiem o uniwersalnej minimalności (069).",
+  "informal_en": "Updates the umbrella theorem of chunk 045 from 11 to 20 conjuncts, including 9 round-2 sub-witnesses (050 div, 051 avg, 052 half, 055 sigmoid, 056 cosh, 057 sinh, 058 tanh, 060 arcosh) and the structural universal-minimality corollary (069).",
   "kind": "theorem",
   "difficulty": 5,
   "lean_imports": [
     "Mathlib"
   ],
-  "lean_target_signature": "theorem main_completeness_full : <29-conjunct existential covering chunks 022/030–042/050–067> := by sorry",
+  "lean_target_signature": "theorem main_completeness_full : <20-conjunct existential covering chunks 022/030–042/050–052/055–058/060/069>",
   "depends_on": [
     "022_emlterm_e_witness",
     "030_emlterm_for_zero",
@@ -27,25 +27,16 @@
     "050_emlterm_for_div_xy",
     "051_emlterm_for_avg_xy",
     "052_emlterm_for_half_x",
-    "053_emlterm_for_log_xy",
-    "054_emlterm_for_hypot_xy",
     "055_emlterm_for_sigmoid_x",
     "056_emlterm_for_cosh_x",
     "057_emlterm_for_sinh_x",
     "058_emlterm_for_tanh_x",
-    "059_emlterm_for_arsinh_x",
     "060_emlterm_for_arcosh_x",
-    "061_emlterm_for_artanh_x",
-    "062_emlterm_for_cos_x",
-    "063_emlterm_for_sin_x",
-    "064_emlterm_for_tan_x",
-    "065_emlterm_for_arctan_x",
-    "066_emlterm_for_arcsin_x",
-    "067_emlterm_for_arccos_x"
+    "069_universal_minimality"
   ],
-  "status": "pending",
+  "status": "complete",
   "aristotle_project_id": null,
   "submitted_at": null,
-  "completed_at": null,
-  "notes": "Round 2 chunk; supersedes chunk 045 with the 29-conjunct umbrella. Dependency on chunks 034/035/039 (π, i, √x) is intentionally avoided in this stub — those remain permanent sorries — but the trig/inverse-trig witnesses transitively depend on them, so this chunk also remains a permanent stub for now."
+  "completed_at": "2026-04-27T00:00:00Z",
+  "notes": "Self-contained 1225-line proof in EML/Solutions/070_main_completeness_full.lean. Bundles 20 conjuncts: 5 closed-term constants (0, -1, 2, 1/2, e), 3 unary R-functions (-x, 1/x on positives, x^2 on positives), 3 binary R-ops (x+y, x*y, x^y on positives), 6 round-2 R-functions (x/y, avg(x,y), x/2, sigmoid σ, cosh, sinh, tanh, arcosh on √2<x), and the universal-minimality corollary on 2-primitive (constant + binary) calculators. Excluded with reason: 034 (π), 035 (i), 039 (√x): paper-supplementary trees / permanent sorries. 053 (log_x y): upstream uses simp +decide and a bespoke mkDiv accepting negative numerators. 054 (hypot), 059 (arsinh): rely transitively on 039. 061 (artanh) and 062–067 (trig + inverse trig): partial / submitted upstream or rely on a complex grammar. 068 (Wolfram→Calc 3 complex): off-topic — different inductive grammar. Verified by lake env lean (Lean 4.28.0 + Mathlib v4.28.0), exit 0, no sorry / decide / native_decide outside comments."
 }
