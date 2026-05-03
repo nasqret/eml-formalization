@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 380" font-family="'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-25 0 985 380" font-family="'Helvetica Neue', Arial, sans-serif">
   <style>
     .axis  { stroke:#222; stroke-width:1.4; fill:none; }
     .tick  { stroke:#222; stroke-width:1; }
