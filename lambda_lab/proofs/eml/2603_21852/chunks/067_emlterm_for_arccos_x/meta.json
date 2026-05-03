@@ -18,9 +18,9 @@
     "052_emlterm_for_half_x",
     "066_emlterm_for_arcsin_x"
   ],
-  "status": "pending",
-  "aristotle_project_id": null,
-  "submitted_at": null,
-  "completed_at": null,
-  "notes": "Round 2 chunk; Table S2 step 29. RECIPE ADJUSTMENT: paper writes arccos = arcosh(cos(arcosh x)) but that demands arcosh on the unit interval (outside its real domain [1,∞)). We adopt arccos = π/2 − arcsin, breaking the circularity from chunk 066's note. Inherits chunk 034's permanent-sorry risk."
+  "status": "partial",
+  "aristotle_project_id": "4e691c8f-979b-41dd-8c18-a2001771fb66",
+  "submitted_at": "2026-05-03T01:47:55Z",
+  "completed_at": "2026-05-03T07:55:28Z",
+  "notes": "Round 2 chunk; Table S2 step 29. RECIPE ADJUSTMENT: paper writes arccos = arcosh(cos(arcosh x)) but that demands arcosh on the unit interval (outside its real domain [1,∞)). We adopt arccos = π/2 − arcsin, breaking the circularity from chunk 066's note. Inherits chunk 034's permanent-sorry risk. | PARTIAL. Cancelled after 6h+ at 18% (same structural blocker as 062/063/064/065 — pure EMLTermℂ₁ cannot produce periodic functions from purely real input). Resolvable only by extending the grammar."
 }

@@ -897,7 +897,7 @@
       "title_en": "EMLTermℂ₁ realising arccos(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "submitted",
+      "status": "partial",
       "depends_on": [
         "034_emlterm_for_pi",
         "040_emlterm_for_add_xy",
@@ -1004,8 +1004,7 @@
     },
     "by_status": {
       "complete": 61,
-      "partial": 4,
-      "submitted": 1
+      "partial": 5
     }
   }
 }
