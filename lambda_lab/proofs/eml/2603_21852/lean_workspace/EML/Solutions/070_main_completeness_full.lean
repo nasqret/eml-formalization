@@ -19,9 +19,16 @@ Conjuncts skipped (with reason):
   forces `1 < y` — narrower than the upstream `0 < y`.  Dropped to keep
   the umbrella honest.
 * 054 (hypot), 059 (arsinh): rely on √x, hence on 039.
-* 061 (artanh), 062–067 (trig + inverse trig): either marked
-  `partial` / `submitted` upstream or rely on a complex grammar that
-  does not produce a clean real witness in this restricted language.
+* 061 (artanh): marked `partial` upstream.
+* 062 (cos), 063 (sin), 064 (tan), 065 (arctan), 066 (arcsin), 067
+  (arccos): live in the COMPLEX `EMLTermℂ₁` grammar, not the real
+  `EMLTerm₁` grammar bundled here. Chunks 062 and 063 carry actual
+  EMLTermℂ₁ witnesses (sealed via Euler / iπ-shift); chunks 064, 065,
+  066, 067 expose closed-form complex-log identities (the math
+  content the EMLTermℂ₁ witness would prove). Inlining the ~700-line
+  EMLTermℂ₁ scaffolding from 062/063 into this umbrella was deferred
+  to keep this file at a manageable size; downstream work can import
+  those Solutions files directly to access the witnesses.
 * 068 (Wolfram → Calc 3 complex): off-topic for the umbrella; uses a
   different inductive grammar.
 -/

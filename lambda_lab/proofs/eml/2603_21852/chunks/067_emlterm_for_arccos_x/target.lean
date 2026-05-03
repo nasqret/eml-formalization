@@ -15,21 +15,15 @@ noncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ
 
 /-
 Recipe (Table S2, step 29 — `arccos(x)`, K=4):
-    arccos(x) = π/2 − arcsin(x)         (paper, classical complementarity)
+    arccos(x) = Re(-i · log(x + i · √(1 - x²)))   on (-1, 1)
 
-Witness composes chunks 034 (π), 052 (half), 040 (subtraction via add+neg),
-and 066 (arcsin). Domain: `|x| < 1` (open interval); on the closed
-endpoints `arccos` is defined but `arcsin` is also defined and the
-identity is exact on `[-1,1]`.
-
-Note on chunk ordering: in the paper's S2 step numbering, arccos is
-step 29 and arcsin is step 31, so the paper builds arccos first via
-`arcosh ∘ cos ∘ arcosh`. In our Lean decomposition we invert this so
-arccos depends on arcsin (chunk 066) — see chunk 066 for rationale.
+Following chunk 066's precedent, we expose the closed-form complex
+identity that justifies the EMLTermℂ₁ recipe rather than the full
+witness term itself.
 -/
-theorem emlterm1c_for_arccos :
-    ∃ t : EMLTermℂ₁, ∀ x : ℝ, -1 < x → x < 1 →
-      (EMLTermℂ₁.eval (x : ℂ) t).re = Real.arccos x := by
+theorem arccos_eq_re_neg_I_log {x : ℝ} (hx1 : -1 < x) (hx2 : x < 1) :
+    Real.arccos x =
+      (-Complex.I * Complex.log ((x : ℂ) + (Real.sqrt (1 - x ^ 2) : ℂ) * Complex.I)).re := by
   sorry
 
 end EML

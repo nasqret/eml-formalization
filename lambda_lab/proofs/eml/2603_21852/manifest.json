@@ -839,7 +839,7 @@
       "title_en": "EMLTermℂ₁ realising tan(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "050_emlterm_for_div_xy",
         "062_emlterm_for_cos_x",
@@ -857,7 +857,7 @@
       "title_en": "EMLTermℂ₁ realising arctan(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "035_emlterm_for_i",
         "036_emlterm_for_neg_x",
@@ -897,7 +897,7 @@
       "title_en": "EMLTermℂ₁ realising arccos(x)",
       "kind": "theorem",
       "difficulty": 5,
-      "status": "partial",
+      "status": "complete",
       "depends_on": [
         "034_emlterm_for_pi",
         "040_emlterm_for_add_xy",

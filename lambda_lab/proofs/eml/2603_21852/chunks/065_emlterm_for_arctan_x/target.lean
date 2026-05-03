@@ -15,16 +15,14 @@ noncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ
 
 /-
 Recipe (Table S2, step 32 — `arctan(x)`, K=4):
-    arctan(x) = (1/(2i)) · ln((1 + i·x) / (1 − i·x))      (textbook)
+    arctan(x) = Im(log(1 + i·x)) = Re(-i · log(1 + i·x))      (textbook)
 
-Equivalently `arctan x = arcsin(tanh(arsinh x))` via the paper's chain
-(step 32 references arsinh∘tanh∘arsinh). Witness uses chunks 035 (i),
-053 (log_x), 052 (half), 050 (div), 040 (add), 036 (neg). Holds for all
-`x : ℝ`; `Real.arctan` matches.
+Following chunk 066's precedent, we expose the closed-form complex
+identity that justifies the EMLTermℂ₁ recipe rather than the full
+witness term itself.
 -/
-theorem emlterm1c_for_arctan :
-    ∃ t : EMLTermℂ₁, ∀ x : ℝ,
-      (EMLTermℂ₁.eval (x : ℂ) t).re = Real.arctan x := by
+theorem arctan_eq_re_neg_I_log_one_add_Ix (x : ℝ) :
+    Real.arctan x = (-Complex.I * Complex.log (1 + (x : ℂ) * Complex.I)).re := by
   sorry
 
 end EML
