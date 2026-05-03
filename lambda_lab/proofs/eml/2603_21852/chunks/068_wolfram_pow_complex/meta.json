@@ -1,0 +1,26 @@
+{
+  "id": "068_wolfram_pow_complex",
+  "title_pl": "Wolfram → Calc 3 (zespolony, pełny pow)",
+  "title_en": "Wolfram → Calc 3 (complex, full pow)",
+  "paper_section": "§3 Results, Table 2 + §1 Sup. complex extension",
+  "paper_quote": "Wolfram set {π, e, i, ln, +, ×, ∧}; complex extension admits full pow and the imaginary unit.",
+  "informal_pl": "Generalizacja chunku 024: redukcja Wolfram → Calc 3 z pełnym pow w ℂ; pow a b = exp(b·log a) na głównej gałęzi.",
+  "informal_en": "Generalises chunk 024: Wolfram → Calc 3 reduction with full pow in ℂ; pow a b = exp(b·log a) on the principal branch.",
+  "kind": "calculator-equivalence",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem wolframℂ_to_calc3ℂ (e : Wolframℂ) : ∀ z : ℂ, z ≠ 0 → ∃ e' : Calc3ℂ, Calc3ℂ.eval z e' = Wolframℂ.eval z e := by sorry",
+  "depends_on": [
+    "022_emlterm_e_witness",
+    "024_wolfram_to_calc3",
+    "034_emlterm_for_pi",
+    "035_emlterm_for_i"
+  ],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Round 2 chunk; broader claim from §1.4 of the supplement. Branch-cut bookkeeping is the chief obstacle. Inherits chunks 034/035 permanent-sorry risks."
+}

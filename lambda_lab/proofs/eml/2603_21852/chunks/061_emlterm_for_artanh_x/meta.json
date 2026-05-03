@@ -1,0 +1,28 @@
+{
+  "id": "061_emlterm_for_artanh_x",
+  "title_pl": "EMLTerm₁ dla artanh(x)",
+  "title_en": "EMLTerm₁ realising artanh(x)",
+  "paper_section": "§Sup. Table S2 step 30",
+  "paper_quote": "30  artanh(x)    K=5    arsinh(1/tan(arccos(x)))",
+  "informal_pl": "artanh x = (1/2) ln((1+x)/(1-x)) dla |x|<1; postać textbookowa zamiast paperowej kompozycji arsinh∘tan⁻¹∘arccos.",
+  "informal_en": "artanh x = (1/2) ln((1+x)/(1-x)) for |x|<1; textbook form instead of the paper's arsinh∘1/tan∘arccos composition.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_artanh : ∃ t : EMLTerm₁, ∀ x : ℝ, -1 < x → x < 1 → EMLTerm₁.eval x t = Real.artanh x := by sorry",
+  "depends_on": [
+    "011_ln_via_eml",
+    "040_emlterm_for_add_xy",
+    "050_emlterm_for_div_xy",
+    "052_emlterm_for_half_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "cc872678-e444-4493-ae5d-8211c5d5ecb9",
+  "submitted_at": "2026-05-02T22:20:28Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 30. Adopt textbook form to avoid the paper's arccos detour."
+}

@@ -1,0 +1,23 @@
+{
+  "id": "069_universal_minimality",
+  "title_pl": "Uniwersalna minimalność (rozszerzenie chunku 029)",
+  "title_en": "Universal minimality (strengthening of chunk 029)",
+  "paper_section": "§3 Results, Table 2 closing remark (open extension)",
+  "paper_quote": "No calculator with strictly fewer than three primitives suffices.",
+  "informal_pl": "Każda konfiguracja {stała + funkcja n-arna} (n ∈ {1,2}) nie wyraża identyczności jako funkcji jednej zmiennej; ewaluacja każdego zamkniętego termu jest stała.",
+  "informal_en": "Every {constant + n-ary function} configuration (n ∈ {1,2}) fails to express the identity as a function of one variable; every closed term evaluates to a constant.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem two_prim_cannot_represent_identity (c : ℝ) (op : ℝ → ℝ → ℝ) : ¬ ∃ t : TwoPrimCalc, ∀ x : ℝ, TwoPrimCalc.eval c op t = x := by sorry",
+  "depends_on": [
+    "029_eml_minimality"
+  ],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Round 2 chunk; generalises chunk 029. The target file states two theorems (binary and unary variants); main theorem is two_prim_cannot_represent_identity, the unary variant follows the same shape."
+}

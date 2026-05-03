@@ -1,0 +1,25 @@
+{
+  "id": "063_emlterm_for_sin_x",
+  "title_pl": "EMLTermℂ₁ dla sin(x)",
+  "title_en": "EMLTermℂ₁ realising sin(x)",
+  "paper_section": "§Sup. Table S2 step 25",
+  "paper_quote": "25  sin(x)    K=5    cos(x - π/2)",
+  "informal_pl": "sin x = cos(x − π/2); świadek to przesunięty świadek z chunku 062.",
+  "informal_en": "sin x = cos(x − π/2); witness is chunk 062's witness with a variable shift.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem emlterm1c_for_sin : ∃ t : EMLTermℂ₁, ∀ x : ℝ, (EMLTermℂ₁.eval (x : ℂ) t).re = Real.sin x := by sorry",
+  "depends_on": [
+    "034_emlterm_for_pi",
+    "052_emlterm_for_half_x",
+    "062_emlterm_for_cos_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "656c1b34-f0d4-4f6e-a5a8-40620b1b7969",
+  "submitted_at": "2026-05-02T22:20:38Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 25. Inherits chunk 034's permanent-sorry risk."
+}

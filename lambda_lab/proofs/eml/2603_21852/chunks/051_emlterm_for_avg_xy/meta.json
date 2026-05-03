@@ -1,0 +1,25 @@
+{
+  "id": "051_emlterm_for_avg_xy",
+  "title_pl": "EMLTerm₂ dla avg(x,y)",
+  "title_en": "EMLTerm₂ realising avg(x, y)",
+  "paper_section": "§Sup. Table S2 step 14",
+  "paper_quote": "14  avg(x,y)    K=5    half(x + y)",
+  "informal_pl": "Średnia arytmetyczna (x+y)/2; świadek to złożenie chunków 040 (dodawanie) i 052 (half).",
+  "informal_en": "Arithmetic mean (x+y)/2; witness composes chunk 040 (addition) with chunk 052 (half).",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_avg : ∃ t : EMLTerm₂, ∀ x y : ℝ, EMLTerm₂.eval x y t = (x + y) / 2 := by sorry",
+  "depends_on": [
+    "040_emlterm_for_add_xy",
+    "052_emlterm_for_half_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "54ab71d2-7c33-47a8-bd64-549f9850a82a",
+  "submitted_at": "2026-05-02T21:06:32Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 14. Composition `half ∘ add` may require positivity bookkeeping when x+y ≤ 0; the paper-level identity is unconditional."
+}

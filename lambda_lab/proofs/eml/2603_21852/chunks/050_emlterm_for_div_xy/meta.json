@@ -1,0 +1,25 @@
+{
+  "id": "050_emlterm_for_div_xy",
+  "title_pl": "EMLTerm₂ dla x / y",
+  "title_en": "EMLTerm₂ realising x / y",
+  "paper_section": "§Sup. Table S2 step 12",
+  "paper_quote": "12  x/y    K=4    x × inv(y)",
+  "informal_pl": "Istnieje 2-zmienny term EML ewaluujący do x/y dla x,y>0. Świadek to kompozycja chunków 041 (x·y) i 037 (1/y) zgodnie z Tabelą S2 (x/y := x · (1/y)).",
+  "informal_en": "There exists a two-variable EML term evaluating to x/y for x,y>0. The witness composes chunk 041 (x·y) with chunk 037 (1/y) following Table S2 (x/y := x · (1/y)).",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_div : ∃ t : EMLTerm₂, ∀ x y : ℝ, 0 < x → 0 < y → EMLTerm₂.eval x y t = x / y := by sorry",
+  "depends_on": [
+    "037_emlterm_for_inv_x",
+    "041_emlterm_for_mul_xy"
+  ],
+  "status": "complete",
+  "aristotle_project_id": "306b0f53-ab50-4970-8934-88cfd9a6338b",
+  "submitted_at": "2026-05-02T21:06:29Z",
+  "completed_at": "2026-05-03T01:30:18Z",
+  "notes": "Round 2 chunk; Table S2 step 12. Positivity preserved via the underlying mul/inv witnesses. | RESOLVED. Aristotle returned a clean proof. Verified."
+}

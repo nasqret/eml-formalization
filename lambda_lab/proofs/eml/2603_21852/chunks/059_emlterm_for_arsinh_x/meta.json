@@ -1,0 +1,28 @@
+{
+  "id": "059_emlterm_for_arsinh_x",
+  "title_pl": "EMLTerm₁ dla arsinh(x)",
+  "title_en": "EMLTerm₁ realising arsinh(x)",
+  "paper_section": "§Sup. Table S2 step 27",
+  "paper_quote": "27  arsinh(x)    K=6    ln(x + hypot(-1, x))",
+  "informal_pl": "arsinh x = ln(x + √(x²+1)); składa hypot, add, ln. Wymagamy x>0 z powodu chunku 054.",
+  "informal_en": "arsinh x = ln(x + √(x²+1)); composes hypot, add, ln. Restricted to x>0 by chunk 054's hypothesis.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_arsinh : ∃ t : EMLTerm₁, ∀ x : ℝ, 0 < x → EMLTerm₁.eval x t = Real.arsinh x := by sorry",
+  "depends_on": [
+    "011_ln_via_eml",
+    "040_emlterm_for_add_xy",
+    "054_emlterm_for_hypot_xy"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "274547c5-23e9-4cda-8321-83e40d1f8351",
+  "submitted_at": "2026-05-02T22:20:31Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 27. Inherits chunk 054 (hypot)'s permanent-sorry risk."
+}

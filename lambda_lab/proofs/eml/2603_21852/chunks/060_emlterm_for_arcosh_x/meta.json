@@ -1,0 +1,29 @@
+{
+  "id": "060_emlterm_for_arcosh_x",
+  "title_pl": "EMLTerm₁ dla arcosh(x)",
+  "title_en": "EMLTerm₁ realising arcosh(x)",
+  "paper_section": "§Sup. Table S2 step 28",
+  "paper_quote": "28  arcosh(x)    K=5    arsinh(hypot(x, √(-1)))",
+  "informal_pl": "arcosh x = ln(x + √(x²-1)) dla x ≥ 1. Paper używa hypot z √(-1); my dla domeny rzeczywistej stosujemy bezpośrednio postać podręcznikową.",
+  "informal_en": "arcosh x = ln(x + √(x²-1)) for x ≥ 1. Paper uses hypot with √(-1); for the real domain we use the textbook form directly.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Pow.Real",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_arcosh : ∃ t : EMLTerm₁, ∀ x : ℝ, 1 ≤ x → EMLTerm₁.eval x t = Real.arcosh x := by sorry",
+  "depends_on": [
+    "011_ln_via_eml",
+    "040_emlterm_for_add_xy",
+    "054_emlterm_for_hypot_xy",
+    "059_emlterm_for_arsinh_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "5c1f557c-e6b0-4f62-b8a8-98ca2ace30b4",
+  "submitted_at": "2026-05-02T22:20:33Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 28. Paper's recipe via complex i diverges from the strictly-real Lean form; we adopt textbook ln(x+√(x²-1)) under x ≥ 1."
+}

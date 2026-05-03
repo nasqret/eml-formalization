@@ -1,0 +1,24 @@
+{
+  "id": "062_emlterm_for_cos_x",
+  "title_pl": "EMLTermℂ₁ dla cos(x)",
+  "title_en": "EMLTermℂ₁ realising cos(x)",
+  "paper_section": "§Sup. Table S2 step 24",
+  "paper_quote": "24  cos(x)    K=5    cosh(√(-x²)) = cosh(i·x)",
+  "informal_pl": "Cosinus jako Re(cosh(i·x)); wymaga gramatyki EMLTermℂ₁.",
+  "informal_en": "Cosine as Re(cosh(i·x)); requires the EMLTermℂ₁ grammar.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem emlterm1c_for_cos : ∃ t : EMLTermℂ₁, ∀ x : ℝ, (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by sorry",
+  "depends_on": [
+    "035_emlterm_for_i",
+    "056_emlterm_for_cosh_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
+  "submitted_at": "2026-05-02T22:20:36Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 24. Introduces EMLTermℂ₁ (one-variable complex EML grammar)."
+}

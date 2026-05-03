@@ -1,0 +1,26 @@
+{
+  "id": "067_emlterm_for_arccos_x",
+  "title_pl": "EMLTermℂ₁ dla arccos(x)",
+  "title_en": "EMLTermℂ₁ realising arccos(x)",
+  "paper_section": "§Sup. Table S2 step 29",
+  "paper_quote": "29  arccos(x)    K=4    arcosh(cos(arcosh(x)))",
+  "informal_pl": "arccos x = π/2 − arcsin x; recepta paper'a (arcosh∘cos∘arcosh) jest równoważna ale wymaga arcosh poza [1,∞).",
+  "informal_en": "arccos x = π/2 − arcsin x; paper's arcosh∘cos∘arcosh recipe is equivalent but extends arcosh outside [1,∞).",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem emlterm1c_for_arccos : ∃ t : EMLTermℂ₁, ∀ x : ℝ, -1 < x → x < 1 → (EMLTermℂ₁.eval (x : ℂ) t).re = Real.arccos x := by sorry",
+  "depends_on": [
+    "034_emlterm_for_pi",
+    "040_emlterm_for_add_xy",
+    "052_emlterm_for_half_x",
+    "066_emlterm_for_arcsin_x"
+  ],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 29. RECIPE ADJUSTMENT: paper writes arccos = arcosh(cos(arcosh x)) but that demands arcosh on the unit interval (outside its real domain [1,∞)). We adopt arccos = π/2 − arcsin, breaking the circularity from chunk 066's note. Inherits chunk 034's permanent-sorry risk."
+}

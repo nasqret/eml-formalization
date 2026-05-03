@@ -1,0 +1,25 @@
+{
+  "id": "064_emlterm_for_tan_x",
+  "title_pl": "EMLTermℂ₁ dla tan(x)",
+  "title_en": "EMLTermℂ₁ realising tan(x)",
+  "paper_section": "§Sup. Table S2 step 26",
+  "paper_quote": "26  tan(x)    K=5    sin x / cos x",
+  "informal_pl": "tan x = sin x / cos x; warunek cos x ≠ 0.",
+  "informal_en": "tan x = sin x / cos x; needs cos x ≠ 0.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem emlterm1c_for_tan : ∃ t : EMLTermℂ₁, ∀ x : ℝ, Real.cos x ≠ 0 → (EMLTermℂ₁.eval (x : ℂ) t).re = Real.tan x := by sorry",
+  "depends_on": [
+    "050_emlterm_for_div_xy",
+    "062_emlterm_for_cos_x",
+    "063_emlterm_for_sin_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "6d82e14e-be0f-4850-90bf-241d2ea42730",
+  "submitted_at": "2026-05-02T22:20:39Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 26."
+}

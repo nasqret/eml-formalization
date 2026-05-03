@@ -1,0 +1,28 @@
+{
+  "id": "065_emlterm_for_arctan_x",
+  "title_pl": "EMLTermℂ₁ dla arctan(x)",
+  "title_en": "EMLTermℂ₁ realising arctan(x)",
+  "paper_section": "§Sup. Table S2 step 32",
+  "paper_quote": "32  arctan(x)    K=4    arcsin(tanh(arsinh(x)))",
+  "informal_pl": "arctan via formuła zespolona (1/(2i))·ln((1+ix)/(1−ix)); paper podaje równoważną kompozycję arsinh∘tanh∘arsinh.",
+  "informal_en": "arctan via complex formula (1/(2i))·ln((1+ix)/(1−ix)); paper gives the equivalent arsinh∘tanh∘arsinh chain.",
+  "kind": "theorem",
+  "difficulty": 5,
+  "lean_imports": [
+    "Mathlib"
+  ],
+  "lean_target_signature": "theorem emlterm1c_for_arctan : ∃ t : EMLTermℂ₁, ∀ x : ℝ, (EMLTermℂ₁.eval (x : ℂ) t).re = Real.arctan x := by sorry",
+  "depends_on": [
+    "035_emlterm_for_i",
+    "036_emlterm_for_neg_x",
+    "040_emlterm_for_add_xy",
+    "050_emlterm_for_div_xy",
+    "052_emlterm_for_half_x",
+    "053_emlterm_for_log_xy"
+  ],
+  "status": "pending",
+  "aristotle_project_id": null,
+  "submitted_at": null,
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 32. We adopt the complex-log form rather than the paper's arsinh∘tanh∘arsinh chain because the latter requires arcsin, which is built downstream — see decomposition note on circularity."
+}

@@ -1,0 +1,27 @@
+{
+  "id": "058_emlterm_for_tanh_x",
+  "title_pl": "EMLTerm₁ dla tanh(x)",
+  "title_en": "EMLTerm₁ realising tanh(x)",
+  "paper_section": "§Sup. Table S2 step 23",
+  "paper_quote": "23  tanh(x)    K=5    sinh x / cosh x",
+  "informal_pl": "Tangens hiperboliczny jako iloraz sinh/cosh; bezpieczny dla każdego x.",
+  "informal_en": "Hyperbolic tangent as ratio sinh/cosh; safe for every x.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic",
+    "Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm1_for_tanh : ∃ t : EMLTerm₁, ∀ x : ℝ, EMLTerm₁.eval x t = Real.tanh x := by sorry",
+  "depends_on": [
+    "050_emlterm_for_div_xy",
+    "056_emlterm_for_cosh_x",
+    "057_emlterm_for_sinh_x"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "4180f8ba-faba-4da3-9968-04ee456577b5",
+  "submitted_at": "2026-05-02T21:06:41Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 23. Stepping-stone for artanh, gd, etc."
+}

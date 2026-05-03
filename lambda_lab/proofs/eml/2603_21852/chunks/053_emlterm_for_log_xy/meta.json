@@ -1,0 +1,25 @@
+{
+  "id": "053_emlterm_for_log_xy",
+  "title_pl": "EMLTerm₂ dla log_x y",
+  "title_en": "EMLTerm₂ realising log_x y",
+  "paper_section": "§Sup. Table S2 step 17",
+  "paper_quote": "17  log_x y    K=5    ln y / ln x",
+  "informal_pl": "Logarytm o dowolnej podstawie. Świadek to dzielenie ln y przez ln x; wymaga x>1, y>0.",
+  "informal_en": "Arbitrary-base logarithm. Witness divides ln y by ln x; requires x>1, y>0.",
+  "kind": "theorem",
+  "difficulty": 4,
+  "lean_imports": [
+    "Mathlib.Analysis.SpecialFunctions.Exp",
+    "Mathlib.Analysis.SpecialFunctions.Log.Basic"
+  ],
+  "lean_target_signature": "theorem emlterm2_for_log : ∃ t : EMLTerm₂, ∀ x y : ℝ, 1 < x → 0 < y → EMLTerm₂.eval x y t = Real.log y / Real.log x := by sorry",
+  "depends_on": [
+    "011_ln_via_eml",
+    "050_emlterm_for_div_xy"
+  ],
+  "status": "submitted",
+  "aristotle_project_id": "11aba8b5-73b3-41b7-96c1-bd48644621a9",
+  "submitted_at": "2026-05-02T21:06:34Z",
+  "completed_at": null,
+  "notes": "Round 2 chunk; Table S2 step 17. Stepping-stone for chunks 059 (arsinh) and 061 (artanh)."
+}

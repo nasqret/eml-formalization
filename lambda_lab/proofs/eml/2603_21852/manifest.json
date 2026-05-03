@@ -585,25 +585,408 @@
       "completed_at": "2026-05-01T23:59:56Z",
       "aristotle_project_id": null,
       "notes": "11-conjunct existential umbrella: 0, -1, 2, 1/2, e, -x, 1/x (x>0), x^2 (x>0), x+y, x*y (x,y>0), x^y (x,y>0). Self-contained 514-line proof in EML/Solutions/045_main_completeness_stub.lean. Excludes π/i/√x (permanent sorries)."
+    },
+    {
+      "id": "050_emlterm_for_div_xy",
+      "title_en": "EMLTerm₂ realising x / y",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "complete",
+      "depends_on": [
+        "037_emlterm_for_inv_x",
+        "041_emlterm_for_mul_xy"
+      ],
+      "completed_at": "2026-05-03T01:30:18Z",
+      "aristotle_project_id": null,
+      "chunk_id": "050_emlterm_for_div_xy",
+      "project_id": "306b0f53-ab50-4970-8934-88cfd9a6338b",
+      "submitted_at": "2026-05-02T21:06:29Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: There exists a two-variable EML term evaluating to x/y for x,y>0. The witness composes chunk 041 (x·y) with chunk 037 (1/y) following Table S2 (x/y := x · (1/y)).\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- Two-variable EML term grammar (lifted from chun"
+    },
+    {
+      "id": "051_emlterm_for_avg_xy",
+      "title_en": "EMLTerm₂ realising avg(x, y)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "040_emlterm_for_add_xy",
+        "052_emlterm_for_half_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "051_emlterm_for_avg_xy",
+      "project_id": "54ab71d2-7c33-47a8-bd64-549f9850a82a",
+      "submitted_at": "2026-05-02T21:06:32Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Arithmetic mean (x+y)/2; witness composes chunk 040 (addition) with chunk 052 (half).\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- Two-variable EML term grammar (lifted from chunk 041). -/\ninductive EMLTerm₂ : Type\n  | one  : EMLTerm₂\n  | varX : EMLTerm₂\n"
+    },
+    {
+      "id": "052_emlterm_for_half_x",
+      "title_en": "EMLTerm₁ realising x / 2",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "partial",
+      "depends_on": [
+        "033_emlterm_for_half",
+        "041_emlterm_for_mul_xy"
+      ],
+      "completed_at": "2026-05-03T01:30:18Z",
+      "aristotle_project_id": null,
+      "chunk_id": "052_emlterm_for_half_x",
+      "project_id": "3f187a65-9e23-44e6-9d35-7d74d1da62dc",
+      "submitted_at": "2026-05-02T21:06:31Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Function half: x ↦ x/2 = x · (1/2). Witness is a one-variable term; requires x>0 (multiplication via chunk 041).\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- One-variable EML term grammar (lifted from chunk 023). -/\ninductive EMLTerm₁ : Type\n  | one : EML"
+    },
+    {
+      "id": "053_emlterm_for_log_xy",
+      "title_en": "EMLTerm₂ realising log_x y",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "011_ln_via_eml",
+        "050_emlterm_for_div_xy"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "053_emlterm_for_log_xy",
+      "project_id": "11aba8b5-73b3-41b7-96c1-bd48644621a9",
+      "submitted_at": "2026-05-02T21:06:34Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Arbitrary-base logarithm. Witness divides ln y by ln x; requires x>1, y>0.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- Two-variable EML term grammar. -/\ninductive EMLTerm₂ : Type\n  | one  : EMLTerm₂\n  | varX : EMLTerm₂\n  | varY : EMLTerm₂\n  | eml  : EMLT"
+    },
+    {
+      "id": "054_emlterm_for_hypot_xy",
+      "title_en": "EMLTerm₂ realising hypot(x, y)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "partial",
+      "depends_on": [
+        "038_emlterm_for_sq_x",
+        "039_emlterm_for_sqrt_x",
+        "040_emlterm_for_add_xy"
+      ],
+      "completed_at": "2026-05-03T01:31:54Z",
+      "aristotle_project_id": null,
+      "chunk_id": "054_emlterm_for_hypot_xy",
+      "project_id": "68a2a337-7a25-45c3-9559-85ee846449e5",
+      "submitted_at": "2026-05-02T22:20:34Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Right-triangle hypotenuse of legs x, y. Witness composes sq + add + sqrt; needs x, y > 0.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow.Real\n\nnamespace EML\n\n/-- Two-variable EML term grammar. -/\ninductive EMLTerm₂ : Type\n  | one  :"
+    },
+    {
+      "id": "055_emlterm_for_sigmoid_x",
+      "title_en": "EMLTerm₁ realising σ(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "partial",
+      "depends_on": [
+        "022_emlterm_e_witness",
+        "036_emlterm_for_neg_x",
+        "037_emlterm_for_inv_x"
+      ],
+      "completed_at": "2026-05-03T01:30:18Z",
+      "aristotle_project_id": null,
+      "chunk_id": "055_emlterm_for_sigmoid_x",
+      "project_id": "331e3a4e-aa91-4c8e-95aa-f6e83eb46792",
+      "submitted_at": "2026-05-02T21:06:36Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Logistic sigmoid σ(x) = 1/(1+e^{-x}); EML recipe uses identity eml(-x, e^{-1}) = e^{-x}+1.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\n\nnamespace EML\n\n/-- One-variable EML term grammar. -/\ninductive EMLTerm₁ : Type\n  | one : EMLTerm₁\n  | var : EMLTerm₁\n  | eml : EMLTerm₁ → "
+    },
+    {
+      "id": "056_emlterm_for_cosh_x",
+      "title_en": "EMLTerm₁ realising cosh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "partial",
+      "depends_on": [
+        "023_emlterm_exp_x_witness",
+        "036_emlterm_for_neg_x",
+        "051_emlterm_for_avg_xy"
+      ],
+      "completed_at": "2026-05-03T01:30:18Z",
+      "aristotle_project_id": null,
+      "chunk_id": "056_emlterm_for_cosh_x",
+      "project_id": "0e3d36d9-8b0b-4a25-a9d1-eaa3e269a5fa",
+      "submitted_at": "2026-05-02T21:06:37Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Hyperbolic cosine via average of exp x and exp(-x); identity holds for every x.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\n\nnamespace EML\n\n/-- One-variable EML term grammar. -/\ninductive EMLTerm₁ : Type\n  | one :"
+    },
+    {
+      "id": "057_emlterm_for_sinh_x",
+      "title_en": "EMLTerm₁ realising sinh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "partial",
+      "depends_on": [
+        "023_emlterm_exp_x_witness",
+        "056_emlterm_for_cosh_x"
+      ],
+      "completed_at": "2026-05-03T01:30:18Z",
+      "aristotle_project_id": null,
+      "chunk_id": "057_emlterm_for_sinh_x",
+      "project_id": "a3cf1102-e6fb-48ed-858a-8ae724278055",
+      "submitted_at": "2026-05-02T21:06:39Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Hyperbolic sine via identity eml(x, e^{cosh x}) = exp x − cosh x.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\n\nnamespace EML\n\ninductive EMLTerm₁ : Type\n  | one : EMLTerm₁\n  | var : EMLTerm₁\n  | eml : EMLTerm₁ → EM"
+    },
+    {
+      "id": "058_emlterm_for_tanh_x",
+      "title_en": "EMLTerm₁ realising tanh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "050_emlterm_for_div_xy",
+        "056_emlterm_for_cosh_x",
+        "057_emlterm_for_sinh_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "058_emlterm_for_tanh_x",
+      "project_id": "4180f8ba-faba-4da3-9968-04ee456577b5",
+      "submitted_at": "2026-05-02T21:06:41Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Hyperbolic tangent as ratio sinh/cosh; safe for every x.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic\n\nnamespace EML\n\ninductive EMLTerm₁ : Type\n  | one : EMLTerm₁\n  | var : EMLTerm₁\n  | eml : EMLTerm₁ → EMLTerm₁ → "
+    },
+    {
+      "id": "059_emlterm_for_arsinh_x",
+      "title_en": "EMLTerm₁ realising arsinh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "011_ln_via_eml",
+        "040_emlterm_for_add_xy",
+        "054_emlterm_for_hypot_xy"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "059_emlterm_for_arsinh_x",
+      "project_id": "274547c5-23e9-4cda-8321-83e40d1f8351",
+      "submitted_at": "2026-05-02T22:20:31Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: arsinh x = ln(x + √(x²+1)); composes hypot, add, ln. Restricted to x>0 by chunk 054's hypothesis.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow.Real\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse\n\nnamespace EML\n\nind"
+    },
+    {
+      "id": "060_emlterm_for_arcosh_x",
+      "title_en": "EMLTerm₁ realising arcosh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "011_ln_via_eml",
+        "040_emlterm_for_add_xy",
+        "054_emlterm_for_hypot_xy",
+        "059_emlterm_for_arsinh_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "060_emlterm_for_arcosh_x",
+      "project_id": "5c1f557c-e6b0-4f62-b8a8-98ca2ace30b4",
+      "submitted_at": "2026-05-02T22:20:33Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: arcosh x = ln(x + √(x²-1)) for x ≥ 1. Paper uses hypot with √(-1); for the real domain we use the textbook form directly.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Pow.Real\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Inv"
+    },
+    {
+      "id": "061_emlterm_for_artanh_x",
+      "title_en": "EMLTerm₁ realising artanh(x)",
+      "kind": "theorem",
+      "difficulty": 4,
+      "status": "submitted",
+      "depends_on": [
+        "011_ln_via_eml",
+        "040_emlterm_for_add_xy",
+        "050_emlterm_for_div_xy",
+        "052_emlterm_for_half_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "061_emlterm_for_artanh_x",
+      "project_id": "cc872678-e444-4493-ae5d-8211c5d5ecb9",
+      "submitted_at": "2026-05-02T22:20:28Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: artanh x = (1/2) ln((1+x)/(1-x)) for |x|<1; textbook form instead of the paper's arsinh∘1/tan∘arccos composition.\n\nimport Mathlib.Analysis.SpecialFunctions.Exp\nimport Mathlib.Analysis.SpecialFunctions.Log.Basic\nimport Mathlib.Analysis.SpecialFunctions.Trigonometric.Inverse\n\nnamespace EML\n\ninductive EMLTerm₁ : Type\n  | one : E"
+    },
+    {
+      "id": "062_emlterm_for_cos_x",
+      "title_en": "EMLTermℂ₁ realising cos(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "submitted",
+      "depends_on": [
+        "035_emlterm_for_i",
+        "056_emlterm_for_cosh_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "062_emlterm_for_cos_x",
+      "project_id": "8346c1aa-cec1-45a6-893d-f9893ad7711b",
+      "submitted_at": "2026-05-02T22:20:36Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: Cosine as Re(cosh(i·x)); requires the EMLTermℂ₁ grammar.\n\nimport Mathlib\n\nnamespace EML\n\n/-- Complex-valued EML term grammar with a single distinguished variable.\nModelled on `EMLTermℂ` of chunk 034 and the parameterised `EMLTerm₁` of\nchunk 023. -/\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : E"
+    },
+    {
+      "id": "063_emlterm_for_sin_x",
+      "title_en": "EMLTermℂ₁ realising sin(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "submitted",
+      "depends_on": [
+        "034_emlterm_for_pi",
+        "052_emlterm_for_half_x",
+        "062_emlterm_for_cos_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "063_emlterm_for_sin_x",
+      "project_id": "656c1b34-f0d4-4f6e-a5a8-40620b1b7969",
+      "submitted_at": "2026-05-02T22:20:38Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: sin x = cos(x − π/2); witness is chunk 062's witness with a variable shift.\n\nimport Mathlib\n\nnamespace EML\n\n/-- Complex-valued one-variable EML term grammar (cf. chunk 062). -/\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : EMLTermℂ₁ → EMLTermℂ₁ → EMLTermℂ₁\n  deriving Repr\n\nnoncomputable def EMLT"
+    },
+    {
+      "id": "064_emlterm_for_tan_x",
+      "title_en": "EMLTermℂ₁ realising tan(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "submitted",
+      "depends_on": [
+        "050_emlterm_for_div_xy",
+        "062_emlterm_for_cos_x",
+        "063_emlterm_for_sin_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null,
+      "chunk_id": "064_emlterm_for_tan_x",
+      "project_id": "6d82e14e-be0f-4850-90bf-241d2ea42730",
+      "submitted_at": "2026-05-02T22:20:39Z",
+      "prompt": "Prove this Lean theorem against Lean 4.28.0 + Mathlib v4.28.0.\n\nContext: tan x = sin x / cos x; needs cos x ≠ 0.\n\nimport Mathlib\n\nnamespace EML\n\ninductive EMLTermℂ₁ : Type\n  | one : EMLTermℂ₁\n  | var : EMLTermℂ₁\n  | eml : EMLTermℂ₁ → EMLTermℂ₁ → EMLTermℂ₁\n  deriving Repr\n\nnoncomputable def EMLTermℂ₁.eval (z : ℂ) : EMLTermℂ₁ → ℂ\n  | .one      => 1\n  | .var      => z\n  | .eml t u  => Complex.exp (ev"
+    },
+    {
+      "id": "065_emlterm_for_arctan_x",
+      "title_en": "EMLTermℂ₁ realising arctan(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "035_emlterm_for_i",
+        "036_emlterm_for_neg_x",
+        "040_emlterm_for_add_xy",
+        "050_emlterm_for_div_xy",
+        "052_emlterm_for_half_x",
+        "053_emlterm_for_log_xy"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
+    },
+    {
+      "id": "066_emlterm_for_arcsin_x",
+      "title_en": "EMLTermℂ₁ realising arcsin(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "038_emlterm_for_sq_x",
+        "039_emlterm_for_sqrt_x",
+        "050_emlterm_for_div_xy",
+        "065_emlterm_for_arctan_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
+    },
+    {
+      "id": "067_emlterm_for_arccos_x",
+      "title_en": "EMLTermℂ₁ realising arccos(x)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "034_emlterm_for_pi",
+        "040_emlterm_for_add_xy",
+        "052_emlterm_for_half_x",
+        "066_emlterm_for_arcsin_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
+    },
+    {
+      "id": "068_wolfram_pow_complex",
+      "title_en": "Wolfram → Calc 3 (complex, full pow)",
+      "kind": "calculator-equivalence",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "022_emlterm_e_witness",
+        "024_wolfram_to_calc3",
+        "034_emlterm_for_pi",
+        "035_emlterm_for_i"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
+    },
+    {
+      "id": "069_universal_minimality",
+      "title_en": "Universal minimality (strengthening of chunk 029)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "029_eml_minimality"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
+    },
+    {
+      "id": "070_main_completeness_full",
+      "title_en": "Main completeness — full umbrella (Round 2)",
+      "kind": "theorem",
+      "difficulty": 5,
+      "status": "pending",
+      "depends_on": [
+        "022_emlterm_e_witness",
+        "030_emlterm_for_zero",
+        "031_emlterm_for_neg_one",
+        "032_emlterm_for_two",
+        "033_emlterm_for_half",
+        "036_emlterm_for_neg_x",
+        "037_emlterm_for_inv_x",
+        "038_emlterm_for_sq_x",
+        "040_emlterm_for_add_xy",
+        "041_emlterm_for_mul_xy",
+        "042_emlterm_for_pow_xy",
+        "050_emlterm_for_div_xy",
+        "051_emlterm_for_avg_xy",
+        "052_emlterm_for_half_x",
+        "053_emlterm_for_log_xy",
+        "054_emlterm_for_hypot_xy",
+        "055_emlterm_for_sigmoid_x",
+        "056_emlterm_for_cosh_x",
+        "057_emlterm_for_sinh_x",
+        "058_emlterm_for_tanh_x",
+        "059_emlterm_for_arsinh_x",
+        "060_emlterm_for_arcosh_x",
+        "061_emlterm_for_artanh_x",
+        "062_emlterm_for_cos_x",
+        "063_emlterm_for_sin_x",
+        "064_emlterm_for_tan_x",
+        "065_emlterm_for_arctan_x",
+        "066_emlterm_for_arcsin_x",
+        "067_emlterm_for_arccos_x"
+      ],
+      "completed_at": null,
+      "aristotle_project_id": null
     }
   ],
   "stats": {
-    "total_chunks": 45,
+    "total_chunks": 66,
     "by_difficulty": {
       "1": 11,
       "2": 10,
       "3": 6,
-      "4": 7,
-      "5": 11
+      "4": 19,
+      "5": 20
     },
     "by_kind": {
       "definition": 7,
       "identity": 12,
-      "theorem": 20,
-      "calculator-equivalence": 6
+      "theorem": 40,
+      "calculator-equivalence": 7
     },
     "by_status": {
-      "complete": 45
+      "complete": 46,
+      "submitted": 9,
+      "partial": 5,
+      "pending": 6
     }
   }
 }
