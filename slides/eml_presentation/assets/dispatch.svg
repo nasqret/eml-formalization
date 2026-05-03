@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .box     { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2; }
+    .boxA    { fill:#fbe8d3; stroke:#a37438; stroke-width:2; }
+    .boxQ    { fill:#d6e2f2; stroke:#1f3b73; stroke-width:2; }
+    .lbl     { font-size:14px; fill:#1d2e21; text-anchor:middle; }
+    .lblb    { font-size:15px; fill:#1d2e21; font-weight:700; text-anchor:middle; }
+    .arr     { stroke:#1f3b73; stroke-width:2; fill:none; marker-end:url(#m); }
+    .arr2    { stroke:#7a3a1a; stroke-width:2; fill:none; marker-end:url(#m2); stroke-dasharray:6 4; }
+    .title   { font-size:18px; font-weight:700; fill:#1d2e21; }
+  </style>
+  <defs>
+    <marker id="m"  markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0,0 L 10,5 L 0,10 z" fill="#1f3b73"/></marker>
+    <marker id="m2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0,0 L 10,5 L 0,10 z" fill="#7a3a1a"/></marker>
+  </defs>
+
+  <text x="20" y="30" class="title">Multi-agent dispatch (Claude as the coordinator)</text>
+
+  <!-- Coordinator -->
+  <rect class="box" x="380" y="60" width="200" height="60" rx="8"/>
+  <text x="480" y="86" class="lblb">Claude (orchestrator)</text>
+  <text x="480" y="106" class="lbl">manifest, queue, commits</text>
+
+  <!-- Background agents -->
+  <rect class="box" x="40"  y="180" width="180" height="50" rx="6"/>
+  <text x="130" y="210" class="lblb">Decomposition agent</text>
+  <rect class="box" x="240" y="180" width="180" height="50" rx="6"/>
+  <text x="330" y="210" class="lblb">Witness composer</text>
+  <rect class="box" x="440" y="180" width="180" height="50" rx="6"/>
+  <text x="530" y="210" class="lblb">Submission monitor</text>
+  <rect class="box" x="640" y="180" width="180" height="50" rx="6"/>
+  <text x="730" y="210" class="lblb">Mathematica probe</text>
+
+  <!-- Aristotle queue -->
+  <rect class="boxA" x="180" y="320" width="240" height="60" rx="6"/>
+  <text x="300" y="346" class="lblb">Aristotle queue</text>
+  <text x="300" y="366" class="lbl">~10 concurrent slots</text>
+
+  <!-- Lean QC -->
+  <rect class="boxQ" x="540" y="320" width="240" height="60" rx="6"/>
+  <text x="660" y="346" class="lblb">Lean QC</text>
+  <text x="660" y="366" class="lbl">lake env lean → exit 0</text>
+
+  <!-- Arrows from coordinator down -->
+  <path class="arr" d="M 430,120 L 130,180"/>
+  <path class="arr" d="M 460,120 L 330,180"/>
+  <path class="arr" d="M 500,120 L 530,180"/>
+  <path class="arr" d="M 530,120 L 730,180"/>
+
+  <!-- Arrows downward to queue / QC -->
+  <path class="arr2" d="M 530,232 L 380,320"/>
+  <path class="arr2" d="M 730,232 L 660,320"/>
+  <path class="arr2" d="M 330,232 L 660,320"/>
+
+  <!-- Loop back -->
+  <path class="arr2" d="M 300,380 Q 100,420 60,260 Q 30,120 380,90"/>
+  <path class="arr2" d="M 660,380 Q 880,420 920,260 Q 950,110 580,90"/>
+</svg>

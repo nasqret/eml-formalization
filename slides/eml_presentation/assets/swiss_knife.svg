@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .handle    { fill:#a32424; stroke:#5a0d0d; stroke-width:2; }
+    .rivet     { fill:#dadada; stroke:#444; stroke-width:1; }
+    .blade     { fill:#e8eaef; stroke:#6a6a6a; stroke-width:1.4; }
+    .blade2    { fill:#cdd2da; stroke:#5a5a5a; stroke-width:1.4; }
+    .label     { font-size:14px; fill:#222; }
+    .role      { font-size:12px; fill:#444; font-style:italic; }
+    .title     { font-size:20px; font-weight:700; fill:#222; }
+  </style>
+
+  <text x="20" y="32" class="title">A Swiss army knife for autoformalization</text>
+
+  <!-- Handle (Claude as the orchestrator) -->
+  <rect class="handle" x="160" y="240" width="640" height="80" rx="40"/>
+  <circle class="rivet" cx="220" cy="280" r="6"/>
+  <circle class="rivet" cx="500" cy="280" r="6"/>
+  <circle class="rivet" cx="780" cy="280" r="6"/>
+  <text x="480" y="288" text-anchor="middle" font-size="22" fill="#fff" font-weight="700">CLAUDE — handle (orchestration)</text>
+
+  <!-- Aristotle blade (long) -->
+  <path class="blade" d="M 200,240 L 350,90 L 380,90 L 250,240 Z"/>
+  <text x="290" y="80" text-anchor="middle" class="label" font-weight="700">Aristotle</text>
+  <text x="290" y="100" text-anchor="middle" class="role">proof blade</text>
+
+  <!-- Codex blade (medium) -->
+  <path class="blade2" d="M 350,240 L 460,140 L 490,140 L 400,240 Z"/>
+  <text x="430" y="130" text-anchor="middle" class="label" font-weight="700">Codex</text>
+  <text x="430" y="148" text-anchor="middle" class="role">quick-cut blade</text>
+
+  <!-- Mathematica precision tool -->
+  <path class="blade" d="M 510,240 L 560,150 L 600,150 L 580,240 Z"/>
+  <circle class="rivet" cx="580" cy="170" r="3"/>
+  <text x="568" y="138" text-anchor="middle" class="label" font-weight="700">Mathematica</text>
+  <text x="568" y="156" text-anchor="middle" class="role">precision tool</text>
+
+  <!-- Lean as the steel of the blade (a blade marked LEAN) -->
+  <path class="blade" d="M 620,240 L 730,90 L 770,90 L 670,240 Z"/>
+  <text x="700" y="80" text-anchor="middle" class="label" font-weight="700">Lean</text>
+  <text x="700" y="100" text-anchor="middle" class="role">the steel</text>
+
+  <!-- Human as the wielder (hand silhouette + arrow) -->
+  <g transform="translate(820,250)">
+    <path d="M 0,30 q 18,-50 50,-30 l 30,8 q 14,4 14,18 v 28 q 0,18 -18,18 h -68 q -16,0 -16,-18 z" fill="#f3d2a8" stroke="#a37438" stroke-width="1.5"/>
+    <text x="40" y="86" text-anchor="middle" class="label" font-weight="700">Human</text>
+    <text x="40" y="104" text-anchor="middle" class="role">the wielder</text>
+  </g>
+  <path d="M 805,265 L 770,275" stroke="#444" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <!-- Caption -->
+  <text x="480" y="430" text-anchor="middle" class="label">Five blades, one handle, one wielder. The proof comes out only if all of them cooperate.</text>
+</svg>

@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1320" font-family="'Helvetica Neue', Arial, sans-serif">
+  <!-- ================================================================ -->
+  <!--  AUTO-FORMALIZATION FACTORY                                       -->
+  <!--  Schematic of the production line (paper anonymized)              -->
+  <!--  Layout: top-down floor plan, no overlapping artefacts.           -->
+  <!-- ================================================================ -->
+
+  <defs>
+    <!-- floor grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#e8e4d6" stroke-width="0.7"/>
+    </pattern>
+    <pattern id="belt" width="20" height="14" patternUnits="userSpaceOnUse">
+      <rect width="20" height="14" fill="#3e3a35"/>
+      <polygon points="0,0 10,7 0,14" fill="#5a5650"/>
+      <polygon points="10,0 20,7 10,14" fill="#5a5650"/>
+    </pattern>
+
+    <linearGradient id="stationGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#dfd9c8"/>
+    </linearGradient>
+    <linearGradient id="hopperGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff8e1"/>
+      <stop offset="100%" stop-color="#e0c98a"/>
+    </linearGradient>
+    <linearGradient id="lineA" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="#cfe6ec"/>
+    </linearGradient>
+    <linearGradient id="lineB" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="#fcd7b5"/>
+    </linearGradient>
+    <linearGradient id="lineC" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff"/>
+      <stop offset="100%" stop-color="#d2e6c7"/>
+    </linearGradient>
+    <linearGradient id="qcGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffe89a"/>
+      <stop offset="100%" stop-color="#d8a845"/>
+    </linearGradient>
+
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1f2630"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a02c2c"/>
+    </marker>
+
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="2" dy="3" stdDeviation="2.5" flood-color="#000" flood-opacity="0.18"/>
+    </filter>
+
+    <!-- Native SVG icon symbols (replace color emoji glyphs that don't render
+         consistently when the SVG is rasterised by librsvg/Inkscape/etc.) -->
+    <symbol id="ic-paper" viewBox="0 0 24 24">
+      <path d="M5 2 H15 L19 6 V22 H5 Z" fill="#fff" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M15 2 V6 H19 Z" fill="#dfd9c8" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+      <line x1="8"  y1="11" x2="16" y2="11" stroke="#5a5650" stroke-width="1"/>
+      <line x1="8"  y1="14" x2="16" y2="14" stroke="#5a5650" stroke-width="1"/>
+      <line x1="8"  y1="17" x2="14" y2="17" stroke="#5a5650" stroke-width="1"/>
+    </symbol>
+    <symbol id="ic-folder" viewBox="0 0 24 24">
+      <path d="M3 8 H10 L12 10 H21 V20 H3 Z" fill="#a8c4d8" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M3 8 H10 L12 10 H21 V12 H3 Z" fill="#7ea4bd" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+    </symbol>
+    <symbol id="ic-book" viewBox="0 0 24 24">
+      <path d="M3 5 Q12 3 12 5 V20 Q12 18 3 20 Z" fill="#fff" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M21 5 Q12 3 12 5 V20 Q12 18 21 20 Z" fill="#fff" stroke="#1f2630" stroke-width="1.5" stroke-linejoin="round"/>
+      <line x1="6"  y1="9"  x2="10" y2="9"  stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="6"  y1="12" x2="10" y2="12" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="6"  y1="15" x2="10" y2="15" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="14" y1="9"  x2="18" y2="9"  stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="14" y1="12" x2="18" y2="12" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="14" y1="15" x2="18" y2="15" stroke="#5a5650" stroke-width="0.8"/>
+    </symbol>
+    <symbol id="ic-globe" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" fill="#cfe6ec" stroke="#1f2630" stroke-width="1.5"/>
+      <ellipse cx="12" cy="12" rx="4" ry="9" fill="none" stroke="#1f2630" stroke-width="1"/>
+      <line   x1="3"  y1="12" x2="21" y2="12" stroke="#1f2630" stroke-width="1"/>
+      <path d="M5 8  Q12 6  19 8"  fill="none" stroke="#1f2630" stroke-width="0.8"/>
+      <path d="M5 16 Q12 18 19 16" fill="none" stroke="#1f2630" stroke-width="0.8"/>
+    </symbol>
+    <symbol id="ic-scroll" viewBox="0 0 24 24">
+      <path d="M7 5 H19 V19 H7 Z" fill="#fff" stroke="#1f2630" stroke-width="1.5"/>
+      <ellipse cx="6" cy="5"  rx="2.4" ry="2" fill="#dfd9c8" stroke="#1f2630" stroke-width="1.5"/>
+      <ellipse cx="6" cy="19" rx="2.4" ry="2" fill="#dfd9c8" stroke="#1f2630" stroke-width="1.5"/>
+      <line x1="10" y1="9"  x2="17" y2="9"  stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="10" y1="12" x2="17" y2="12" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="10" y1="15" x2="14" y2="15" stroke="#5a5650" stroke-width="0.8"/>
+    </symbol>
+    <symbol id="ic-clipboard" viewBox="0 0 24 24">
+      <rect x="4" y="4" width="16" height="18" rx="2" fill="#fff" stroke="#1f2630" stroke-width="1.5"/>
+      <rect x="9" y="2" width="6"  height="4"  rx="1" fill="#a02c2c" stroke="#1f2630" stroke-width="1.5"/>
+      <line x1="8" y1="11" x2="16" y2="11" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="8" y1="14" x2="16" y2="14" stroke="#5a5650" stroke-width="0.8"/>
+      <line x1="8" y1="17" x2="14" y2="17" stroke="#5a5650" stroke-width="0.8"/>
+    </symbol>
+  </defs>
+
+  <!-- background + grid -->
+  <rect width="1400" height="1320" fill="#f7f5ee"/>
+  <rect width="1400" height="1320" fill="url(#grid)"/>
+
+  <!-- ================================================================ -->
+  <!-- Title                                                             -->
+  <!-- ================================================================ -->
+  <text x="700" y="50" text-anchor="middle" font-size="32" font-weight="700"
+        fill="#1f2630" letter-spacing="3">AUTO-FORMALIZATION FACTORY</text>
+  <text x="700" y="78" text-anchor="middle" font-size="13" fill="#5a5650" letter-spacing="2">
+    paper-in &#x2192; machine-checked Lean library &#x2192; reader-ready artefacts
+  </text>
+  <line x1="320" y1="92" x2="1080" y2="92" stroke="#1f2630" stroke-width="1.5"/>
+
+  <!-- ================================================================ -->
+  <!-- LEGEND (top-left, in the empty corner)                            -->
+  <!-- ================================================================ -->
+  <g transform="translate(40,130)">
+    <rect width="240" height="170" rx="6" fill="#fff" stroke="#1f2630" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="240" height="22" rx="6" fill="#1f2630"/>
+    <text x="120" y="16" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#fff" letter-spacing="2">LEGEND</text>
+    <g transform="translate(14,38)" font-size="11">
+      <rect x="0" y="0" width="14" height="14" fill="#cfe6ec" stroke="#1f2630"/>
+      <text x="22" y="11" fill="#1f2630">Aristotle (Harmonic AI)</text>
+      <rect x="0" y="22" width="14" height="14" fill="#fcd7b5" stroke="#1f2630"/>
+      <text x="22" y="33" fill="#1f2630">Mathematica (search)</text>
+      <rect x="0" y="44" width="14" height="14" fill="#d2e6c7" stroke="#1f2630"/>
+      <text x="22" y="55" fill="#1f2630">Composition (human/agent)</text>
+      <line x1="0" y1="74" x2="20" y2="74" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+      <text x="28" y="78" fill="#1f2630">solid: forward conveyor</text>
+      <line x1="0" y1="92" x2="20" y2="92" stroke="#a02c2c" stroke-width="2"
+            stroke-dasharray="6,4" marker-end="url(#arrowRed)"/>
+      <text x="28" y="96" fill="#1f2630">dashed: re-route on FAIL</text>
+      <text x="0" y="118" font-size="10" fill="#5a5650" font-style="italic">no proprietary content shown</text>
+    </g>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- CONTROL ROOM (top-right, in the empty corner)                     -->
+  <!-- ================================================================ -->
+  <g transform="translate(1120,130)">
+    <rect width="240" height="170" rx="6" fill="#fff" stroke="#1f2630" stroke-width="1.5" filter="url(#shadow)"/>
+    <rect width="240" height="22" rx="6" fill="#1f2630"/>
+    <text x="120" y="16" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#fff" letter-spacing="2">CONTROL ROOM</text>
+    <g transform="translate(14,38)" font-size="10" fill="#1f2630">
+      <text x="0" y="0" font-weight="700">REPL operator console</text>
+      <text x="0" y="13" fill="#5a5650">list / submit / watch / verify / combine</text>
+      <text x="0" y="32" font-weight="700">Bilingual i18n (PL &#x21C4; EN)</text>
+      <text x="0" y="45" fill="#5a5650">single source &#x2022; per-string locale</text>
+      <text x="0" y="64" font-weight="700">Persistence &amp; resilience</text>
+      <text x="0" y="77" fill="#5a5650">~/.local/share &#x2022; offline degrade</text>
+      <text x="0" y="90" fill="#5a5650">resumable submissions</text>
+      <text x="0" y="113" font-size="10" fill="#5a5650" font-style="italic">Lean 4.28 + Mathlib v4.28</text>
+    </g>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- INTAKE (top-center)                                                -->
+  <!-- ================================================================ -->
+  <g filter="url(#shadow)">
+    <rect x="575" y="130" width="250" height="92" rx="8" fill="#fff" stroke="#1f2630" stroke-width="2"/>
+    <rect x="575" y="130" width="250" height="22" rx="8" fill="#1f2630"/>
+    <text x="700" y="146" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#fff" letter-spacing="2">INTAKE</text>
+    <use href="#ic-paper" x="615" y="167" width="32" height="32"/>
+    <text x="710" y="186" text-anchor="middle" font-size="14" fill="#1f2630" font-weight="600">arXiv preprint</text>
+    <text x="700" y="208" text-anchor="middle" font-size="10" fill="#5a5650">PDF + HTML + supplementary</text>
+  </g>
+
+  <!-- arrow down -->
+  <line x1="700" y1="222" x2="700" y2="262" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- Station 1 -->
+  <g filter="url(#shadow)">
+    <rect x="575" y="262" width="250" height="100" rx="6" fill="url(#stationGrad)" stroke="#1f2630" stroke-width="2"/>
+    <rect x="575" y="262" width="250" height="22" rx="6" fill="#395776"/>
+    <text x="700" y="278" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#fff" letter-spacing="2">STATION 1 &#x2022; EXTRACTION</text>
+    <text x="700" y="307" text-anchor="middle" font-size="11" fill="#5a5650">&#x2022; WebFetch &#x2022; OCR &#x2022; sectioning</text>
+    <text x="700" y="324" text-anchor="middle" font-size="11" fill="#5a5650">&#x2022; identify atomic claims</text>
+    <text x="700" y="345" text-anchor="middle" font-size="10" fill="#395776" font-style="italic">paper text, numbered identities, tables</text>
+  </g>
+
+  <line x1="700" y1="362" x2="700" y2="402" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- Station 2 -->
+  <g filter="url(#shadow)">
+    <rect x="575" y="402" width="250" height="115" rx="6" fill="url(#stationGrad)" stroke="#1f2630" stroke-width="2"/>
+    <rect x="575" y="402" width="250" height="22" rx="6" fill="#395776"/>
+    <text x="700" y="418" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#fff" letter-spacing="2">STATION 2 &#x2022; DECOMPOSITION</text>
+    <text x="700" y="447" text-anchor="middle" font-size="11" fill="#5a5650">&#x2022; agent-driven chunking</text>
+    <text x="700" y="464" text-anchor="middle" font-size="11" fill="#5a5650">&#x2022; per-chunk dossier:</text>
+    <text x="700" y="481" text-anchor="middle" font-size="10" fill="#395776" font-style="italic">paper text &#x2022; Lean target &#x2022; deps</text>
+    <text x="700" y="503" text-anchor="middle" font-size="10" fill="#5a5650">dependency DAG &#x2022; bilingual</text>
+  </g>
+
+  <line x1="700" y1="517" x2="700" y2="555" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- ================================================================ -->
+  <!-- HOPPER (chunks bin)                                                -->
+  <!-- ================================================================ -->
+  <g filter="url(#shadow)">
+    <polygon points="555,555 845,555 815,680 585,680" fill="url(#hopperGrad)" stroke="#1f2630" stroke-width="2"/>
+    <text x="700" y="595" text-anchor="middle" font-size="14" font-weight="700" fill="#1f2630">CHUNKS HOPPER</text>
+    <text x="700" y="617" text-anchor="middle" font-size="11" fill="#5a5650">target.lean &#x2022; chunk.md</text>
+    <text x="700" y="633" text-anchor="middle" font-size="11" fill="#5a5650">meta.json &#x2022; deps DAG</text>
+    <text x="700" y="660" text-anchor="middle" font-size="14" font-weight="700" fill="#395776">N chunks</text>
+  </g>
+
+  <!-- chute and 3-way splitter (kept entirely between hopper and lines) -->
+  <line x1="700" y1="680" x2="700" y2="700" stroke="#1f2630" stroke-width="2.5"/>
+  <line x1="700" y1="700" x2="245" y2="700" stroke="#1f2630" stroke-width="2"/>
+  <line x1="700" y1="700" x2="1155" y2="700" stroke="#1f2630" stroke-width="2"/>
+
+  <!-- three drop arrows into the lines -->
+  <line x1="245" y1="700" x2="245" y2="745" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="700" y1="700" x2="700" y2="745" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="1155" y1="700" x2="1155" y2="745" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- ================================================================ -->
+  <!-- THREE PROCESSING LINES (clean horizontal band)                    -->
+  <!-- ================================================================ -->
+
+  <!-- LINE A: Aristotle -->
+  <g filter="url(#shadow)">
+    <rect x="60" y="745" width="370" height="180" rx="6" fill="url(#lineA)" stroke="#1f2630" stroke-width="2"/>
+    <rect x="60" y="745" width="370" height="26" rx="6" fill="#0e6b85"/>
+    <text x="245" y="763" text-anchor="middle" font-size="13" font-weight="700"
+          fill="#fff" letter-spacing="2">LINE A &#x2022; ARISTOTLE</text>
+    <text x="245" y="797" text-anchor="middle" font-size="13" fill="#1f2630" font-weight="600">Automated proof generation</text>
+    <text x="245" y="817" text-anchor="middle" font-size="11" fill="#5a5650">Harmonic AI &#x2022; cloud queue</text>
+    <rect x="80" y="838" width="330" height="22" rx="3" fill="url(#belt)"/>
+    <text x="245" y="881" text-anchor="middle" font-size="11" fill="#5a5650">submit &#x2192; queue &#x2192; proof &#x2192; archive</text>
+    <text x="245" y="902" text-anchor="middle" font-size="11" fill="#0e6b85" font-weight="600">simp &#x2022; grind &#x2022; nlinarith &#x2022; ring</text>
+  </g>
+
+  <!-- LINE B: Mathematica -->
+  <g filter="url(#shadow)">
+    <rect x="515" y="745" width="370" height="180" rx="6" fill="url(#lineB)" stroke="#1f2630" stroke-width="2"/>
+    <rect x="515" y="745" width="370" height="26" rx="6" fill="#a35825"/>
+    <text x="700" y="763" text-anchor="middle" font-size="13" font-weight="700"
+          fill="#fff" letter-spacing="2">LINE B &#x2022; MATHEMATICA</text>
+    <text x="700" y="797" text-anchor="middle" font-size="13" fill="#1f2630" font-weight="600">Symbolic tree search</text>
+    <text x="700" y="817" text-anchor="middle" font-size="11" fill="#5a5650">wolframscript &#x2022; local</text>
+    <rect x="535" y="838" width="330" height="22" rx="3" fill="url(#belt)"/>
+    <text x="700" y="881" text-anchor="middle" font-size="11" fill="#5a5650">enumerate &#x2192; numeric sieve &#x2192; verify</text>
+    <text x="700" y="902" text-anchor="middle" font-size="11" fill="#a35825" font-weight="600">witness synthesis (not proof)</text>
+  </g>
+
+  <!-- LINE C: Composition -->
+  <g filter="url(#shadow)">
+    <rect x="970" y="745" width="370" height="180" rx="6" fill="url(#lineC)" stroke="#1f2630" stroke-width="2"/>
+    <rect x="970" y="745" width="370" height="26" rx="6" fill="#3d6b35"/>
+    <text x="1155" y="763" text-anchor="middle" font-size="13" font-weight="700"
+          fill="#fff" letter-spacing="2">LINE C &#x2022; COMPOSITION</text>
+    <text x="1155" y="797" text-anchor="middle" font-size="13" fill="#1f2630" font-weight="600">Human / agent assembly</text>
+    <text x="1155" y="817" text-anchor="middle" font-size="11" fill="#5a5650">library &#x2022; umbrella &#x2022; reformulation</text>
+    <rect x="990" y="838" width="330" height="22" rx="3" fill="url(#belt)"/>
+    <text x="1155" y="881" text-anchor="middle" font-size="11" fill="#5a5650">design types &#x2022; chain witnesses</text>
+    <text x="1155" y="902" text-anchor="middle" font-size="11" fill="#3d6b35" font-weight="600">scope reductions &#x2022; complex extension</text>
+  </g>
+
+  <!-- merge from three lines down to QC -->
+  <line x1="245" y1="925" x2="245" y2="955" stroke="#1f2630" stroke-width="2"/>
+  <line x1="700" y1="925" x2="700" y2="955" stroke="#1f2630" stroke-width="2"/>
+  <line x1="1155" y1="925" x2="1155" y2="955" stroke="#1f2630" stroke-width="2"/>
+  <line x1="245" y1="955" x2="1155" y2="955" stroke="#1f2630" stroke-width="2"/>
+  <line x1="700" y1="955" x2="700" y2="985" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- ================================================================ -->
+  <!-- QUALITY CONTROL                                                    -->
+  <!-- ================================================================ -->
+  <g filter="url(#shadow)">
+    <polygon points="540,985 860,985 880,1010 860,1035 540,1035 520,1010"
+             fill="url(#qcGrad)" stroke="#1f2630" stroke-width="2"/>
+    <text x="700" y="1005" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#1f2630" letter-spacing="2">QUALITY CONTROL</text>
+    <text x="700" y="1024" text-anchor="middle" font-size="13" fill="#1f2630" font-weight="600">lake env lean</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- RE-ROUTE on FAIL — clean loop along the LEFT margin               -->
+  <!-- (goes from QC up to Decomposition's left side; nothing else there) -->
+  <!-- ================================================================ -->
+  <path d="M 540 1010 L 480 1010 L 480 460 L 575 460"
+        fill="none" stroke="#a02c2c" stroke-width="2"
+        stroke-dasharray="6,4" marker-end="url(#arrowRed)"/>
+  <text x="490" y="730" font-size="10" fill="#a02c2c" font-style="italic" transform="rotate(-90 490 730)">
+    re-route on FAIL &#x2022; spec reformulation
+  </text>
+
+  <!-- pass-through label below QC -->
+  <line x1="700" y1="1035" x2="700" y2="1075" stroke="#1f2630" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <text x="715" y="1059" font-size="10" fill="#5a5650" font-style="italic">verified</text>
+
+  <!-- ================================================================ -->
+  <!-- PACKAGING ROW (5 product cards, horizontal)                       -->
+  <!-- ================================================================ -->
+  <g filter="url(#shadow)">
+    <rect x="20" y="1075" width="1360" height="200" rx="8" fill="#eef0f3" stroke="#1f2630" stroke-width="2"/>
+    <rect x="20" y="1075" width="1360" height="26" rx="8" fill="#1f2630"/>
+    <text x="700" y="1093" text-anchor="middle" font-size="12" font-weight="700"
+          fill="#fff" letter-spacing="3">PACKAGING &amp; SHIPPING</text>
+  </g>
+
+  <!-- product cards: 5 across, 256 wide, 12 gap, starting at x=42 -->
+  <!-- card 1 -->
+  <g transform="translate(42,1115)">
+    <rect width="256" height="148" rx="5" fill="#fff" stroke="#1f2630" stroke-width="1.2"/>
+    <rect width="6" height="148" fill="#395776"/>
+    <use href="#ic-folder" x="14" y="12" width="28" height="28"/>
+    <text x="50" y="35" font-size="13" font-weight="700" fill="#1f2630">Lean library</text>
+    <text x="14" y="62" font-size="10" fill="#5a5650">EML.lean +</text>
+    <text x="14" y="76" font-size="10" fill="#5a5650">EML/{Basic, Term, Calc,</text>
+    <text x="14" y="90" font-size="10" fill="#5a5650">Functions, Solutions}/</text>
+    <text x="14" y="110" font-size="10" fill="#5a5650">self-contained per-chunk</text>
+    <text x="14" y="124" font-size="10" fill="#5a5650">solution files</text>
+    <text x="14" y="142" font-size="10" fill="#395776" font-style="italic">primary scientific artefact</text>
+  </g>
+
+  <!-- card 2 -->
+  <g transform="translate(310,1115)">
+    <rect width="256" height="148" rx="5" fill="#fff" stroke="#1f2630" stroke-width="1.2"/>
+    <rect width="6" height="148" fill="#a35825"/>
+    <use href="#ic-book" x="14" y="12" width="28" height="28"/>
+    <text x="50" y="35" font-size="13" font-weight="700" fill="#1f2630">Hybrid PDF report</text>
+    <text x="14" y="62" font-size="10" fill="#5a5650">paper text interleaved with</text>
+    <text x="14" y="76" font-size="10" fill="#5a5650">verified Lean per chunk</text>
+    <text x="14" y="96" font-size="10" fill="#5a5650">Markdown &#x2192; pandoc &#x2192;</text>
+    <text x="14" y="110" font-size="10" fill="#5a5650">xelatex &#x2192; PDF</text>
+    <text x="14" y="142" font-size="10" fill="#a35825" font-style="italic">reader-facing companion</text>
+  </g>
+
+  <!-- card 3 -->
+  <g transform="translate(578,1115)">
+    <rect width="256" height="148" rx="5" fill="#fff" stroke="#1f2630" stroke-width="1.2"/>
+    <rect width="6" height="148" fill="#0e6b85"/>
+    <use href="#ic-globe" x="14" y="12" width="28" height="28"/>
+    <text x="50" y="35" font-size="13" font-weight="700" fill="#1f2630">Interactive site</text>
+    <text x="14" y="62" font-size="10" fill="#5a5650">3-way toggle:</text>
+    <text x="14" y="76" font-size="10" fill="#5a5650">Paper &#x21C4; Lean &#x21C4; Side-by-side</text>
+    <text x="14" y="96" font-size="10" fill="#5a5650">syntax highlighting &#x2022;</text>
+    <text x="14" y="110" font-size="10" fill="#5a5650">deps cross-linked &#x2022; offline-OK</text>
+    <text x="14" y="142" font-size="10" fill="#0e6b85" font-style="italic">GitHub Pages deployable</text>
+  </g>
+
+  <!-- card 4 -->
+  <g transform="translate(846,1115)">
+    <rect width="256" height="148" rx="5" fill="#fff" stroke="#1f2630" stroke-width="1.2"/>
+    <rect width="6" height="148" fill="#3d6b35"/>
+    <use href="#ic-scroll" x="14" y="12" width="28" height="28"/>
+    <text x="50" y="35" font-size="13" font-weight="700" fill="#1f2630">LaTeX report</text>
+    <text x="14" y="62" font-size="10" fill="#5a5650">methodology &#x2022; per-chunk</text>
+    <text x="14" y="76" font-size="10" fill="#5a5650">decision log &#x2022; lessons learned</text>
+    <text x="14" y="96" font-size="10" fill="#5a5650">open problems &#x2022;</text>
+    <text x="14" y="110" font-size="10" fill="#5a5650">reproducibility recipe</text>
+    <text x="14" y="142" font-size="10" fill="#3d6b35" font-style="italic">narrative for peer review</text>
+  </g>
+
+  <!-- card 5 -->
+  <g transform="translate(1114,1115)">
+    <rect width="256" height="148" rx="5" fill="#fff" stroke="#1f2630" stroke-width="1.2"/>
+    <rect width="6" height="148" fill="#a02c2c"/>
+    <use href="#ic-clipboard" x="14" y="12" width="28" height="28"/>
+    <text x="50" y="35" font-size="13" font-weight="700" fill="#1f2630">Manifest</text>
+    <text x="14" y="62" font-size="10" fill="#5a5650">manifest.json &#x2022; per-chunk</text>
+    <text x="14" y="76" font-size="10" fill="#5a5650">meta with full history</text>
+    <text x="14" y="96" font-size="10" fill="#5a5650">project_ids &#x2022; retries &#x2022;</text>
+    <text x="14" y="110" font-size="10" fill="#5a5650">spec changes &#x2022; status</text>
+    <text x="14" y="142" font-size="10" fill="#a02c2c" font-style="italic">audit trail</text>
+  </g>
+
+  <!-- ================================================================ -->
+  <!-- bottom bar                                                         -->
+  <!-- ================================================================ -->
+  <rect x="0" y="1295" width="1400" height="25" fill="#1f2630"/>
+  <text x="20" y="1313" font-size="10" fill="#fffbe9" letter-spacing="1">
+    FALENTY 2026 &#x2022; auto-formalization pipeline schematic
+  </text>
+  <text x="1380" y="1313" text-anchor="end" font-size="10" fill="#fffbe9" letter-spacing="1">
+    factory floor view &#x2022; no proprietary content shown
+  </text>
+
+</svg>
