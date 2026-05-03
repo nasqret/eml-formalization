@@ -250,7 +250,7 @@ def _cmd_show(console: Console, args: List[str]) -> None:
     if not _check_workspace(console):
         return
     if not args:
-        console.print(f"[warn]{t('eml.submit.usage').replace('submit', 'show').replace('--all-pending', '').replace('[--limit N]', '')}[/warn]")
+        console.print(f"[warn]{t('eml.show.usage')}[/warn]")
         return
     prefix = args[0]
     chunk_id = _resolve_chunk_id(prefix)
@@ -445,8 +445,12 @@ def _record_submission(chunk_id: str, project_id: str, prompt: str) -> None:
     chunks = manifest.setdefault("chunks", [])
     found = False
     for entry in chunks:
-        if entry.get("chunk_id") == chunk_id:
+        # Manifest entries authored by the decomposition agent use `id`;
+        # entries authored by an earlier _record_submission used `chunk_id`.
+        # Match either, so we update in place rather than duplicate.
+        if (entry.get("id") or entry.get("chunk_id")) == chunk_id:
             entry.update({
+                "id": chunk_id,
                 "project_id": project_id,
                 "submitted_at": meta["submitted_at"],
                 "status": "submitted",
@@ -456,7 +460,7 @@ def _record_submission(chunk_id: str, project_id: str, prompt: str) -> None:
             break
     if not found:
         chunks.append({
-            "chunk_id": chunk_id,
+            "id": chunk_id,
             "project_id": project_id,
             "submitted_at": meta["submitted_at"],
             "status": "submitted",
@@ -666,7 +670,7 @@ def _watch_one(console: Console, chunk_id: str) -> bool:
     _save_chunk_meta(chunk_id, meta)
     manifest = _load_manifest()
     for entry in manifest.get("chunks", []):
-        if entry.get("chunk_id") == chunk_id:
+        if (entry.get("id") or entry.get("chunk_id")) == chunk_id:
             entry["status"] = "complete"
             entry["completed_at"] = meta["completed_at"]
             break
@@ -694,7 +698,7 @@ def _cmd_watch(console: Console, args: List[str]) -> None:
         return
 
     if not positional:
-        console.print(f"[warn]{t('eml.submit.usage').replace('submit', 'watch').replace('--all-pending', '--all').replace('[--limit N]', '')}[/warn]")
+        console.print(f"[warn]{t('eml.watch.usage')}[/warn]")
         return
     chunk_id = _resolve_chunk_id(positional[0])
     if chunk_id is None:

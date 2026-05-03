@@ -5850,6 +5850,14 @@ STRINGS: Dict[str, Dict[str, str]] = {
         "pl": "uzycie: eml submit <chunk-id> [--all-pending] [--limit N]",
         "en": "usage: eml submit <chunk-id> [--all-pending] [--limit N]",
     },
+    "eml.show.usage": {
+        "pl": "uzycie: eml show <chunk-id>",
+        "en": "usage: eml show <chunk-id>",
+    },
+    "eml.watch.usage": {
+        "pl": "uzycie: eml watch <chunk-id> | --all",
+        "en": "usage: eml watch <chunk-id> | --all",
+    },
     "eml.submit.resolving": {
         "pl": "Rozpoznaje kawalek '{prefix}'...",
         "en": "Resolving chunk '{prefix}'...",

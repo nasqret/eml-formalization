@@ -315,21 +315,27 @@ def _cmd_list(console: Console, args: List[str]) -> None:
     if not _require_key(console):
         return
     cli_args = ["list"]
-    iterator = iter(args)
-    for tok in iterator:
+    # Index-based scan; rebinding `iter()` mid-for-loop doesn't switch the
+    # for's underlying iterator (CPython captures it once), which would
+    # silently swallow the token after `--status A B`.
+    idx = 0
+    while idx < len(args):
+        tok = args[idx]
         if tok == "--status":
             statuses = []
-            nxt = next(iterator, None)
-            while nxt is not None and not nxt.startswith("--"):
-                statuses.append(nxt)
-                nxt = next(iterator, None)
+            j = idx + 1
+            while j < len(args) and not args[j].startswith("--"):
+                statuses.append(args[j])
+                j += 1
             if statuses:
                 cli_args += ["--status", *statuses]
-            if nxt is not None:
-                # oddać token z powrotem
-                iterator = iter([nxt, *iterator])
+            idx = j
         elif tok == "--limit":
-            cli_args += ["--limit", next(iterator, "10")]
+            limit_val = args[idx + 1] if idx + 1 < len(args) else "10"
+            cli_args += ["--limit", limit_val]
+            idx += 2
+        else:
+            idx += 1
 
     try:
         result = _run_aristotle(cli_args)
