@@ -1,59 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" font-family="'Helvetica Neue', Arial, sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 540" font-family="'Helvetica Neue', Arial, sans-serif">
   <style>
-    .box     { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2; }
-    .boxA    { fill:#fbe8d3; stroke:#a37438; stroke-width:2; }
-    .boxQ    { fill:#d6e2f2; stroke:#1f3b73; stroke-width:2; }
+    .box     { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2.4; }
+    .boxA    { fill:#fbe8d3; stroke:#a37438; stroke-width:2.4; }
+    .boxQ    { fill:#d6e2f2; stroke:#1f3b73; stroke-width:2.4; }
     .lbl     { font-size:14px; fill:#1d2e21; text-anchor:middle; }
     .lblb    { font-size:15px; fill:#1d2e21; font-weight:700; text-anchor:middle; }
-    .arr     { stroke:#1f3b73; stroke-width:2; fill:none; marker-end:url(#m); }
-    .arr2    { stroke:#7a3a1a; stroke-width:2; fill:none; marker-end:url(#m2); stroke-dasharray:6 4; }
-    .title   { font-size:18px; font-weight:700; fill:#1d2e21; }
+    .arr     { stroke:#1f3b73; stroke-width:2.6; fill:none; marker-end:url(#m); }
+    .arr2    { stroke:#7a3a1a; stroke-width:2.4; fill:none; marker-end:url(#m2); stroke-dasharray:7 5; }
+    .arrLoop { stroke:#3a6f2a; stroke-width:2.2; fill:none; marker-end:url(#m3); stroke-dasharray:3 4; }
+    .title   { font-size:20px; font-weight:700; fill:#1d2e21; }
   </style>
   <defs>
-    <marker id="m"  markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0,0 L 10,5 L 0,10 z" fill="#1f3b73"/></marker>
-    <marker id="m2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0,0 L 10,5 L 0,10 z" fill="#7a3a1a"/></marker>
+    <marker id="m"  markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#1f3b73"/></marker>
+    <marker id="m2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#7a3a1a"/></marker>
+    <marker id="m3" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#3a6f2a"/></marker>
   </defs>
 
-  <text x="20" y="30" class="title">Multi-agent dispatch (Claude as the coordinator)</text>
+  <text x="20" y="32" class="title">Multi-agent dispatch (Claude as the coordinator)</text>
 
-  <!-- Coordinator -->
-  <rect class="box" x="380" y="60" width="200" height="60" rx="8"/>
-  <text x="480" y="86" class="lblb">Claude (orchestrator)</text>
-  <text x="480" y="106" class="lbl">manifest, queue, commits</text>
+  <!-- Coordinator (top centre) -->
+  <rect class="box" x="420" y="65" width="240" height="70" rx="8"/>
+  <text x="540" y="93" class="lblb">Claude (orchestrator)</text>
+  <text x="540" y="115" class="lbl">manifest, queue, commits</text>
 
-  <!-- Background agents -->
-  <rect class="box" x="40"  y="180" width="180" height="50" rx="6"/>
-  <text x="130" y="210" class="lblb">Decomposition agent</text>
-  <rect class="box" x="240" y="180" width="180" height="50" rx="6"/>
-  <text x="330" y="210" class="lblb">Witness composer</text>
-  <rect class="box" x="440" y="180" width="180" height="50" rx="6"/>
-  <text x="530" y="210" class="lblb">Submission monitor</text>
-  <rect class="box" x="640" y="180" width="180" height="50" rx="6"/>
-  <text x="730" y="210" class="lblb">Mathematica probe</text>
+  <!-- Four background agents in a row at y ~ 220 -->
+  <rect class="box" x="40"  y="215" width="220" height="62" rx="6"/>
+  <text x="150" y="240" class="lblb">Decomposition agent</text>
+  <text x="150" y="260" class="lbl">chunk extraction</text>
 
-  <!-- Aristotle queue -->
-  <rect class="boxA" x="180" y="320" width="240" height="60" rx="6"/>
-  <text x="300" y="346" class="lblb">Aristotle queue</text>
-  <text x="300" y="366" class="lbl">~10 concurrent slots</text>
+  <rect class="box" x="290" y="215" width="220" height="62" rx="6"/>
+  <text x="400" y="240" class="lblb">Witness composer</text>
+  <text x="400" y="260" class="lbl">tree synthesis</text>
 
-  <!-- Lean QC -->
-  <rect class="boxQ" x="540" y="320" width="240" height="60" rx="6"/>
-  <text x="660" y="346" class="lblb">Lean QC</text>
-  <text x="660" y="366" class="lbl">lake env lean → exit 0</text>
+  <rect class="box" x="540" y="215" width="220" height="62" rx="6"/>
+  <text x="650" y="240" class="lblb">Submission monitor</text>
+  <text x="650" y="260" class="lbl">poll + retry</text>
 
-  <!-- Arrows from coordinator down -->
-  <path class="arr" d="M 430,120 L 130,180"/>
-  <path class="arr" d="M 460,120 L 330,180"/>
-  <path class="arr" d="M 500,120 L 530,180"/>
-  <path class="arr" d="M 530,120 L 730,180"/>
+  <rect class="box" x="790" y="215" width="220" height="62" rx="6"/>
+  <text x="900" y="240" class="lblb">Mathematica probe</text>
+  <text x="900" y="260" class="lbl">numeric sieve</text>
 
-  <!-- Arrows downward to queue / QC -->
-  <path class="arr2" d="M 530,232 L 380,320"/>
-  <path class="arr2" d="M 730,232 L 660,320"/>
-  <path class="arr2" d="M 330,232 L 660,320"/>
+  <!-- Aristotle queue + Lean QC at the bottom -->
+  <rect class="boxA" x="180" y="380" width="280" height="74" rx="6"/>
+  <text x="320" y="408" class="lblb">Aristotle queue</text>
+  <text x="320" y="430" class="lbl">~10 concurrent slots</text>
 
-  <!-- Loop back -->
-  <path class="arr2" d="M 300,380 Q 100,420 60,260 Q 30,120 380,90"/>
-  <path class="arr2" d="M 660,380 Q 880,420 920,260 Q 950,110 580,90"/>
+  <rect class="boxQ" x="600" y="380" width="280" height="74" rx="6"/>
+  <text x="740" y="408" class="lblb">Lean QC</text>
+  <text x="740" y="430" class="lbl">lake env lean → exit 0</text>
+
+  <!-- Fan-out from coordinator to the four agents.
+       Lines start at the BOTTOM EDGE of the orchestrator box
+       (y=135) and end at the TOP EDGE of each agent (y=215). -->
+  <path class="arr" d="M 470,135 L 150,215"/>
+  <path class="arr" d="M 510,135 L 400,215"/>
+  <path class="arr" d="M 570,135 L 650,215"/>
+  <path class="arr" d="M 610,135 L 900,215"/>
+
+  <!-- Agents to queue / QC, no diagonal crossings through labels -->
+  <path class="arr2" d="M 400,277 L 350,380"/>
+  <path class="arr2" d="M 650,277 L 700,380"/>
+  <path class="arr2" d="M 900,277 L 800,380"/>
+
+  <!-- Loop back: queue -> orchestrator (left), QC -> orchestrator (right) -->
+  <path class="arrLoop" d="M 200,420 Q 60,420 50,250 Q 40,90 420,100"/>
+  <path class="arrLoop" d="M 880,420 Q 1030,420 1040,250 Q 1050,90 660,100"/>
+
+  <!-- Tiny legend -->
+  <g transform="translate(20,490)" font-size="12" fill="#1f2630">
+    <line x1="0" y1="0" x2="22" y2="0" class="arr"/>
+    <text x="30" y="4">dispatch</text>
+    <line x1="120" y1="0" x2="142" y2="0" class="arr2"/>
+    <text x="150" y="4">action</text>
+    <line x1="220" y1="0" x2="242" y2="0" class="arrLoop"/>
+    <text x="250" y="4">feedback</text>
+  </g>
 </svg>

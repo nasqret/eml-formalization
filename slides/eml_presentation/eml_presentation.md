@@ -62,7 +62,7 @@ This talk: how a small team (one human + several AI assistants) sealed a 7-page 
 
 ---
 
-<!-- .slide: class="figure-short compact" -->
+<!-- .slide: class="figure-mid compact" -->
 
 ## Curry-Howard, in one slide
 
@@ -94,15 +94,16 @@ What changed: large language models compose with **tactic search** and **RL on L
 
 ## Aristotle in 60 seconds
 
-- **Where it lives:** Harmonic AI's cloud queue.
-- **What you send:** a Lean 4 statement (with imports + spec).
-- **What you get back:** a `.lean` file plus a project archive.
-- **Surface:** `arist submit`, `arist list`, `arist result <id>`.
-- **Concurrency:** ~10 active slots, billed per job.
-- **Strength:** one-step lemmas, simp-able identities, small existentials.
-- **Weakness:** long, chained existential constructions.
-
-Wall-clock per job in our experiment: 8 minutes to 8 hours.
+| Aspect | Detail |
+|---|---|
+| **Where it lives** | Harmonic AI's cloud queue |
+| **What you send** | Lean 4 statement (imports + spec) |
+| **What you get back** | a `.lean` file plus a project archive |
+| **Surface** | `arist submit`, `arist list`, `arist result <id>` |
+| **Concurrency** | ~10 active slots, billed per job |
+| **Strength** | one-step lemmas, simp-able identities, small existentials |
+| **Weakness** | long, chained existential constructions |
+| **Wall-clock per job** | 8 minutes to 8 hours |
 
 ---
 
@@ -110,28 +111,31 @@ Wall-clock per job in our experiment: 8 minutes to 8 hours.
 
 ## The paper
 
-A 7-page paper plus supplementary, claiming:
-
 > "All elementary functions can be derived from a single binary operator on the reals."
 
 The operator (the **EML**, *exp-minus-log*):
+$\mathrm{eml}(x, y) \ =\ \exp(x) - \ln(y).$
 
-$$\mathrm{eml}(x, y) \ =\ \exp(x) - \ln(y).$$
-
-36 primitives in the paper's Table 1: `e, 0, -1, 2, 1/2, exp, log, x+y, x*y, x^y, sin, cos, sqrt, pi, i, ...`.
+| Group | Examples | Difficulty |
+|---|---|---|
+| Constants | `e, 0, -1, 2, 1/2` | easy → medium |
+| Constants (complex) | `pi, i` | hard (closed form) |
+| Unary functions | `-x, 1/x, x^2, sqrt, exp, log` | medium |
+| Binary functions | `x+y, x*y, x^y, x/y, log_x y` | medium |
+| Trigonometric | `sin, cos, tan, sinh, cosh, tanh, arctan` | hard |
+| Total | 36 primitives in paper Table 1 | mixed |
 
 **Goal:** machine-check every claim in Lean 4 + Mathlib.
 
 ---
 
-<!-- .slide: class="figure-tall compact" -->
+<!-- .slide: class="figure-hero" -->
 
 ## The factory
 
 <img src="assets/formalization_factory.svg" alt="formalization factory"/>
 
-Decompose → three parallel lines (Aristotle / Mathematica / manual) → QC (`lake env lean`) → five packaging artefacts.
-Output: **`nasqret/falenty-2026`**, 66 chunks all `lake env lean` exit 0; ~5 000 lines of Lean, 31-page LaTeX report, 54-page hybrid PDF, 47-page HTML site, 16 git commits.
+<small>Decompose → three parallel lines (Aristotle / Mathematica / manual composition) → QC (`lake env lean`) → five packaging artefacts. Output: `nasqret/falenty-2026`.</small>
 
 ---
 
@@ -139,19 +143,29 @@ Output: **`nasqret/falenty-2026`**, 66 chunks all `lake env lean` exit 0; ~5 000
 
 ## Decomposition methodology
 
-Each chunk is a self-contained directory: `chunk.md` (paper text + Lean target + deps), `meta.json` (status, project_id, history), `target.lean`, `result.lean`. Bilingual end-to-end.
+<div class="two-col-wide">
+
+<img src="assets/chunk_dossier.svg" alt="chunk dossier schematic"/>
+
+<div>
+
+Each chunk is a self-contained directory; bilingual end-to-end.
 
 | Group | # | Examples |
 |---|---|---|
 | Foundations | 5 | `def eml`, `EMLTerm`, `eval` |
 | Identities | 12 | Identity 5, `exp(x) = eml(x,1)` |
 | Calc-equiv | 7 | Wolfram → Calc 3 → … → EML |
-| Constants | 6 | `0, -1, 1/2, 2, e`, `pi, i` (complex) |
-| Functions | 15 | `-x, 1/x, x^2, sqrt, x+y, x*y, x^y, x/y` |
-| Trig | 8 | `sinh, cosh, tanh, sin, cos, tan, arctan` |
-| Master / misc | 13 | umbrellas, Catalan count, sigmoid |
+| Constants | 6 | `0, -1, 1/2, 2, e, pi, i` |
+| Functions | 15 | `-x, 1/x, x^2, sqrt, x+y, x*y` |
+| Trig | 8 | `sin, cos, tan, sinh, cosh, arctan` |
+| Master / misc | 13 | umbrellas, sigmoid, Catalan |
 
-Difficulty distribution (levels 1–5): 11 / 10 / 6 / 19 / 20.
+Difficulty distribution (1–5): 11 / 10 / 6 / 19 / 20.
+
+</div>
+
+</div>
 
 ---
 
@@ -177,30 +191,49 @@ Numbers from one v2 run targeting `e`:
 
 ---
 
-<!-- .slide: class="figure-mid compact" -->
+<!-- .slide: class="compact" -->
 
 ## Aristotle's role
 
-- 25+ submissions across **5 waves** over a 36-hour window.
-- ~10 concurrent slots; overnight rate-limit stall ~6 h.
-- One-step identities: ~10 minutes per chunk.
-- Long existentials (size > 30): hours, often `COMPLETE_WITH_ERRORS`.
+<div class="two-col-wide">
 
 <img src="assets/spec_cycle.svg" alt="spec-tightening cycle"/>
 
-Of 15 wave-3 submissions, 9 returned a clean proof on the first pass.
+<div>
+
+- **25+ submissions** across 5 waves over a 36-hour window.
+- ~10 concurrent slots; overnight rate-limit stall ~6 h.
+- One-step identities: ~10 minutes per chunk.
+- Long existentials (size > 30): hours, often `COMPLETE_WITH_ERRORS`.
+- Of 15 wave-3 submissions, **9 returned a clean proof on the first pass**.
+
+The cycle on the left is what we ran whenever a `COMPLETE_WITH_ERRORS` came back.
+
+</div>
+
+</div>
 
 ---
 
-<!-- .slide: class="figure-mid compact" -->
+<!-- .slide: class="compact" -->
 
 ## Claude's role
+
+<div class="two-col-wide">
+
+<img src="assets/dispatch.svg" alt="multi-agent dispatch"/>
+
+<div>
 
 - **Design.** Chunk schema, factory architecture, calc-equiv inductives, the `EMLTermℂ` extension for `pi` / `i`.
 - **Coordination.** Parallel agents, queue monitoring, batch fetching, manifest dedupe, commit cadence.
 - **Scaffolding.** REPL command (`/eml`, `/ac`), HTML site generator, LaTeX report.
 
-<img src="assets/dispatch.svg" alt="multi-agent dispatch"/>
+Claude is the **handle** that fans work out to the four agents and reassembles the results.
+
+</div>
+
+</div>
 
 ---
 
@@ -210,10 +243,12 @@ Of 15 wave-3 submissions, 9 returned a clean proof on the first pass.
 
 Powered by the OpenAI APIs, configured via `~/.config/openai/env`:
 
-- **Paraphrase generation** for chunk markdown (`ch explore --paraphrase`).
-- **Quiz LLM judge** for the lecture's interactive layer.
-- **Informalization** of Aristotle's Lean proofs back to natural-language prose (`arist informal`).
-- **Bilingual narration** of the hybrid report.
+| Use | What it does |
+|---|---|
+| Paraphrase generation | rewrites chunk markdown (`ch explore --paraphrase`) |
+| Quiz LLM judge | scores the lecture's interactive quiz layer |
+| Informalization | turns Aristotle's Lean proofs back into prose (`arist informal`) |
+| Bilingual narration | PL ⇄ EN voice for the hybrid report |
 
 Codex is the *quick-cut blade*: cheap, fast, perfect for textual shape-shifting where ground-truth verification is not the bottleneck.
 
@@ -223,14 +258,31 @@ Codex is the *quick-cut blade*: cheap, fast, perfect for textual shape-shifting 
 
 ## The Human role
 
-**What the human did:**
+<div class="did-split">
+
+<div class="col did">
+
+#### What the human DID
 
 - **Scope.** "Seal the trig family or not?" "Accept primed types?"
 - **Quality calls.** Did Aristotle's rich grammar count, or do we recompose?
 - **Sign-offs.** Every commit, every wave, every push.
 - **Choosing waves.** When to fire, when to wait out the rate limit.
 
-**What the human did NOT do:** write Lean proofs by hand (except the 514-line manual umbrella); mechanically extract chunks; set up monitors.
+</div>
+
+<div class="col didnt">
+
+#### What the human did NOT do
+
+- Write Lean proofs by hand (except the 514-line manual umbrella).
+- Mechanically extract chunks from the paper.
+- Set up monitors / poll the queue.
+- Run the Mathematica search by hand.
+
+</div>
+
+</div>
 
 The verdict: **human-in-charge, not human-out-of-the-loop.**
 
@@ -242,7 +294,7 @@ The verdict: **human-in-charge, not human-out-of-the-loop.**
 
 <img src="assets/wave_timeline.svg" alt="wave timeline"/>
 
-Five Aristotle waves, manual fixes, then the final umbrellas. Most wall-clock was Aristotle queue waiting; productive *human* time was under a working day.
+Five Aristotle waves, manual fixes, then the final umbrellas. Most wall-clock was queue waiting; productive *human* time was under a working day.
 
 ---
 
@@ -250,10 +302,14 @@ Five Aristotle waves, manual fixes, then the final umbrellas. Most wall-clock wa
 
 ## When the negatives helped
 
-- **`Project failed` / `no project_id`.** Aristotle's CLI prints the id to *stderr* → added stderr fallback to the extractor.
-- **`COMPLETE_WITH_ERRORS`.** Aristotle silently extended the grammar (extra `const : R → EMLTerm`) → manual-composition pass for pure-grammar witnesses.
-- **Junk-value `Real.log 0 = 0`.** Forced spec tightenings: `∀ x : R` → `∀ x > 0` on `037, 038, 041, 042`.
-- **Mathematica search exhausted at size 31.** Confirmed the paper's `K`-bound for `pi / i / sqrt(x)`; led to the `EMLTermℂ` extension.
+| Negative signal | Diagnosis | Fix |
+|---|---|---|
+| `Project failed` / `no project_id` | Aristotle's CLI prints the id to **stderr** | added stderr fallback to extractor |
+| `COMPLETE_WITH_ERRORS` | Aristotle silently extended the grammar (extra `const : R → EMLTerm`) | manual-composition pass for pure-grammar witnesses |
+| Junk-value `Real.log 0 = 0` | Spec was too loose | tightened `∀ x : R` → `∀ x > 0` on `037, 038, 041, 042` |
+| MMA search exhausted at size 31 | Confirmed paper's `K`-bound for `pi / i / sqrt(x)` | introduced `EMLTermℂ` complex extension |
+
+Every red flag taught us something concrete; nothing was just "noise".
 
 ---
 
@@ -262,11 +318,9 @@ Five Aristotle waves, manual fixes, then the final umbrellas. Most wall-clock wa
 ## The mathematics — the operator
 
 The EML algebra:
-
 $$\mathrm{eml}(x, y) \ =\ \exp(x) - \ln(y).$$
 
 **Identity 5** (the workhorse):
-
 $$\ln(z) \ =\ \mathrm{eml}\bigl(1,\ \mathrm{eml}(\mathrm{eml}(1, z),\ 1)\bigr), \qquad z > 0.$$
 
 Inner $\mathrm{eml}(1,z) = e - \ln z$; next $\mathrm{eml}(e-\ln z, 1) = \exp(e-\ln z)$;
@@ -301,14 +355,26 @@ theorem emlterm_for_two : ∃ t : EMLTerm, EMLTerm.eval t = 2 :=
 
 ---
 
-<!-- .slide: class="figure-mid compact" -->
+<!-- .slide: class="compact" -->
 
 ## The pi witness — and Euler
 
+<div class="two-col-wide">
+
 <img src="assets/pi_tree.svg" alt="pi witness tree"/>
 
+<div>
+
 For trig chunks we extend to `EMLTermℂ₁` and chain Euler:
-$\cos x = \tfrac{1}{2}(e^{ix}+e^{-ix})$, $\sin x = \cos(x-\tfrac{\pi}{2})$.
+
+$$\cos x = \tfrac{1}{2}(e^{ix}+e^{-ix})$$
+$$\sin x = \cos\bigl(x-\tfrac{\pi}{2}\bigr)$$
+
+Real-domain enumeration found **0** witnesses for `pi`; the complex extension closes the bridge through `Mathlib.Analysis.SpecialFunctions.Complex.Log`.
+
+</div>
+
+</div>
 
 ---
 
@@ -353,12 +419,17 @@ Total elapsed: ~3 days. Active work: under one engineering day.
 
 ## Why it succeeded
 
-1. **Atomic decomposition** — each chunk fits in one Aristotle submission.
-2. **Ground truth** — `lake env lean` exit 0 is the only acceptance.
-3. **Iterative spec tightening** — `∀ x` → `∀ x > 0` is cheap.
-4. **Honest partial accounting** — `COMPLETE_WITH_ERRORS` is data, not failure.
-5. **Multi-tool diversification** — when MMA dies, Lean composes; when Aristotle stalls, the human writes the umbrella.
-6. **Version control as audit trail** — 16 commits = a replayable history of every decision.
+<div class="grid-2x3">
+
+<div class="cell"><strong>Atomic decomposition</strong>each chunk fits one Aristotle submission; failures stay local.</div>
+<div class="cell"><strong>Ground truth</strong><code>lake env lean</code> exit 0 is the only acceptance criterion.</div>
+<div class="cell"><strong>Iterative spec tightening</strong><code>∀ x</code> → <code>∀ x &gt; 0</code> is cheap and recovers many fails.</div>
+
+<div class="cell"><strong>Honest partial accounting</strong><code>COMPLETE_WITH_ERRORS</code> is data, not failure.</div>
+<div class="cell"><strong>Multi-tool diversification</strong>when MMA dies Lean composes; when Aristotle stalls the human writes.</div>
+<div class="cell"><strong>Audit trail</strong>16 commits = a replayable history of every decision.</div>
+
+</div>
 
 ---
 
@@ -366,12 +437,14 @@ Total elapsed: ~3 days. Active work: under one engineering day.
 
 ## Future prospects
 
-- Seal the 4 closed-form-only chunks with literal trees (size > 100).
-- A universal pipeline for *any* paper of this shape (definition + Table-of-witnesses).
-- **Acorn** integration (the new tactic-suggestion service).
-- Faster Aristotle as Harmonic ramps capacity.
-- Fully autonomous loops: doable, but accept the risk of silent grammar drift.
-- A larger paper portfolio — the EML push was a pilot.
+| Horizon | Goal | Status |
+|---|---|---|
+| Now → 1 mo | Seal the 4 closed-form-only chunks with literal trees (size > 100) | open |
+| 1 → 3 mo | Universal pipeline for *any* paper of this shape (definition + Table-of-witnesses) | scoping |
+| 3 → 6 mo | **Acorn** integration (the new tactic-suggestion service) | watching |
+| 3 → 6 mo | Faster Aristotle as Harmonic ramps capacity | external |
+| 6 → 12 mo | Fully autonomous loops (accept silent grammar drift risk) | research |
+| 12 mo + | Larger paper portfolio — EML push was a pilot | pipeline |
 
 ---
 
@@ -401,14 +474,11 @@ Repo: `github.com/nasqret/falenty-2026` · License: MIT.
 
 <!-- .slide: class="compact" -->
 
-## Q & A
+## Q & A — the project at a glance
 
-**Repo:** `github.com/nasqret/falenty-2026`
+<img src="assets/by_the_numbers.svg" alt="by the numbers" style="max-height:430px;"/>
 
-**Hybrid report:** `lambda_lab/proofs/eml/2603_21852/report/`
-
-**Interactive site:** `docs/`
-
+**Repo:** `github.com/nasqret/falenty-2026` ·
+**Hybrid report:** `lambda_lab/proofs/eml/2603_21852/report/` ·
+**Site:** `docs/` ·
 **Contact:** *bartosz.naskrecki at amu.edu.pl*
-
-Thank you.

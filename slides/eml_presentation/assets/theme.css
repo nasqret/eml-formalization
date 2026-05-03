@@ -3,9 +3,9 @@
    (reveal.js `simple` base, white background, sober typography).
 
    Goals:
-   1. Each slide fits inside the 960×700 default canvas.
+   1. Each slide fits inside the 1280×720 canvas.
    2. Tables and lists print cleanly to one page each.
-   3. SVG diagrams shrink to leave room for caption text.
+   3. SVG diagrams dominate the slide where they are the point.
    ───────────────────────────────────────────────────────────────── */
 
 :root {
@@ -79,6 +79,8 @@ html, body,
 
 .reveal strong { color: var(--accent); font-weight: 700; }
 .reveal em     { color: var(--ink); font-style: italic; }
+
+.reveal small  { font-size: 0.72em; color: var(--ink-soft); }
 
 /* ─── CODE ─────────────────────────────────────────────────────── */
 
@@ -196,10 +198,36 @@ html, body,
   display: block;
 }
 
-/* slot-specific image height caps; markdown-side classes drive these */
-.reveal section.figure-tall  img { max-height: 460px; }
-.reveal section.figure-mid   img { max-height: 360px; }
-.reveal section.figure-short img { max-height: 260px; }
+/* slot-specific image height caps; markdown-side classes drive these.
+   Bumped up — the previous 260/360/460 wasted slide real-estate. */
+.reveal section.figure-tall  img { max-height: 600px; width: 100%; }
+.reveal section.figure-mid   img { max-height: 500px; width: 100%; }
+.reveal section.figure-short img { max-height: 360px; width: 100%; }
+
+/* hero figure: the diagram IS the slide. ~85% of vertical space. */
+.reveal section.figure-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
+.reveal section.figure-hero h2 {
+  font-size: 0.95em;
+  margin: 0 0 0.15em 0;
+}
+.reveal section.figure-hero img,
+.reveal section.figure-hero svg {
+  max-height: 620px;
+  width: 100%;
+  margin: 0 auto;
+}
+.reveal section.figure-hero p,
+.reveal section.figure-hero small {
+  text-align: center;
+  font-size: 0.62em;
+  color: var(--ink-soft);
+  margin: 0.15em auto 0 auto;
+}
 
 /* ─── TITLE SLIDE ──────────────────────────────────────────────── */
 
@@ -239,14 +267,100 @@ html, body,
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.2em;
-  align-items: start;
+  align-items: center;
 }
 
-.reveal .two-col img {
+.reveal .two-col img,
+.reveal .two-col svg {
   margin: 0;
   width: 100%;
-  max-height: 480px;
+  max-height: 560px;
 }
+
+.reveal .two-col ul,
+.reveal .two-col ol {
+  margin: 0 0 0 1em;
+}
+
+.reveal .two-col li {
+  font-size: 0.85em;
+  line-height: 1.3;
+  margin-bottom: 0.2em;
+}
+
+.reveal .two-col p {
+  font-size: 0.85em;
+  margin: 0.2em 0;
+}
+
+/* image-heavy column on the left, slim column on the right */
+.reveal .two-col-wide {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.0em;
+  align-items: center;
+}
+.reveal .two-col-wide img,
+.reveal .two-col-wide svg {
+  margin: 0;
+  width: 100%;
+  max-height: 580px;
+}
+.reveal .two-col-wide li,
+.reveal .two-col-wide p {
+  font-size: 0.82em;
+  line-height: 1.3;
+}
+
+/* ─── 2x3 GRID ─────────────────────────────────────────────────── */
+
+.reveal .grid-2x3,
+.reveal .grid-3x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: auto;
+  gap: 0.55em 0.7em;
+  margin: 0.4em auto;
+  width: 96%;
+}
+.reveal .grid-2x3 .cell,
+.reveal .grid-3x2 .cell {
+  background: #faf8f0;
+  border-left: 4px solid var(--accent);
+  padding: 0.5em 0.7em 0.55em 0.8em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  line-height: 1.3;
+}
+.reveal .grid-2x3 .cell strong,
+.reveal .grid-3x2 .cell strong {
+  display: block;
+  color: var(--accent);
+  margin-bottom: 0.15em;
+  font-size: 1.05em;
+}
+
+/* did / did-not split */
+.reveal .did-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  margin: 0.4em auto;
+}
+.reveal .did-split .col {
+  background: #faf8f0;
+  border-radius: 5px;
+  padding: 0.6em 0.8em;
+}
+.reveal .did-split .col.did    { border-top: 4px solid #3a6f2a; }
+.reveal .did-split .col.didnt  { border-top: 4px solid #a32424; }
+.reveal .did-split h4 {
+  margin: 0 0 0.3em 0;
+  font-size: 0.95em;
+  color: var(--accent);
+}
+.reveal .did-split ul { margin: 0 0 0 1em; }
+.reveal .did-split li { font-size: 0.8em; line-height: 1.3; margin-bottom: 0.15em; }
 
 /* ─── SLIDE NUMBER ─────────────────────────────────────────────── */
 

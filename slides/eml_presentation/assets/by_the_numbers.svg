@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 460" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .tile     { fill:#faf8f0; stroke:#1f3b73; stroke-width:1.8; }
+    .tileGold { fill:#fff5d6; stroke:#a37438; stroke-width:1.8; }
+    .tileGreen{ fill:#e3efd9; stroke:#3a6f2a; stroke-width:1.8; }
+    .num      { font-size:48px; font-weight:700; text-anchor:middle; fill:#1f3b73; }
+    .numG     { font-size:48px; font-weight:700; text-anchor:middle; fill:#3a6f2a; }
+    .numW     { font-size:48px; font-weight:700; text-anchor:middle; fill:#a37438; }
+    .lbl      { font-size:14px; fill:#1d2e21; text-anchor:middle; }
+    .lblb     { font-size:15px; fill:#1d2e21; text-anchor:middle; font-weight:700; }
+    .title    { font-size:22px; font-weight:700; fill:#1d2e21; }
+    .meta     { font-size:12px; fill:#5a5650; font-style:italic; text-anchor:middle; }
+  </style>
+
+  <text x="540" y="36" text-anchor="middle" class="title">EML formalization — by the numbers</text>
+
+  <!-- Row 1: 4 tiles -->
+  <g transform="translate(40,70)">
+    <rect class="tileGreen" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="numG">66/66</text>
+    <text x="110" y="108" class="lblb">chunks verified</text>
+    <text x="110" y="128" class="lbl">lake env lean exit 0</text>
+  </g>
+  <g transform="translate(290,70)">
+    <rect class="tile" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="num">~5,000</text>
+    <text x="110" y="108" class="lblb">lines of Lean</text>
+    <text x="110" y="128" class="lbl">spec + witnesses + proofs</text>
+  </g>
+  <g transform="translate(540,70)">
+    <rect class="tile" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="num">3</text>
+    <text x="110" y="108" class="lblb">days elapsed</text>
+    <text x="110" y="128" class="lbl">~1 active engineering day</text>
+  </g>
+  <g transform="translate(790,70)">
+    <rect class="tileGold" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="numW">16</text>
+    <text x="110" y="108" class="lblb">git commits</text>
+    <text x="110" y="128" class="lbl">replayable audit trail</text>
+  </g>
+
+  <!-- Row 2: 4 tiles -->
+  <g transform="translate(40,240)">
+    <rect class="tile" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="num">25+</text>
+    <text x="110" y="108" class="lblb">Aristotle submissions</text>
+    <text x="110" y="128" class="lbl">over 5 waves</text>
+  </g>
+  <g transform="translate(290,240)">
+    <rect class="tile" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="num">3.8 M</text>
+    <text x="110" y="108" class="lblb">trees enumerated</text>
+    <text x="110" y="128" class="lbl">Mathematica search, size ≤ 31</text>
+  </g>
+  <g transform="translate(540,240)">
+    <rect class="tile" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="num">5</text>
+    <text x="110" y="108" class="lblb">tools cooperated</text>
+    <text x="110" y="128" class="lbl">Aristotle · Claude · Codex · MMA · Lean</text>
+  </g>
+  <g transform="translate(790,240)">
+    <rect class="tileGreen" width="220" height="150" rx="8"/>
+    <text x="110" y="78"  class="numG">1</text>
+    <text x="110" y="108" class="lblb">human in charge</text>
+    <text x="110" y="128" class="lbl">scope, taste, sign-off</text>
+  </g>
+
+  <text x="540" y="430" class="meta">Active wall-clock under one engineering day; the rest is queue time on Aristotle.</text>
+</svg>

@@ -10,10 +10,15 @@ binary operator"* into Lean 4 + Mathlib.
 ```
 ./build.sh         # static HTML  -> build/index.html
 ./build.sh pdf     # PDF (one slide per page) -> eml_presentation.pdf
+./build.sh all     # html + pdf in one shot
 ./build.sh serve   # live server  -> http://localhost:1948
 ```
 
 Equivalent `make html`, `make pdf`, `make serve`, `make clean`.
+
+After editing slides, rebuild with `./build.sh && ./build.sh pdf` (the second
+call regenerates the static HTML before printing to PDF, so a single
+`./build.sh pdf` is enough).
 
 The PDF target spawns a tiny static server (`http-server`) on port 18948 and
 prints with **headless Google Chrome** against `?print-pdf` — the only
