@@ -110,6 +110,21 @@ consequences:
 
 ## What surprised us
 
+0. **The paper itself notes prior Lean attempts failed.** SI Part II §2
+   (page 9) records:
+   > *"A natural next step would be formalization in Lean 4, but
+   > preliminary AI-assisted attempts failed; the extended-value
+   > conventions (`ln 0 = −∞`) and branch-cut reasoning required appear
+   > to exceed current automation capabilities."*
+   What our artefact gets working — modulo the three §G boundary points
+   and the trig-narrowing-vs-paper-line-333 mismatch documented above —
+   is essentially what the SI flags as exceeding automation. The
+   architectural shifts that unlocked this (partial-eval `Option ℝ` to
+   sidestep `ln 0 = 0` junk, real-fragment compositional compiler for
+   the bulk, complex-grammar `EMLTermℂ` extension for trig) are
+   summarised in §3 of the README and worth a careful read before
+   accepting our claims at face value.
+
 1. **Pro's Cayley quotient unblocks `tan`.** The doubled-angle form
    `(e^{2ix} − 1) / (1 + e^{2ix}) = i · tan x` (recommended by an
    independent GPT Pro code review with no shared context) avoids the
@@ -144,15 +159,43 @@ consequences:
 ## What remains open
 
 ### Paper-open conjectures (the paper itself does not prove these)
-* **§3.2 — universal minimality of EML.** The conjecture that no
-  smaller / simpler binary Sheffer suffices for the elementary
-  functions. The paper's Conclusions section explicitly leaves this
-  open. One `sorry` in chunk
-  `lean_workspace/EML/Solutions/029_eml_minimality.lean`.
-* **§4.3 — gradient-based symbolic regression.** The paper's training
-  scheme is fundamentally numerical. There is no Mathlib infrastructure
-  for gradient flow / projection / floating-point ↔ symbolic
-  equivalence. **Out of scope for this formalisation.**
+
+The Supplementary Information (SI §1.5, page 8) gives an explicit
+numbered list of seven open questions. We do not address any of these
+— they are research questions about the operator landscape, not about
+witness construction:
+
+1. Taxonomy of EML, EDL, −EML — discrete family or continuous
+   distribution?
+2. Canonical-form / non-repetitive enumeration analogue of the
+   Stern–Brocot tree.
+3. **Constant-free binary Sheffer.** Does one exist? SI §1.4 records a
+   Rust exhaustive search (profile B) finding nothing up to operator
+   complexity K = 6.
+4. Leaf-only-input full binary EML tree for any elementary function.
+5. Variable-transplant depths (the identity has depth 4; what other
+   depths exist?).
+6. **Real-only Sheffer.** Paper §5 (line 540) conjectures impossible:
+   *"A continuous Sheffer working purely in the real domain seems
+   impossible."* No proof.
+7. **−∞-free EML or variant.** Can EML or one of its cousins work
+   without using the extended real axis?
+
+**Minimality (paper §5, line 533).** The "informal" minimality claim
+that the EML row of Table 2 (`{1, eml}`) cannot be reduced further is
+the strongest concrete statement, but the *fully universal* version —
+quantifying over every conceivable 2-primitive calculator design — is
+explicitly flagged as non-trivial: the paper gives the trap example
+`B(x, y) = x − y/2` with `B(x, x) = x/2` yet `B(B(x, x), x) = 0`.
+Our `lean_workspace/EML/Solutions/029_eml_minimality.lean` proves two
+**concrete corollaries** (constant-only and constant-plus-unary
+calculators are constant-functional), no `sorry`. The fully universal
+claim is left as a research question.
+
+**§4.3 — gradient-based symbolic regression.** The paper's training
+scheme (Section 4.3) is fundamentally numerical. There is no Mathlib
+infrastructure for gradient flow / projection / floating-point ↔
+symbolic equivalence. **Out of scope for this formalisation.**
 
 ### Future-work extensions (deliberately deferred)
 * **Full-real-domain trig.** Closeable via two paths:
@@ -165,17 +208,22 @@ consequences:
     indexed by period number rather than a single witness — slightly
     less faithful to the paper's "one witness per primitive" framing.
   See `OPEN_QUESTIONS.md` for full plans.
-* **Sheffer companions §3.1 — per-primitive completeness for EDL and
-  −EML.** The paper presents EML, EDL, and −EML as a "family" but
-  proves completeness only for EML (the rest are confirmed empirically
-  via the Mathematica `VerifyBaseSet` procedure). A full parallel
-  sealing effort for either cousin is **1–2 weeks per cousin**. Plans
-  D and E in `OPEN_QUESTIONS.md`.
+* **Sheffer companions — per-primitive completeness for EDL and −EML.**
+  The paper presents EML, EDL, and −EML as a "family" (paper §3,
+  equation block `\label{Sheffers}`) but proves completeness only for
+  EML; the cousins are confirmed empirically via the Mathematica /
+  Rust `VerifyBaseSet` procedure. A full parallel sealing effort for
+  either cousin is **1–2 weeks per cousin**. Plans D and E in
+  `OPEN_QUESTIONS.md`.
 * **Sheffer naming cleanup.** Our scaffolding currently has four
-  operators (`EDL`, `LDE`, `T₁`, `T₂`) but only `EDL` matches the
-  paper's §3.1 verbatim. `LDE = log(x)/exp(y)` is **not** the paper's
-  `−EML = log(x) − exp(y)` — different operators. `T₁`, `T₂` are
-  exploratory inventions. Cleanup is a 1–2 hour task (Plan A).
+  operators (`EDL`, `LDE`, `T₁`, `T₂`) — only `EDL` matches the paper.
+  `LDE = log(x)/exp(y)` (division) is **not** the paper's
+  `−EML = log(x) − exp(y)` (subtraction). `T₁`, `T₂` in our scaffolding
+  are *binary* but the paper's actual T₁/T₂ are **ternary** operators
+  (SI §1.4, page 8): `T₁(x, y, z) = e^(x−y) ln x / ln z`,
+  `T₂(x, y, z) = e^(x−y) ln z / ln x`, with the special property
+  `T₂(x, x, x) = 1`. Our `T1Term`/`T2Term` should be removed; cleanup
+  is a 1–2 hour task (Plan A).
 
 ### Three §G boundary points (architectural)
 `√0`, `arcosh 1`, `hypot(0, 0)` — Mathlib's `Real.log 0 = 0` makes

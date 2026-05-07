@@ -24,32 +24,93 @@ direction, or a future-work extension.
 
 ## Paper-open conjectures (the paper itself does not prove these)
 
-### §3.2 — Universal minimality of EML
+### The author's own list — SI §1.5 "Open questions from the search"
 
-**Status:** paper-open conjecture (paper, conclusion section).
+The Supplementary Information (page 8) gives an **explicit numbered list
+of seven open questions** that the paper itself flags. Our formalisation
+does not address any of these — they are research questions in the
+author's own framing:
 
-**Statement.** The conjecture that the EML operator
-`eml(x, y) = exp(x) − ln(y)` paired with the constant `1` is in some
-sense **universally minimal** among continuous binary Sheffer operators
-for the elementary functions.
+1. **Taxonomy.** "Are EML, EDL, and −EML unrelated, members of a
+   discrete family, or random samples from a continuous distribution
+   of Sheffer operators?"
+2. **Canonical form.** "Can formula enumeration using EML (or one of
+   its variants) be made non-repetitive, analogous to the Stern–Brocot
+   tree for rationals?"
+3. **Constant-free binary Sheffer.** "Does a single binary operator
+   exist that generates constants from arbitrary input (no
+   distinguished terminal symbol)?" SI §1.4 records a Rust exhaustive
+   search (profile B) finding nothing up to operator complexity K = 6.
+4. **Leaf-only evaluation.** "Can we find a full binary EML tree for
+   any elementary function with inputs restricted to the leaf layer
+   only?"
+5. **Variable-transplant depths.** "Known identity function has
+   depth four, allowing for transplanting variables down the tree by
+   multiples of 4. Are there other of this kind, with various depths?"
+6. **Real-only Sheffer.** "Does a Sheffer operator exist that works
+   purely in the real domain?" Paper §5 (line 540) conjectures
+   impossible but offers no proof.
+7. **−∞ elimination.** "Can the EML Sheffer, or one of its variants,
+   work without use of the extended real axis, −∞ in particular?"
 
-**Why open.** The paper itself does not provide a proof. Section 5 of the
-paper (Conclusions / Open problems) explicitly lists this. There is no
-known systematic technique to prove minimality — the paper notes
-(line 533 of `EML.tex`):
+These are paper-open in the strict sense: the author lists them as
+future work. Our formalisation operates *downstream* of the EML
+operator's discovery — given EML, we mechanically verify its
+witnesses for the 36 paper primitives. The seven questions above ask
+something about the operator landscape itself.
 
-> "Proving such impossibility for any given candidate is non-trivial:
-> one might expect `f(x, x)` being constant to suffice, but consider
-> `B(x, y) = x − y/2`, for which `B(x, x) = x/2` yet `B(B(x, x), x) = 0`.
-> Such traps illustrate why systematic search is essential in this work."
+### Minimality of EML — paper §5 open question
 
-**Codebase pointer.** Chunk
-`lean_workspace/EML/Solutions/029_eml_minimality.lean` carries one `sorry`
-that is documented in-source as "paper-open."
+**Status:** paper-open conjecture, posed in paper §5 (Conclusions and
+open questions, line 533 of `EML.tex`).
 
-**Acceptance criterion for closing.** A separate research result, likely
-beyond the scope of this formalization project. A proof would itself be
-publishable.
+**Where it lives in the paper.** Two related strands:
+
+1. **Operational minimality (paper §2 Methods, line 175).** Ablation
+   testing collapses Calc 4 (36 primitives) → Calc 3 → Calc 2 → Calc 1
+   → Calc 0 → `{1, eml}`. The endpoint is the EML row of Table 2: one
+   constant `1` plus one binary operator `eml`. This is where the
+   informal claim "you can't go lower than `{1, eml}`" comes from.
+
+2. **The actual open question (paper §5, line 533).** Verbatim:
+
+   > *"Whether an EML-type binary Sheffer working without pairing with
+   > a distinguished constant exists is an open question. Proving such
+   > impossibility for any given candidate is non-trivial: one might
+   > expect `f(x, x)` being constant to suffice, but consider
+   > `B(x, y) = x − y/2`, for which `B(x, x) = x/2` yet
+   > `B(B(x, x), x) = 0`. Such traps illustrate why systematic search
+   > is essential in this work."*
+
+**The fully universal claim** (what "universal minimality" would mean).
+Roughly: for every binary operator `B : ℝ × ℝ → ℝ` (under some
+appropriate smoothness / definability constraint) and every constant
+`c : ℝ`, if the calculator `{c, B}` reconstructs all 36 paper
+primitives then `B = eml` modulo trivial reparameterisation. The paper
+does **not** prove this — line 533 explicitly flags it as non-trivial
+and gives the `B(x, y) = x − y/2` trap to illustrate why naive arguments
+fail.
+
+**What our codebase has.** `lean_workspace/EML/Solutions/029_eml_minimality.lean`
+proves two **concrete corollaries** of minimality (no `sorry`):
+
+1. With only the constant `1` and no binary operator, you cannot
+   express the identity `x ↦ x`. *(Constant-only calculator is
+   constant-functional.)*
+2. With one constant `c : ℝ` and one unary `f : ℝ → ℝ` (no variables,
+   no binaries), every term evaluates to a constant — so the identity
+   is unrepresentable. *(Constant + unary alone is constant-functional.)*
+
+Together these rule out two specific 2-primitive shapes. The chunk's
+docstring is explicit:
+
+> *"A fully universal proof would quantify over every conceivable
+> 2-primitive calculator design — beyond the scope of this formalisation."*
+
+**Acceptance criterion for closing.** A separate research result. Even
+formulating the statement requires picking an appropriate function
+class for `B` (smooth? continuous? definable?). A proof would itself
+be publishable.
 
 ---
 
@@ -193,44 +254,60 @@ relative to the paper's own §3.1 nomenclature.
 
 ### Plan A — Sheffer naming cleanup (1–2 hours)
 
-**Goal.** Align `EML.Framework.Sheffer` with the paper's actual §3.1
-"Three Sheffer operators" block. The current scaffolding has four
-operators; only `EDL` matches the paper exactly. `LDE` is a different
-operator from the paper's `−EML`, and `T₁`/`T₂` are exploratory
-inventions not in the paper.
+**Goal.** Align `EML.Framework.Sheffer` with the paper's actual
+companion set. The current scaffolding has four operators; only `EDL`
+matches the paper. The other three are misnamed or fabricated relative
+to what the paper says.
 
-**Steps.**
+**Three issues to fix.**
 
-1. **Rename `LDETerm` → `NegEMLTerm`** and replace its operator with the
-   paper's actual cousin:
+1. **`LDETerm` is not the paper's `−EML`.** Our `lde?(x, y) = log(x) /
+   exp(y)` (division). Paper §3 equation (`\label{eml-infty}`):
+   `−eml(y, x) = log(x) − exp(y)` (subtraction). These are different
+   operators. **Action:** rename `LDETerm → NegEMLTerm` and replace
+   `lde?` with:
    ```lean
    def negEml? (x y : ℝ) : Option ℝ :=
      if 0 < x then some (Real.log x - Real.exp y) else none
    ```
-   (Subtraction, not division. The current `lde?` uses division.)
-   Update the collapse identity: paper's `−EML` requires the constant
-   `−∞`, but in our partial-eval setting we can show
-   `negEml(x, 1) = log x − e` for `0 < x`.
 
-2. **Tag `T1Term` and `T2Term` as exploratory** with a clear docstring:
+2. **`T1Term` and `T2Term` are wrong shape.** The paper's actual T₁ /
+   T₂ are **ternary** operators, defined in SI §1.4 (page 8):
    ```
-   /-! **NOTE.** T₁ and T₂ are exploratory operators not present in the
-   paper. They are retained for future work on the family of binary
-   Sheffers but are *not* part of arXiv:2603.21852's claimed companion
-   set. -/
+   T₁(x, y, z) = e^(x−y) · ln(x) / ln(z)
+   T₂(x, y, z) = e^(x−y) · ln(z) / ln(x)
    ```
-   Or remove them entirely. Recommend keeping with the disclaimer to
-   avoid breaking any downstream references.
+   with the property `T₂(x, x, x) = 1` — they generate their own
+   constant from arbitrary input, the property the binary EML lacks.
+   Our `T1Term`/`T2Term` are *binary* and entirely fabricated.
+   **Action:** either (a) replace with a fresh ternary `T1Term3`
+   inductive type matching the paper, or (b) remove `T1Term`/`T2Term`
+   entirely and document them as "scaffolding error from an earlier
+   pass." Recommend (b) — the SI §1.4 explicitly notes ternaries are
+   *preliminary unverified candidates*; not worth the effort to
+   formalise until the paper firms them up.
 
-3. **Add a `paper_sourcing.md`** sub-document next to `Sheffer.lean`
-   pointing readers to paper lines 273–284 (equation block
-   `\label{Sheffers}`) so the provenance is unambiguous.
+3. **No `paper_sourcing.md` next to `Sheffer.lean`.** Add a small
+   pointer document citing paper lines 273–284 (the EML/EDL/−EML
+   block) and SI §1.4 (page 8, ternary candidates) so the provenance
+   is unambiguous to a future reader.
 
-4. **Update README.md and AUTHOR_SUMMARY.md** to reflect three Sheffers
-   (EML, EDL, −EML) plus exploratory T₁/T₂.
+**Steps in order.**
 
-**Acceptance.** `lake build EML` clean; the renamed grammar's collapse
-identity proved; README and author summary cite paper §3.1 line numbers.
+1. Rename `LDETerm → NegEMLTerm` and rewrite `lde? → negEml?` per (1)
+   above. Update the collapse identity: in our partial-eval setting,
+   `negEml(x, 1) = log(x) − e` for `0 < x` (the paper requires `−∞`
+   as constant, but our `negEml(x, 1)` just gives a finite value).
+2. Remove `T1Term`, `T2Term` and their helper definitions per (2).
+3. Add `EML/Framework/Sheffer/PaperSourcing.md` per (3).
+4. Update `README.md` and `AUTHOR_SUMMARY.md` to reflect three
+   Sheffers (EML, EDL, −EML) and to cite the SI §1.4 ternary
+   candidates as preliminary future work, not as part of our
+   scaffolding.
+
+**Acceptance.** `lake build EML` clean; `NegEMLTerm` collapse identity
+proved; README and author summary cite paper line numbers correctly;
+no fabricated operators remain in the scaffolding.
 
 ---
 
