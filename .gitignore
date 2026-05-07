@@ -17,15 +17,6 @@ build/
 dist/
 .ipynb_checkpoints/
 
-# JupyterBook v2 (mystmd)
-book/_build/
-book/.jupyter_cache/
-book/node_modules/
-_build/
-
-# Site generator output (regenerowalne z site/build.py)
-site/md/
-
 # Editor
 .vscode/
 .idea/
@@ -38,7 +29,6 @@ slides/*.html.bak
 slides/build/
 
 # Lean
-lean_examples/build/
 **/*.olean
 lake-packages/
 .lake/
@@ -50,20 +40,11 @@ lake-packages/
 # Logs
 *.log
 
-# Lab scratch
-lambda_lab/_scratch/
-
-
-# Acorn standard library — cloned from acornprover/acornlib, not vendored
-lambda_lab/proofs/acorn_lib/
-
 # Claude Code session state (per-machine, not source)
 .claude/
 
 # Aristotle cached project bundles (transient, fetched on demand)
 lambda_lab/proofs/aristotle/*/
 
-# Build artefacts and bundles (regenerable from sources)
+# Bundle archives (regenerable from sources)
 *.zip
-EML_review_bundle/
-EML_review_bundle_sources/
