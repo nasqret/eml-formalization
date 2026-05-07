@@ -619,7 +619,24 @@ lemma eval_mkSUB (z : ℂ) (A B : EMLTermℂ₁)
     `exp(log(exp(Ix)) - log(I)) = exp(Ix - Iπ/2)`, whose .re = sin x. -/
 def sinTerm : EMLTermℂ₁ := mkEXP (mkSUB (mkLOG cosTerm) (mkLOG iTerm))
 
-theorem emlterm1c_for_sin :
+/--
+**Real-part witness for `sin`** (NOT a literal complex EML witness).
+
+This proves that the real part of `EMLTermℂ₁.eval (x : ℂ) t` equals
+`Real.sin x`, where `t` is the witness `sinTerm` evaluating to
+`Complex.exp (I * (x - π/2))`. The full complex value is
+`sin x − I cos x`, whose imaginary part is `−cos x ≠ 0`
+(except at `x = π/2` and odd multiples).
+
+A literal complex EML witness `eval t = (Real.sin x : ℂ)` would require
+extending the grammar with `(_ − _) / 2I` so that the Euler decomposition
+`(exp(ix) − exp(−ix)) / (2I)` lands inside the term language. That is
+deferred to Tier 1 (`emlterm1c_for_sin_literal`).
+
+The `.re` projection is *not* part of the EML grammar; calling this a
+"sin witness" is precise only with the `_re` qualifier.
+-/
+theorem sin_re_via_emlterm1c :
     ∃ t : EMLTermℂ₁, ∀ x : ℝ, 0 < x → x < Real.pi →
       (EMLTermℂ₁.eval (x : ℂ) t).re = Real.sin x := by
   refine ⟨sinTerm, fun x hx hx_pi => ?_⟩

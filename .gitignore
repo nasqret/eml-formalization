@@ -56,3 +56,14 @@ lambda_lab/_scratch/
 
 # Acorn standard library — cloned from acornprover/acornlib, not vendored
 lambda_lab/proofs/acorn_lib/
+
+# Claude Code session state (per-machine, not source)
+.claude/
+
+# Aristotle cached project bundles (transient, fetched on demand)
+lambda_lab/proofs/aristotle/*/
+
+# Build artefacts and bundles (regenerable from sources)
+*.zip
+EML_review_bundle/
+EML_review_bundle_sources/

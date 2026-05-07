@@ -611,7 +611,23 @@ private lemma eval_mid {x : ℝ} (hx : 0 < x) :
   rw [h1, h2]
   ring
 
-theorem emlterm1c_for_cos :
+/--
+**Real-part witness for `cos`** (NOT a literal complex EML witness).
+
+This proves that the real part of `EMLTermℂ₁.eval (x : ℂ) t` equals
+`Real.cos x`, where `t` is the witness `cosTerm` evaluating to
+`Complex.exp (I * x)`. The full complex value is `cos x + I sin x`,
+whose imaginary part is `sin x ≠ 0`.
+
+A literal complex EML witness `eval t = (Real.cos x : ℂ)` would require
+extending the grammar with `(_ + _) / 2` so that the Euler decomposition
+`(exp(ix) + exp(-ix)) / 2` lands inside the term language. That is
+deferred to Tier 1 (`emlterm1c_for_cos_literal`).
+
+The `.re` projection is *not* part of the EML grammar; calling this a
+"cos witness" is precise only with the `_re` qualifier.
+-/
+theorem cos_re_via_emlterm1c :
     ∃ t : EMLTermℂ₁, ∀ x : ℝ, 0 < x →
       (EMLTermℂ₁.eval (x : ℂ) t).re = Real.cos x := by
   refine ⟨cosTerm, fun x hx => ?_⟩

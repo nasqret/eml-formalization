@@ -1,36 +1,92 @@
 import Mathlib
 
 /-!
-# Main completeness umbrella, Round 2 (chunk 070).
+# Selected real-grammar completeness umbrella (chunk 070).
 
-This file is **self-contained**: it redefines the EML term shapes
-(`EMLTerm`, `EMLTerm₁`, `EMLTerm₂`) and their `eval` functions, then
-inlines the constructive witnesses harvested from the round-1 chunks
-(030, 031, 032, 033, 022, 036, 037, 038, 040, 041, 042) plus a
-selection of round-2 chunks (050, 051, 052, 055, 056, 057, 058, 060,
-069).  Everything is bundled into one big existential.
+This file proves a single bundled existential — `main_completeness_selected`
+— packaging 19 individually verified `EMLTerm` / `EMLTerm₁` / `EMLTerm₂`
+witnesses plus a structural minimality corollary. It is **not** the
+paper's Theorem 5 (a structural `F36(X) → EMLTerm` compiler theorem
+proven by induction); it is a hand-curated catalogue of selected
+existential witnesses in the real grammars.
 
-Conjuncts skipped (with reason):
-* 034 (π), 035 (i), 039 (√x): require the paper's Supplementary trees
-  (permanent sorries).
-* 053 (log_x y): the upstream witness uses `simp +decide` and a
-  bespoke `mkDiv` that handles a possibly-negative numerator.  The
-  generic `mkDIV` packaged here requires `eval(numerator) > 0`, which
-  forces `1 < y` — narrower than the upstream `0 < y`.  Dropped to keep
-  the umbrella honest.
-* 054 (hypot), 059 (arsinh): rely on √x, hence on 039.
-* 061 (artanh): marked `partial` upstream.
-* 062 (cos), 063 (sin), 064 (tan), 065 (arctan), 066 (arcsin), 067
-  (arccos): live in the COMPLEX `EMLTermℂ₁` grammar, not the real
-  `EMLTerm₁` grammar bundled here. Chunks 062 and 063 carry actual
-  EMLTermℂ₁ witnesses (sealed via Euler / iπ-shift); chunks 064, 065,
-  066, 067 expose closed-form complex-log identities (the math
-  content the EMLTermℂ₁ witness would prove). Inlining the ~700-line
-  EMLTermℂ₁ scaffolding from 062/063 into this umbrella was deferred
-  to keep this file at a manageable size; downstream work can import
-  those Solutions files directly to access the witnesses.
-* 068 (Wolfram → Calc 3 complex): off-topic for the umbrella; uses a
-  different inductive grammar.
+This file is **self-contained**: it redefines the EML term shapes and
+inlines the witnesses, so `lake env lean` of this file alone replays
+the entire bundle without depending on the rest of `Solutions/`.
+
+## What is bundled here (real grammars only)
+
+20 conjuncts: chunks 022, 030–033, 036–038, 040–042, 050–052, 055–058,
+060 (arcosh on `√2 < x`), 069 (minimality).  See the `theorem
+main_completeness_selected` docstring for the per-conjunct list.
+
+## What is NOT in this file (proven elsewhere, see Solutions/)
+
+* **034 (π), 035 (i)**: literal complex `EMLTermℂ` closed witnesses.
+  Sealed via the paper's Supplementary trees. Live in the complex
+  grammar, off-grammar for this file.
+* **039 (√x for `0 < x`)**: literal real `EMLTerm₁` witness via the
+  `pow_term` substitution trick (chunk 042's two-variable witness with
+  the second argument substituted by `1/2`). Inlining requires the
+  EMLTerm₂ → EMLTerm₁ substitution lemma scaffolding (~200 lines).
+* **054 (hypot `0 < x ∧ 0 < y`)**: literal real `EMLTerm₂` witness via
+  the same `pow_term` trick. ~200 lines of scaffolding.
+* **059 (arsinh `0 < x`)**: literal real `EMLTerm₁` witness via
+  `arsinh(x) = log(x + √(x²+1))`. Depends on the chunk-039 sqrt
+  scaffolding.
+* **060 widened from `√2 < x` to `1 < x`**: proven in Solutions/060.
+  This file still uses the looser `√2 < x` form to keep the inlined
+  proof simple; the widened proof requires the `pow_term` substitution
+  scaffolding.
+* **061 (artanh `−1 < x < 1`)**: literal real `EMLTerm₁` witness via
+  `artanh(x) = (log(1+x) − log(1−x)) / 2`, with paper-canonical
+  `expT`/`logT` (no `Real.log 0 = 0` junk-value reliance).
+* **053 (log_x y)**: requires the bespoke divide-with-possibly-negative-
+  numerator witness, narrower domain (`1 < y` here vs `0 < y`
+  upstream).
+
+## NOT literal EML witnesses (real-part projections / closed-form only)
+
+These chunks live in the complex grammar `EMLTermℂ₁` and **do not**
+prove `eval t = (Real.f x : ℂ)`. They prove either a real-part
+projection or a closed-form identity:
+
+* **062 (cos), 063 (sin)**: prove `(eval t).re = Real.cos x` and
+  `(eval t).re = Real.sin x` respectively. The `.re` is *not* part of
+  the EML grammar, so these are NOT literal complex EML witnesses.
+  Tier 1 plan: extend the grammar with `(_ + _) / 2` (and `… / (2I)`)
+  so the Euler decomposition `(exp(ix) ± exp(−ix))/2` lands inside the
+  term language.
+* **064 (tan), 065 (arctan), 066 (arcsin), 067 (arccos)**: prove
+  closed-form complex-log identities (the math content a literal
+  witness would target), not literal `∃ t : EMLTermℂ₁` statements.
+  Tier 1 plan: use the same extended grammar to deliver literal
+  complex witnesses.
+
+## Calculator-chain reductions (chunks 024–028, 068)
+
+Each of those chunks redefines its own local `Calc0/Calc1/Calc2/Calc3/
+Wolfram` inductive types, so the chain is currently a **sequence of
+isolated reductions over differently-typed languages**, not a single
+compositional theorem chained through the unified `EML/Calc.lean`
+inductives. Tier 1 plan: hoist unified definitions and rewrite 024–028
+to chain compositionally.
+
+## What this file does NOT prove
+
+The paper's headline theorem is a **structural compiler theorem** of
+the form
+
+    ∀ F : F36Expr n, ∃ T : EMLTerm n,
+        ∀ x ∈ domain F, evalEML T x = evalF36 F x
+
+over a 36-primitive expression language `F36Expr`. That is **not**
+proven anywhere in this artefact. The bundled existential below is a
+hand-curated catalogue of selected witnesses, useful as a
+non-vacuousness check but not a structural completeness statement.
+Tier 2 plan: define `F36Expr`, define `compile`, prove correctness
+by structural induction (each induction case dispatches to an
+existing per-primitive chunk).
 -/
 
 namespace EML
@@ -1168,7 +1224,7 @@ private theorem c069_universal_minimality
 
 /-! # Section 5 — Umbrella theorem -/
 
-/-- **Main completeness — full umbrella (Round 2).**
+/-- **Selected real-grammar completeness umbrella.**
 
 Bundles 19 constructive `EMLTerm` / `EMLTerm₁` / `EMLTerm₂` witnesses
 plus a structural minimality corollary into a single proof.  Conjuncts
@@ -1192,15 +1248,30 @@ in order:
 16. `cosh` (chunk 056)
 17. `sinh` (chunk 057)
 18. `tanh` (chunk 058)
-19. `arcosh` on `√2 < x` (chunk 060)
+19. `arcosh` on `√2 < x` (chunk 060) — widened to `1 < x` in
+    `Solutions/060_emlterm_for_arcosh_x.lean`
 20. universal minimality (chunk 069): a `{constant, binary}` calculator
     cannot realise the identity function.
 
-NOT included: π (chunk 034), i (chunk 035), √x (chunk 039), hypot
-(chunk 054), arsinh (chunk 059), artanh (chunk 061), trig + inverse
-trig (chunks 062–067), Wolfram→Calc 3 complex (chunk 068).  See file
-header for per-chunk reasons. -/
-theorem main_completeness_full :
+This is **not** the paper's structural completeness theorem (which
+quantifies universally over a 36-primitive expression language and is
+proven by structural induction); it is a selected catalogue.
+
+**Proven elsewhere, NOT bundled here:**
+* π (chunk 034), i (chunk 035): live in complex grammar `EMLTermℂ`.
+* √x for `0 < x` (chunk 039), hypot (chunk 054), arsinh (chunk 059),
+  artanh (chunk 061): literal real witnesses; require pulling in the
+  `pow_term` substitution scaffolding to inline.
+* cos / sin (chunks 062, 063): real-part projection only, NOT literal
+  complex EML witnesses (the `.re` is outside the grammar).
+* tan / arctan / arcsin / arccos (chunks 064–067): closed-form complex-
+  log identities only, NOT literal complex EML witnesses.
+* Wolfram → Calc3 complex (chunk 068): different inductive grammar.
+
+See the file header for the closure plan (Tier 1 = literal trig
+witnesses + domain widening; Tier 2 = F36Expr structural compiler
+theorem). -/
+theorem main_completeness_selected :
     (∃ t : EMLTerm,  EMLTerm.eval t = 0) ∧
     (∃ t : EMLTerm,  EMLTerm.eval t = -1) ∧
     (∃ t : EMLTerm,  EMLTerm.eval t = 2) ∧

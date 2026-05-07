@@ -13,11 +13,22 @@ noncomputable def EMLTerm₁.eval (x : ℝ) : EMLTerm₁ → ℝ
   | .var      => x
   | .eml t u  => Real.exp (EMLTerm₁.eval x t) - Real.log (EMLTerm₁.eval x u)
 
-/-! ## Helper constructors -/
+/-! ## Helper constructors
 
-def zT : EMLTerm₁ := .eml .one (.eml (.eml .one .one) .one)
-def expT (t : EMLTerm₁) : EMLTerm₁ := .eml t zT
-def logT (t : EMLTerm₁) : EMLTerm₁ := .eml zT (.eml (.eml zT t) zT)
+These follow the paper's canonical Identity 4 (`exp z = eml(z, 1)`) and
+Identity 5 (`log z = eml(1, eml(eml(1, z), 1))`). No `Real.log 0 = 0`
+junk value is used: every `eml(_, y)` subterm has `y > 0` on the
+artanh domain `|x| < 1`.
+
+The earlier version of this chunk routed `expT` and `logT` through a
+constant-`0` term `zT` and relied on Lean's total `Real.log 0 = 0` junk
+value. That made the witness valid only under Lean's totalised `Real.log`
+semantics, not under the paper's partial / extended-real convention
+where `ln(0) = -∞`. The canonical forms below are paper-faithful.
+-/
+
+def expT (t : EMLTerm₁) : EMLTerm₁ := .eml t .one
+def logT (t : EMLTerm₁) : EMLTerm₁ := .eml .one (.eml (.eml .one t) .one)
 def subT (a b : EMLTerm₁) : EMLTerm₁ := .eml (logT a) (expT b)
 
 /-! ## Witness sub-terms -/
@@ -36,27 +47,28 @@ def artanhT : EMLTerm₁ := subT fHalfT gHalfT
 
 /-! ## Evaluation lemmas -/
 
-lemma eval_zT (x : ℝ) : zT.eval x = 0 := by
-  -- By definition of $zT$, we have $zT.eval x = exp(1) - log(exp(log(exp(1) - log(1)) - log(1))))$.
-  simp [zT, EMLTerm₁.eval]
-
 lemma eval_expT (t : EMLTerm₁) (x : ℝ) :
     (expT t).eval x = Real.exp (t.eval x) := by
-  -- By definition of `expT`, we have `expT t = .eml t zT`. Using the definition of `EMLTerm₁.eval`, we can rewrite the left-hand side.
-  rw [show expT t = .eml t zT from rfl];
-  -- By definition of `EMLTerm₁.eval`, we have `EMLTerm₁.eval x (t.eml zT) = Real.exp (EMLTerm₁.eval x t) - Real.log (EMLTerm₁.eval x zT)`.
-  rw [EMLTerm₁.eval];
-  rw [ eval_zT, Real.log_zero, sub_zero ]
+  -- expT t = .eml t .one; eval = exp(t) - log(1) = exp(t).
+  show Real.exp (t.eval x) - Real.log 1 = Real.exp (t.eval x)
+  rw [Real.log_one, sub_zero]
 
 lemma eval_logT (t : EMLTerm₁) (x : ℝ) :
     (logT t).eval x = Real.log (t.eval x) := by
-  unfold logT; simp +decide [ *, EMLTerm₁.eval ] ;
-  rw [ eval_zT ] ; norm_num
+  -- logT t = .eml .one (.eml (.eml .one t) .one)
+  -- inner   = .eml .one t           ↦ exp 1 - log(t.eval x)                  = e - log t
+  -- middle  = .eml (.eml .one t) .one ↦ exp(e - log t) - log 1 = exp(e - log t)
+  -- outer   = .eml .one middle      ↦ exp 1 - log(exp(e - log t)) = e - (e - log t) = log t
+  show Real.exp 1
+        - Real.log (Real.exp (Real.exp 1 - Real.log (t.eval x)) - Real.log 1)
+      = Real.log (t.eval x)
+  rw [Real.log_one, sub_zero, Real.log_exp]; ring
 
 lemma eval_subT (a b : EMLTerm₁) (x : ℝ) (ha : 0 < a.eval x) :
     (subT a b).eval x = a.eval x - b.eval x := by
-  unfold subT; simp +decide [ *, EMLTerm₁.eval ] ;
-  rw [ eval_logT, eval_expT, Real.exp_log ha, Real.log_exp ]
+  -- subT a b = .eml (logT a) (expT b); eval = exp(log a) - log(exp b) = a - b.
+  show Real.exp ((logT a).eval x) - Real.log ((expT b).eval x) = a.eval x - b.eval x
+  rw [eval_logT, eval_expT, Real.exp_log ha, Real.log_exp]
 
 lemma eval_omxT (x : ℝ) : omxT.eval x = 1 - x := by
   convert eval_subT .one .var x _;

@@ -155,8 +155,8 @@ lemma twoLogX_eval (x : ℝ) (hx : 0 < x) :
   rw [ Real.exp_log ];
   · ring;
   · rw [ Real.exp_log ];
-    · exact?;
-    · exact?
+    · exact shiftM1_plus_log_pos x hx;
+    · exact shiftM1_pos x hx
 
 lemma xSq_eval (x : ℝ) (hx : 0 < x) :
     EMLTerm₁.eval x xSq = x ^ 2 := by

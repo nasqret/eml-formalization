@@ -1,5 +1,6 @@
 import EML.Basic
 import EML.Term
-import EML.Functions.Constants
-import EML.Functions.Arithmetic
-import EML.Functions.Transcendental
+import EML.Framework.PaperClaims
+import EML.Framework.StructuralLimits
+import EML.Framework.KCounting
+import EML.Framework.Sheffer
