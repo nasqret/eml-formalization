@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 200" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .box     { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2; }
+    .boxR    { fill:#d8e9d2; stroke:#3a6f2a; stroke-width:2; }
+    .lbl     { font-size:15px; fill:#1d2e21; text-anchor:middle; }
+    .lblb    { font-size:17px; fill:#1d2e21; text-anchor:middle; font-weight:700; }
+    .arr     { stroke:#1f3b73; stroke-width:2.4; fill:none; marker-end:url(#a); }
+  </style>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M 0,0 L 10,5 L 0,10 z" fill="#1f3b73"/></marker>
+  </defs>
+
+  <rect class="box" x="40" y="40" width="280" height="110" rx="8"/>
+  <text x="180" y="80" class="lblb">Term</text>
+  <text x="180" y="108" class="lbl">lambda x : A . x : A -&gt; A</text>
+  <text x="180" y="132" class="lbl">a function</text>
+
+  <rect class="boxR" x="440" y="40" width="280" height="110" rx="8"/>
+  <text x="580" y="80" class="lblb">Proposition</text>
+  <text x="580" y="108" class="lbl">A implies A</text>
+  <text x="580" y="132" class="lbl">a logical statement</text>
+
+  <path class="arr" d="M 320,95 L 440,95"/>
+  <text x="380" y="85" class="lbl">is</text>
+</svg>

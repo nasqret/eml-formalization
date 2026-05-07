@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 540" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .node    { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2.4; }
+    .nodeOk  { fill:#d8e9d2; stroke:#3a6f2a; stroke-width:2.4; }
+    .nodeBad { fill:#f4d6c5; stroke:#a32424; stroke-width:2.4; }
+    .lbl     { font-size:15px; fill:#1d2e21; }
+    .lblb    { font-size:16px; fill:#1d2e21; font-weight:700; }
+    .arrow   { stroke:#1f3b73; stroke-width:2.6; fill:none; marker-end:url(#h); }
+    .arrowB  { stroke:#a32424; stroke-width:2.6; fill:none; marker-end:url(#h2); stroke-dasharray:7 5; }
+    .title   { font-size:20px; font-weight:700; fill:#1d2e21; }
+  </style>
+  <defs>
+    <marker id="h" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0,0 L 12,6 L 0,12 z" fill="#1f3b73"/>
+    </marker>
+    <marker id="h2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M 0,0 L 12,6 L 0,12 z" fill="#a32424"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="32" class="title">The spec-tightening cycle</text>
+
+  <!-- Six nodes around an enlarged hexagon. Centre at (440, 290), radius ~210. -->
+  <g>
+    <!-- 1. top -->
+    <ellipse class="node"    cx="440" cy="110" rx="135" ry="40"/>
+    <text x="440" y="106" text-anchor="middle" class="lblb">1. Write spec</text>
+    <text x="440" y="128" text-anchor="middle" class="lbl">forall x : R, ...</text>
+
+    <!-- 2. top-right -->
+    <ellipse class="node"    cx="730" cy="220" rx="115" ry="40"/>
+    <text x="730" y="216" text-anchor="middle" class="lblb">2. Submit</text>
+    <text x="730" y="238" text-anchor="middle" class="lbl">to Aristotle</text>
+
+    <!-- 3. bottom-right -->
+    <ellipse class="nodeBad" cx="730" cy="380" rx="125" ry="40"/>
+    <text x="730" y="376" text-anchor="middle" class="lblb">3. Fail</text>
+    <text x="730" y="398" text-anchor="middle" class="lbl">COMPLETE_WITH_ERRORS</text>
+
+    <!-- 4. bottom -->
+    <ellipse class="node"    cx="440" cy="478" rx="150" ry="40"/>
+    <text x="440" y="474" text-anchor="middle" class="lblb">4. Diagnose</text>
+    <text x="440" y="496" text-anchor="middle" class="lbl">junk-value Real.log 0 = 0</text>
+
+    <!-- 5. bottom-left -->
+    <ellipse class="node"    cx="150" cy="380" rx="120" ry="40"/>
+    <text x="150" y="376" text-anchor="middle" class="lblb">5. Tighten</text>
+    <text x="150" y="398" text-anchor="middle" class="lbl">forall x &gt; 0, ...</text>
+
+    <!-- 6. top-left -->
+    <ellipse class="nodeOk"  cx="150" cy="220" rx="120" ry="40"/>
+    <text x="150" y="216" text-anchor="middle" class="lblb">6. Resubmit</text>
+    <text x="150" y="238" text-anchor="middle" class="lbl">exit 0</text>
+  </g>
+
+  <!-- Cycle arrows. Each path's endpoint lies ON the destination
+       ellipse's boundary (computed via direction-vector projection
+       onto the ellipse), so the marker-end arrowhead touches the
+       node rim with no overshoot or gap. -->
+
+  <!-- 1 → 2  start (523,142) on node 1, end (652,191) on node 2 -->
+  <path class="arrow"  d="M 523,142 Q 590,152 652,191"/>
+
+  <!-- 2 → 3  vertical, bottom of node 2 to top of node 3 (red dashed = failure) -->
+  <path class="arrowB" d="M 730,260 L 730,340"/>
+
+  <!-- 3 → 4  start (644,409) on node 3, end (533,447) on node 4 -->
+  <path class="arrow"  d="M 644,409 Q 590,442 533,447"/>
+
+  <!-- 4 → 5  start (347,447) on node 4, end (234,408) on node 5 -->
+  <path class="arrow"  d="M 347,447 Q 290,442 234,408"/>
+
+  <!-- 5 → 6  vertical, top of node 5 to bottom of node 6 -->
+  <path class="arrow"  d="M 150,340 L 150,260"/>
+
+  <!-- 6 → 1  start (229,190) on node 6, end (357,142) on node 1 -->
+  <path class="arrow"  d="M 229,190 Q 293,152 357,142"/>
+</svg>

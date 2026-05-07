@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 520" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .handle    { fill:#a32424; stroke:#5a0d0d; stroke-width:2; }
+    .rivet     { fill:#dadada; stroke:#444; stroke-width:1; }
+    .blade     { fill:#e8eaef; stroke:#6a6a6a; stroke-width:1.4; }
+    .blade2    { fill:#cdd2da; stroke:#5a5a5a; stroke-width:1.4; }
+    .blade3    { fill:#f3e0c2; stroke:#a37438; stroke-width:1.4; }
+    .label     { font-size:14px; fill:#222; }
+    .role      { font-size:12px; fill:#444; font-style:italic; }
+    .title     { font-size:20px; font-weight:700; fill:#222; }
+    .magnifier { fill:none; stroke:#1f3b73; stroke-width:3; }
+  </style>
+
+  <text x="20" y="32" class="title">A Swiss army knife for autoformalization</text>
+
+  <!-- Handle (Claude as the orchestrator) -->
+  <rect class="handle" x="180" y="270" width="720" height="80" rx="40"/>
+  <circle class="rivet" cx="240" cy="310" r="6"/>
+  <circle class="rivet" cx="540" cy="310" r="6"/>
+  <circle class="rivet" cx="840" cy="310" r="6"/>
+  <text x="540" y="318" text-anchor="middle" font-size="22" fill="#fff" font-weight="700">CLAUDE — handle (orchestration)</text>
+
+  <!-- Aristotle blade (long, leftmost) -->
+  <path class="blade" d="M 220,270 L 360,110 L 390,110 L 270,270 Z"/>
+  <text x="305" y="78" text-anchor="middle" class="role">proof blade</text>
+  <text x="305" y="98" text-anchor="middle" class="label" font-weight="700">Aristotle</text>
+
+  <!-- Codex blade (medium) -->
+  <path class="blade2" d="M 360,270 L 470,160 L 500,160 L 410,270 Z"/>
+  <text x="440" y="128" text-anchor="middle" class="role">quick-cut blade</text>
+  <text x="440" y="148" text-anchor="middle" class="label" font-weight="700">Codex</text>
+
+  <!-- Mathematica precision tool -->
+  <path class="blade" d="M 520,270 L 570,170 L 610,170 L 590,270 Z"/>
+  <circle class="rivet" cx="590" cy="190" r="3"/>
+  <text x="578" y="138" text-anchor="middle" class="role">precision tool</text>
+  <text x="578" y="158" text-anchor="middle" class="label" font-weight="700">Mathematica</text>
+
+  <!-- Lean as the steel of the blade -->
+  <path class="blade" d="M 630,270 L 740,110 L 780,110 L 680,270 Z"/>
+  <text x="710" y="78" text-anchor="middle" class="role">the steel</text>
+  <text x="710" y="98" text-anchor="middle" class="label" font-weight="700">Lean</text>
+
+  <!-- GPT Pro as the magnifying-glass / appraiser blade (rightmost on the knife) -->
+  <path class="blade3" d="M 800,270 L 880,180 L 910,200 L 850,270 Z"/>
+  <!-- A small magnifying glass icon mounted on the blade -->
+  <g transform="translate(820,140)">
+    <circle class="magnifier" cx="0" cy="0" r="12"/>
+    <line x1="9" y1="9" x2="20" y2="20" class="magnifier"/>
+  </g>
+  <text x="870" y="118" text-anchor="middle" class="role">audit + architect</text>
+  <text x="870" y="138" text-anchor="middle" class="label" font-weight="700">GPT Pro</text>
+
+  <!-- Human as the wielder (clean person silhouette + arrow) -->
+  <g transform="translate(920,280)">
+    <!-- head -->
+    <circle cx="40" cy="6" r="10" fill="#f3d2a8" stroke="#a37438" stroke-width="1.6"/>
+    <!-- torso + shoulders, rounded -->
+    <path d="M 16,28 q 0,-6 6,-6 h 36 q 6,0 6,6 v 18 q 0,14 -14,14 h -20 q -14,0 -14,-14 z"
+          fill="#f3d2a8" stroke="#a37438" stroke-width="1.6"/>
+    <text x="40" y="86" text-anchor="middle" class="label" font-weight="700">Human</text>
+    <text x="40" y="104" text-anchor="middle" class="role">the wielder</text>
+  </g>
+  <!-- arrow from the human to the right end of the knife handle -->
+  <path d="M 935,310 L 905,310" stroke="#444" stroke-width="2" fill="none" marker-end="url(#arr)"/>
+
+  <defs>
+    <marker id="arr" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <!-- Caption -->
+  <text x="540" y="475" text-anchor="middle" class="label">Six tools, one handle, one wielder. Aristotle proves; Codex translates; Mathematica searches; Lean checks;</text>
+  <text x="540" y="495" text-anchor="middle" class="label">GPT Pro audits and re-architects. Claude binds them. The proof comes out only if all of them cooperate.</text>
+</svg>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 560" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .n      { fill:#f7f3e6; stroke:#1f3b73; stroke-width:1.8; }
+    .nC     { fill:#d6e2f2; stroke:#1f3b73; stroke-width:1.8; }
+    .nLeaf  { fill:#d8e9d2; stroke:#3a6f2a; stroke-width:1.8; }
+    .lbl    { font-size:15px; fill:#1d2e21; text-anchor:middle; }
+    .lblb   { font-size:15px; fill:#1d2e21; text-anchor:middle; font-weight:700; }
+    .edge   { stroke:#1f3b73; stroke-width:2; fill:none; marker-end:url(#a); }
+    .edgeD  { stroke:#1f3b73; stroke-width:1.6; fill:none; stroke-dasharray:5 4; marker-end:url(#a); }
+    .title  { font-size:20px; font-weight:700; fill:#1d2e21; }
+    .sub    { font-size:13px; fill:#444; font-style:italic; text-anchor:middle; }
+  </style>
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 z" fill="#1f3b73"/>
+    </marker>
+  </defs>
+  <text x="20" y="32" class="title">pi as an EML witness tree (chunk 034)</text>
+  <text x="410" y="58" class="sub">pi = sqrt( -( log( -1 ) )^2 ) — built bottom-up from constants e, -1, 1/2, 2</text>
+
+  <!-- Root: sqrt -->
+  <ellipse class="n" cx="410" cy="110" rx="95" ry="30"/>
+  <text x="410" y="108" class="lblb">sqrt</text>
+  <text x="410" y="128" class="lbl">root: pi (real)</text>
+
+  <!-- Edge: root -> pow level (only the first arrow points DOWN) -->
+  <line class="edge" x1="410" y1="140" x2="410" y2="180"/>
+
+  <!-- pow level -->
+  <ellipse class="n" cx="410" cy="210" rx="120" ry="30"/>
+  <text x="410" y="208" class="lblb">x^2  with  x = log(-1) = i pi</text>
+  <text x="410" y="228" class="lbl">witness via chunks 032 + 038</text>
+
+  <!-- Edges to children -->
+  <line class="edge" x1="370" y1="240" x2="220" y2="290"/>
+  <line class="edge" x1="450" y1="240" x2="600" y2="290"/>
+
+  <!-- Left subtree: log(-1) -->
+  <ellipse class="nC" cx="200" cy="320" rx="120" ry="30"/>
+  <text x="200" y="318" class="lblb">log on C : (-1) → i pi</text>
+  <text x="200" y="338" class="lbl">EMLTermC extension</text>
+
+  <line class="edge" x1="200" y1="350" x2="200" y2="390"/>
+  <ellipse class="nLeaf" cx="200" cy="420" rx="95" ry="26"/>
+  <text x="200" y="426" class="lblb">-1 (chunk 031)</text>
+
+  <!-- Right subtree: 2 -->
+  <ellipse class="nLeaf" cx="620" cy="320" rx="95" ry="26"/>
+  <text x="620" y="326" class="lblb">2 (chunk 032)</text>
+
+  <!-- Auxiliary used inside the sqrt step -->
+  <ellipse class="nLeaf" cx="620" cy="420" rx="95" ry="26"/>
+  <text x="620" y="426" class="lblb">1/2 (chunk 033)</text>
+  <!-- Dashed edge: the "2" leaf is the exponent of the implicit ^(1/2) at the root.
+       Connect from the bottom of the "2" node down to the top of the "1/2" node. -->
+  <line class="edgeD" x1="620" y1="346" x2="620" y2="394"/>
+  <text x="640" y="375" font-size="12" fill="#444" font-style="italic">paired with sqrt at root</text>
+
+  <text x="410" y="490" class="sub">Real-domain search budget exhausted at size 31 (3.8M trees, 3.1M unique signatures);</text>
+  <text x="410" y="510" class="sub">Mathlib's complex log_neg_one closes the witness instead. Verified by lake env lean, exit 0.</text>
+</svg>

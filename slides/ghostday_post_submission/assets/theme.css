@@ -1,0 +1,449 @@
+/* ─────────────────────────────────────────────────────────────────
+   Theme overrides for the EML auto-formalization presentation
+   (reveal.js `simple` base, white background, sober typography).
+
+   Goals:
+   1. Each slide fits inside the 1280×720 canvas.
+   2. Tables and lists print cleanly to one page each.
+   3. SVG diagrams dominate the slide where they are the point.
+   ───────────────────────────────────────────────────────────────── */
+
+:root {
+  --ink:        #1d2e21;
+  --ink-soft:   #3d4f38;
+  --accent:     #1f3b73;
+  --accent-hi:  #2f5aa3;
+  --warm:       #a37438;
+  --line:       rgba(29, 46, 33, 0.18);
+  --code-bg:    #f1efe6;
+}
+
+/* ─── BASE ─────────────────────────────────────────────────────── */
+
+html, body,
+.reveal-viewport, .reveal,
+.reveal .backgrounds,
+.reveal .slide-background {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+}
+
+.reveal {
+  font-family: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  font-size: 30px;            /* base ~30px → headings/lists scale down */
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.reveal .slides { text-align: left; }
+
+.reveal .slides section {
+  padding: 0 !important;
+}
+
+/* ─── HEADINGS ─────────────────────────────────────────────────── */
+
+.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.15;
+  margin: 0 0 0.4em 0;
+  letter-spacing: -0.01em;
+  text-transform: none;
+}
+
+.reveal h1 { font-size: 1.8em; }
+.reveal h2 { font-size: 1.4em; }
+.reveal h3 { font-size: 1.15em; }
+.reveal h4 { font-size: 1.0em; color: var(--ink-soft); }
+
+/* ─── PARAGRAPHS / LISTS ───────────────────────────────────────── */
+
+.reveal p {
+  font-size: 0.95em;
+  line-height: 1.4;
+  margin: 0.35em 0;
+}
+
+.reveal ul, .reveal ol {
+  display: block;
+  margin: 0.4em 0 0.4em 1.1em;
+}
+
+.reveal li {
+  font-size: 0.92em;
+  line-height: 1.35;
+  margin-bottom: 0.25em;
+}
+
+.reveal strong { color: var(--accent); font-weight: 700; }
+.reveal em     { color: var(--ink); font-style: italic; }
+
+.reveal small  { font-size: 0.72em; color: var(--ink-soft); }
+
+/* ─── CODE ─────────────────────────────────────────────────────── */
+
+.reveal code,
+.reveal pre code {
+  font-family: 'JetBrains Mono', 'Fira Mono', Menlo, Consolas, monospace;
+  background: var(--code-bg);
+  border-radius: 3px;
+  padding: 0.05em 0.3em;
+}
+
+.reveal pre {
+  background: var(--code-bg);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.5em 0.8em;
+  font-size: 0.55em;
+  line-height: 1.35;
+  box-shadow: none;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.reveal pre code {
+  background: none;
+  padding: 0;
+  white-space: pre;
+  display: block;
+  overflow-x: auto;
+}
+
+/* ─── TABLES ───────────────────────────────────────────────────── */
+
+.reveal table {
+  margin: 0.4em auto;
+  border-collapse: collapse;
+  font-size: 0.78em;
+  width: auto;
+  max-width: 100%;
+}
+
+.reveal table th {
+  background: rgba(31, 59, 115, 0.08);
+  color: var(--accent);
+  font-weight: 700;
+  border-bottom: 2px solid var(--accent);
+  padding: 0.3em 0.55em;
+  text-align: left;
+}
+
+.reveal table td {
+  border-bottom: 1px solid var(--line);
+  padding: 0.28em 0.55em;
+  vertical-align: top;
+}
+
+/* compact table variant — for dense slides */
+.reveal section.compact table {
+  font-size: 0.7em;
+}
+.reveal section.compact table th,
+.reveal section.compact table td {
+  padding: 0.22em 0.45em;
+}
+.reveal section.compact ul,
+.reveal section.compact ol { margin-top: 0.2em; margin-bottom: 0.2em; }
+.reveal section.compact li { font-size: 0.82em; line-height: 1.3; margin-bottom: 0.15em; }
+.reveal section.compact p  { font-size: 0.82em; margin: 0.25em 0; }
+.reveal section.compact h2 { font-size: 1.15em; margin-bottom: 0.3em; }
+
+/* ─── BLOCKQUOTE ───────────────────────────────────────────────── */
+
+.reveal blockquote {
+  border-left: 4px solid var(--warm);
+  background: rgba(163, 116, 56, 0.08);
+  padding: 0.45em 0.9em;
+  font-style: italic;
+  color: var(--ink);
+  margin: 0.5em auto;
+  font-size: 0.92em;
+  box-shadow: none;
+  width: 92%;
+  box-sizing: border-box;
+}
+
+/* ─── MATH ─────────────────────────────────────────────────────── */
+
+.reveal .MathJax,
+.reveal .katex {
+  font-size: 1.0em !important;
+  color: var(--ink) !important;
+}
+
+.reveal .MathJax_Display,
+.reveal .katex-display,
+.reveal mjx-container[display="true"] {
+  margin: 0.4em 0 !important;
+  font-size: 1.05em !important;
+  color: var(--ink);
+}
+
+/* ─── IMAGES / SVG ─────────────────────────────────────────────── */
+
+.reveal section img,
+.reveal section svg {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  margin: 0.2em auto;
+  display: block;
+}
+
+/* slot-specific image height caps; markdown-side classes drive these.
+   Bumped up — the previous 260/360/460 wasted slide real-estate. */
+.reveal section.figure-tall  img { max-height: 600px; width: 100%; }
+.reveal section.figure-mid   img { max-height: 500px; width: 100%; }
+.reveal section.figure-short img { max-height: 360px; width: 100%; }
+
+/* hero figure: the diagram IS the slide. ~85% of vertical space. */
+.reveal section.figure-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+}
+.reveal section.figure-hero h2 {
+  font-size: 0.95em;
+  margin: 0 0 0.15em 0;
+}
+.reveal section.figure-hero img,
+.reveal section.figure-hero svg {
+  max-height: 620px;
+  width: 100%;
+  margin: 0 auto;
+}
+.reveal section.figure-hero p,
+.reveal section.figure-hero small {
+  text-align: center;
+  font-size: 0.62em;
+  color: var(--ink-soft);
+  margin: 0.15em auto 0 auto;
+}
+
+/* ─── SECTION DIVIDER ──────────────────────────────────────────── */
+
+.reveal section.section-divider {
+  text-align: center !important;
+  padding: 0 !important;
+}
+.reveal section.section-divider h1 {
+  font-size: 2.4em;
+  color: var(--accent);
+  margin: 0 auto;
+  letter-spacing: -0.01em;
+  border-top: 4px solid var(--accent);
+  border-bottom: 4px solid var(--accent);
+  padding: 0.5em 0.8em;
+  display: inline-block;
+}
+
+/* ─── TITLE SLIDE ──────────────────────────────────────────────── */
+
+.reveal section.title-slide {
+  text-align: left;
+  padding: 0 !important;
+}
+
+.reveal .title-grid {
+  display: grid;
+  grid-template-columns: 0.7fr 1.3fr;
+  gap: 1.3em;
+  align-items: center;
+  height: 100%;
+}
+
+.reveal .title-grid .title-hero {
+  width: 100%;
+  max-height: 600px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.reveal .title-grid .title-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.3em;
+  padding-right: 0.6em;
+}
+
+.reveal section.title-slide h1 {
+  font-size: 1.55em;
+  color: var(--accent);
+  margin: 0 0 0.15em 0;
+  line-height: 1.05;
+}
+
+.reveal section.title-slide h2 {
+  font-size: 0.95em;
+  color: var(--ink);
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 0.5em 0;
+}
+
+.reveal section.title-slide p {
+  font-size: 0.75em;
+  line-height: 1.35;
+  margin: 0.2em 0;
+}
+
+.reveal section.title-slide strong {
+  color: var(--accent);
+  font-size: 1.2em;
+  display: inline-block;
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+.reveal section.title-slide .title-text p {
+  margin: 0.25em 0;
+}
+
+.reveal .title-logos {
+  display: flex;
+  align-items: center;
+  gap: 1.4em;
+  margin-top: 0.8em;
+  padding-top: 0.6em;
+  border-top: 1px solid var(--line);
+}
+.reveal .title-logos img {
+  max-height: 100px;
+  width: auto;
+  margin: 0;
+  filter: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+/* ─── 2-COLUMN ────────────────────────────────────────────────── */
+
+.reveal .two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2em;
+  align-items: center;
+}
+
+.reveal .two-col img,
+.reveal .two-col svg {
+  margin: 0;
+  width: 100%;
+  max-height: 560px;
+}
+
+.reveal .two-col ul,
+.reveal .two-col ol {
+  margin: 0 0 0 1em;
+}
+
+.reveal .two-col li {
+  font-size: 0.85em;
+  line-height: 1.3;
+  margin-bottom: 0.2em;
+}
+
+.reveal .two-col p {
+  font-size: 0.85em;
+  margin: 0.2em 0;
+}
+
+/* image-heavy column on the left, slim column on the right */
+.reveal .two-col-wide {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 1.0em;
+  align-items: center;
+}
+.reveal .two-col-wide img,
+.reveal .two-col-wide svg {
+  margin: 0;
+  width: 100%;
+  max-height: 580px;
+}
+.reveal .two-col-wide li,
+.reveal .two-col-wide p {
+  font-size: 0.82em;
+  line-height: 1.3;
+}
+
+/* ─── 2x3 GRID ─────────────────────────────────────────────────── */
+
+.reveal .grid-2x3,
+.reveal .grid-3x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: auto;
+  gap: 0.55em 0.7em;
+  margin: 0.4em auto;
+  width: 96%;
+}
+.reveal .grid-2x3 .cell,
+.reveal .grid-3x2 .cell {
+  background: #faf8f0;
+  border-left: 4px solid var(--accent);
+  padding: 0.5em 0.7em 0.55em 0.8em;
+  border-radius: 4px;
+  font-size: 0.75em;
+  line-height: 1.3;
+}
+.reveal .grid-2x3 .cell strong,
+.reveal .grid-3x2 .cell strong {
+  display: block;
+  color: var(--accent);
+  margin-bottom: 0.15em;
+  font-size: 1.05em;
+}
+
+/* did / did-not split */
+.reveal .did-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  margin: 0.4em auto;
+}
+.reveal .did-split .col {
+  background: #faf8f0;
+  border-radius: 5px;
+  padding: 0.6em 0.8em;
+}
+.reveal .did-split .col.did    { border-top: 4px solid #3a6f2a; }
+.reveal .did-split .col.didnt  { border-top: 4px solid #a32424; }
+.reveal .did-split h4 {
+  margin: 0 0 0.3em 0;
+  font-size: 0.95em;
+  color: var(--accent);
+}
+.reveal .did-split ul { margin: 0 0 0 1em; }
+.reveal .did-split li { font-size: 0.8em; line-height: 1.3; margin-bottom: 0.15em; }
+
+/* ─── SLIDE NUMBER ─────────────────────────────────────────────── */
+
+.reveal .slide-number {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: var(--accent);
+  background: transparent;
+  opacity: 0.6;
+}
+
+.reveal .progress { color: var(--accent); height: 3px; }
+
+/* ─── PRINT / PDF — make every slide fit one page ──────────────── */
+
+@media print {
+  .reveal pre { font-size: 0.5em; }
+  .reveal table { font-size: 0.72em; }
+}

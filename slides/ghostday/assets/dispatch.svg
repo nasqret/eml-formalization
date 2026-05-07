@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 580" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .box     { fill:#f7f3e6; stroke:#1f3b73; stroke-width:2.4; }
+    .boxA    { fill:#fbe8d3; stroke:#a37438; stroke-width:2.4; }
+    .boxQ    { fill:#d6e2f2; stroke:#1f3b73; stroke-width:2.4; }
+    .boxR    { fill:#f0e0e0; stroke:#a32424; stroke-width:2.6; }
+    .lbl     { font-size:14px; fill:#1d2e21; text-anchor:middle; }
+    .lblb    { font-size:15px; fill:#1d2e21; font-weight:700; text-anchor:middle; }
+    .arr     { stroke:#1f3b73; stroke-width:2.6; fill:none; marker-end:url(#m); }
+    .arr2    { stroke:#7a3a1a; stroke-width:2.4; fill:none; marker-end:url(#m2); stroke-dasharray:7 5; }
+    .arrLoop { stroke:#3a6f2a; stroke-width:2.2; fill:none; marker-end:url(#m3); stroke-dasharray:3 4; }
+    .arrRev  { stroke:#a32424; stroke-width:2.6; fill:none; marker-end:url(#m4); stroke-dasharray:8 4; }
+    .title   { font-size:20px; font-weight:700; fill:#1d2e21; }
+    .annot   { font-size:11px; fill:#a32424; font-style:italic; }
+  </style>
+  <defs>
+    <marker id="m"  markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#1f3b73"/></marker>
+    <marker id="m2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#7a3a1a"/></marker>
+    <marker id="m3" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#3a6f2a"/></marker>
+    <marker id="m4" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M 0,0 L 12,6 L 0,12 z" fill="#a32424"/></marker>
+  </defs>
+
+  <text x="20" y="32" class="title">Multi-agent dispatch with GPT Pro in the audit loop</text>
+
+  <!-- Coordinator (top centre) -->
+  <rect class="box" x="470" y="65" width="240" height="70" rx="8"/>
+  <text x="590" y="93" class="lblb">Claude (orchestrator)</text>
+  <text x="590" y="115" class="lbl">manifest, queue, commits</text>
+
+  <!-- GPT Pro reviewer / architect — top right, OUTSIDE the worker fan -->
+  <rect class="boxR" x="870" y="65" width="260" height="74" rx="8"/>
+  <text x="1000" y="93" class="lblb">GPT Pro (reviewer / architect)</text>
+  <text x="1000" y="113" class="lbl">independent audit</text>
+  <text x="1000" y="129" class="lbl">recommends architecture</text>
+
+  <!-- Bidirectional review channel between Claude and GPT Pro -->
+  <path class="arrRev" d="M 710,90 L 870,90"/>
+  <path class="arrRev" d="M 870,115 L 710,115"/>
+  <text x="790" y="80" class="annot">submit bundle</text>
+  <text x="790" y="135" class="annot">review + architecture</text>
+
+  <!-- Four background agents in a row at y ~ 240 -->
+  <rect class="box" x="50"  y="235" width="220" height="62" rx="6"/>
+  <text x="160" y="260" class="lblb">Decomposition agent</text>
+  <text x="160" y="280" class="lbl">chunk extraction</text>
+
+  <rect class="box" x="300" y="235" width="220" height="62" rx="6"/>
+  <text x="410" y="260" class="lblb">Witness composer</text>
+  <text x="410" y="280" class="lbl">tree synthesis</text>
+
+  <rect class="box" x="550" y="235" width="220" height="62" rx="6"/>
+  <text x="660" y="260" class="lblb">Submission monitor</text>
+  <text x="660" y="280" class="lbl">poll + retry</text>
+
+  <rect class="box" x="800" y="235" width="220" height="62" rx="6"/>
+  <text x="910" y="260" class="lblb">Mathematica probe</text>
+  <text x="910" y="280" class="lbl">numeric sieve</text>
+
+  <!-- Aristotle queue + Lean QC at the bottom -->
+  <rect class="boxA" x="220" y="410" width="280" height="74" rx="6"/>
+  <text x="360" y="438" class="lblb">Aristotle queue</text>
+  <text x="360" y="460" class="lbl">~10 concurrent slots</text>
+
+  <rect class="boxQ" x="640" y="410" width="280" height="74" rx="6"/>
+  <text x="780" y="438" class="lblb">Lean QC</text>
+  <text x="780" y="460" class="lbl">lake env lean → exit 0</text>
+
+  <!-- Fan-out from coordinator to the four agents -->
+  <path class="arr" d="M 520,135 L 160,235"/>
+  <path class="arr" d="M 560,135 L 410,235"/>
+  <path class="arr" d="M 620,135 L 660,235"/>
+  <path class="arr" d="M 660,135 L 910,235"/>
+
+  <!-- Agents to queue / QC -->
+  <path class="arr2" d="M 410,297 L 380,410"/>
+  <path class="arr2" d="M 660,297 L 720,410"/>
+  <path class="arr2" d="M 910,297 L 820,410"/>
+
+  <!-- Loop back: queue -> orchestrator (left), QC -> orchestrator (right) -->
+  <path class="arrLoop" d="M 240,450 Q 80,450 70,270 Q 60,90 470,100"/>
+  <path class="arrLoop" d="M 920,450 Q 1080,450 1100,290 Q 1110,200 1080,150"/>
+
+  <!-- Tiny legend -->
+  <g transform="translate(20,530)" font-size="12" fill="#1f2630">
+    <line x1="0"   y1="0" x2="22"  y2="0" class="arr"/>
+    <text x="30"  y="4">dispatch</text>
+    <line x1="120" y1="0" x2="142" y2="0" class="arr2"/>
+    <text x="150" y="4">action</text>
+    <line x1="220" y1="0" x2="242" y2="0" class="arrLoop"/>
+    <text x="250" y="4">feedback</text>
+    <line x1="340" y1="0" x2="362" y2="0" class="arrRev"/>
+    <text x="370" y="4">audit / architecture</text>
+  </g>
+</svg>

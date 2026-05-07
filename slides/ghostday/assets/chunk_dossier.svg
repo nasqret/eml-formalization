@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 460" font-family="'Helvetica Neue', Arial, sans-serif">
+  <style>
+    .folder { fill:#fbe8d3; stroke:#a37438; stroke-width:2.4; }
+    .file   { fill:#ffffff; stroke:#1f3b73; stroke-width:1.8; }
+    .fold   { fill:#dfd9c8; stroke:#1f3b73; stroke-width:1.8; }
+    .lbl    { font-size:14px; fill:#1d2e21; }
+    .lblb   { font-size:15px; fill:#1d2e21; font-weight:700; }
+    .meta   { font-size:12px; fill:#5a5650; font-style:italic; }
+    .title  { font-size:20px; font-weight:700; fill:#1d2e21; }
+    .arrow  { stroke:#3a6f2a; stroke-width:2.2; fill:none; marker-end:url(#g); }
+  </style>
+  <defs>
+    <marker id="g" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M 0,0 L 10,5 L 0,10 z" fill="#3a6f2a"/>
+    </marker>
+  </defs>
+
+  <text x="20" y="30" class="title">Anatomy of a chunk dossier</text>
+  <text x="20" y="52" class="meta">one self-contained directory per atomic claim — bilingual end-to-end</text>
+
+  <!-- Folder tab -->
+  <path class="folder" d="M 60,90 H 200 L 220,110 H 460 V 410 H 60 Z" />
+  <text x="70" y="108" font-size="13" font-weight="700" fill="#7a3a1a">chunks/032_two/</text>
+
+  <!-- Four files inside, two columns -->
+  <!-- 1. chunk.md -->
+  <g transform="translate(95,135)">
+    <rect class="file" x="0" y="0" width="155" height="105" rx="4"/>
+    <path d="M 130,0 L 155,25 H 130 Z" fill="#dfd9c8" stroke="#1f3b73" stroke-width="1.6"/>
+    <text x="12" y="22" class="lblb">chunk.md</text>
+    <text x="12" y="44" class="lbl">paper text</text>
+    <text x="12" y="62" class="lbl">Lean target</text>
+    <text x="12" y="80" class="lbl">deps DAG</text>
+    <text x="12" y="98" class="meta">PL + EN</text>
+  </g>
+
+  <!-- 2. meta.json -->
+  <g transform="translate(265,135)">
+    <rect class="file" x="0" y="0" width="155" height="105" rx="4"/>
+    <path d="M 130,0 L 155,25 H 130 Z" fill="#dfd9c8" stroke="#1f3b73" stroke-width="1.6"/>
+    <text x="12" y="22" class="lblb">meta.json</text>
+    <text x="12" y="44" class="lbl">status</text>
+    <text x="12" y="62" class="lbl">project_id</text>
+    <text x="12" y="80" class="lbl">history</text>
+    <text x="12" y="98" class="meta">audit trail</text>
+  </g>
+
+  <!-- 3. target.lean -->
+  <g transform="translate(95,265)">
+    <rect class="file" x="0" y="0" width="155" height="105" rx="4"/>
+    <path d="M 130,0 L 155,25 H 130 Z" fill="#dfd9c8" stroke="#1f3b73" stroke-width="1.6"/>
+    <text x="12" y="22" class="lblb">target.lean</text>
+    <text x="12" y="44" class="lbl">imports</text>
+    <text x="12" y="62" class="lbl">defs</text>
+    <text x="12" y="80" class="lbl">theorem stmt</text>
+    <text x="12" y="98" class="meta">spec only</text>
+  </g>
+
+  <!-- 4. result.lean -->
+  <g transform="translate(265,265)">
+    <rect class="file" x="0" y="0" width="155" height="105" rx="4"/>
+    <path d="M 130,0 L 155,25 H 130 Z" fill="#dfd9c8" stroke="#1f3b73" stroke-width="1.6"/>
+    <text x="12" y="22" class="lblb">result.lean</text>
+    <text x="12" y="44" class="lbl">witness term</text>
+    <text x="12" y="62" class="lbl">proof body</text>
+    <text x="12" y="80" class="lbl">helpers</text>
+    <text x="12" y="98" class="meta">QC: exit 0</text>
+  </g>
+
+  <!-- Arrow to QC pipeline on the right -->
+  <line class="arrow" x1="475" y1="250" x2="585" y2="250"/>
+  <text x="525" y="240" class="meta" text-anchor="middle">lake env lean</text>
+
+  <!-- QC summary panel -->
+  <g transform="translate(600,140)">
+    <rect class="file" x="0" y="0" width="285" height="220" rx="6" fill="#d8e9d2" stroke="#3a6f2a" stroke-width="2.2"/>
+    <text x="142" y="32" text-anchor="middle" class="lblb" fill="#1d2e21">Per-chunk acceptance</text>
+    <line x1="20" y1="44" x2="265" y2="44" stroke="#3a6f2a" stroke-width="1.4"/>
+    <text x="20" y="72"  class="lbl"><tspan font-weight="700">1.</tspan> All four files present</text>
+    <text x="20" y="98"  class="lbl"><tspan font-weight="700">2.</tspan> Imports resolve</text>
+    <text x="20" y="124" class="lbl"><tspan font-weight="700">3.</tspan> Theorem statement matches target</text>
+    <text x="20" y="150" class="lbl"><tspan font-weight="700">4.</tspan> Lean kernel: exit code 0</text>
+    <text x="20" y="186" class="lblb" fill="#3a6f2a" font-size="16">Then -> commit + manifest update</text>
+  </g>
+</svg>
