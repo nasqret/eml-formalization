@@ -1,0 +1,898 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{tikz-cd}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+% Math operator spacing for the hat-decorated combinators
+\newcommand{\hexp}{\mathop{\widehat{\exp}}}
+\newcommand{\hlog}{\mathop{\widehat{\log}}}
+\newcommand{\hsqrt}{\mathop{\widehat{\sqrt{\vphantom{x}}}}}
+\newcommand{\hsq}{\mathop{\widehat{\mathrm{sq}}}}
+\newcommand{\hinv}{\mathop{\widehat{\mathrm{inv}}}}
+\newcommand{\hadd}{\mathbin{\widehat{+}}}
+\newcommand{\hsub}{\mathbin{\widehat{-}}}
+\newcommand{\hmul}{\mathbin{\widehat{\cdot}}}
+\newcommand{\hdiv}{\mathbin{\widehat{/}}}
+\newcommand{\hpow}{\mathbin{\widehat{\hat{}}\,}}
+% Complex variants
+\newcommand{\hexpC}{\mathop{\widehat{\exp_{\!\mathbb{C}}}}}
+\newcommand{\hlogC}{\mathop{\widehat{\log_{\!\mathbb{C}}}}}
+\newcommand{\haddC}{\mathbin{\widehat{+_{\!\mathbb{C}}}}}
+\newcommand{\hsubC}{\mathbin{\widehat{-_{\!\mathbb{C}}}}}
+\newcommand{\hmulC}{\mathbin{\widehat{\cdot_{\!\mathbb{C}}}}}
+\newcommand{\hdivC}{\mathbin{\widehat{/_{\!\mathbb{C}}}}}
+
+\newcommand{\F}{\mathsf{F36}}
+\newcommand{\EL}{\mathsf{EL}}
+\newcommand{\EML}{\mathsf{EML}}
+\newcommand{\EMLC}{\mathsf{EML}_{\mathbb{C}}}
+\newcommand{\Eset}{\mathcal{E}}
+\newcommand{\EsetC}{\mathcal{E}_{\mathbb{C}}}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Structure of the \textsc{eml} completeness proof\\[2pt]
+       \large An expository tour of grammars, combinators, and bridges}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We give a high-level account of how the \emph{completeness theorem}
+\textemdash\ \emph{every elementary function is expressible as a finite
+expression in the binary operator $\mathrm{eml}(a, b) = \exp(a) -
+\log(b)$, paired with the constant $1$} \textemdash\ is proved.
+The proof rests on a layered architecture: three inductive grammars
+($\F$, $\EL$, $\EML$) connected by two compilers; a catalogue of
+\emph{derived combinators} that recover the usual repertoire
+($+$, $-$, $\cdot$, $/$, $\exp$, $\log$, $\sqrt{\,}$, $\ldots$) as
+fixed-shape sub-trees of the $\mathrm{eml}$ syntax; a single structural
+correctness theorem for the compiler; and a small zoo of
+\emph{Euler bridges} from the complex EML grammar back to the real
+elementary functions. We trace one paper claim end-to-end as a worked
+example, and finish with the scoreboard summarising what is sealed.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================================
+\section{The headline theorem}
+% =====================================================================
+
+The paper's claim, stripped to bare mathematical content, is the
+following.
+
+\begin{theorem}[Headline]
+\label{thm:headline}
+Let $\F$ denote the catalogue of $36$ paper primitives \textemdash\ atoms
+($\mathbf{1},\,\pi,\,e,\,-1,\,2,\,\tfrac{1}{2}$ and the input variable),
+the eight standard real unaries, the six hyperbolic functions, the
+six trigonometric and inverse-trigonometric functions, and the eight
+binary operations. Let $\Eset$ be the single-binary-operator grammar
+\[
+  \Eset \;\ni\; T \;::=\; \mathbf{1} \;\;\big|\;\; \mathbf{x}_n
+       \;\;\big|\;\; \mathrm{eml}(T, T),
+  \qquad \mathrm{eml}(a, b) := \exp(a) - \log(b).
+\]
+Then for each $f \in \F$ there is a finite expression $\mathsf{T}_{f}
+\in \Eset$ \textup{(}or in its complex variant $\EsetC$\textup{)} such
+that on a non-empty open subset of $f$'s natural domain, the
+partial evaluation of $\mathsf{T}_f$ yields a value whose appropriate
+projection $\Re$ or $\Im$ equals $f(x)$.
+\end{theorem}
+
+The hedge \emph{non-empty open subset} is honest. Three measure-zero
+points \textemdash\ $\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0,0)$
+\textemdash\ lie outside the natural construction; a few trig primitives
+are sealed on strict-but-symmetric subdomains rather than on the full
+real line. The bulk of the result, however, is a clean structural
+completeness, and the architecture below explains how the bulk is
+obtained.
+
+The aim of this report is to explain \emph{why} Theorem
+\ref{thm:headline} is true: what shape the proof has, what each
+architectural layer contributes, and where the interesting ideas live.
+
+% =====================================================================
+\section{Three languages, two compilers}
+% =====================================================================
+
+The proof reduces the problem $f \rightsquigarrow \mathsf{T}_f$ through
+a three-language pipeline. The picture is
+
+\begin{center}
+\begin{tikzcd}[column sep=large, row sep=small]
+\boxed{\F}
+  \arrow[r, "\text{translate?}"]
+  \arrow[rrd, dashed, bend right=12, "\text{paper claim}"' inner sep=1pt]
+& \boxed{\EL}
+  \arrow[r, "\text{compile}"]
+& \boxed{\EML}
+  \arrow[d, "\iota"]
+\\[-0.5em]
+& & \boxed{\EMLC}
+\end{tikzcd}
+\end{center}
+
+The four boxes are inductive types; the three arrows are total
+functions; the dashed arrow names the public statement we want to
+verify.
+
+\paragraph{$\F$.} The paper's source language. It has $36$ named
+constructors and a partial denotation: each primitive returns $\bot$
+outside its natural mathematical domain (e.g.\ $\log$ on $\le 0$).
+
+\paragraph{$\EL$.} An intermediate language whose alphabet is
+\emph{elementary}: atoms ($\mathbf{1},\,\mathbf{x}_n$, named constants),
+the unaries $\{\exp,\log,\mathrm{neg},\mathrm{halve},\mathrm{sq},\sqrt{\,},
+\mathrm{inv}\}$, and the binaries $\{+,-,\cdot,/,\hat{},\log_b,
+\mathrm{avg},\mathrm{hypot}\}$. The translation $\F \to \EL$ expands
+non-elementary names through standard identities: e.g.
+\begin{align*}
+  \sinh(a) &\mapsto \tfrac{1}{2}\bigl(\exp(a) - \exp(-a)\bigr), &
+  \tanh(a) &\mapsto \sinh(a) / \cosh(a), \\
+  \mathrm{arsinh}(a) &\mapsto \log\bigl(a + \sqrt{a^2 + 1}\bigr), &
+  \mathrm{artanh}(a) &\mapsto \tfrac{1}{2}\bigl(\log(1 + a) - \log(1 - a)\bigr).
+\end{align*}
+The language $\EL$ is small enough to compile, but rich enough to
+absorb every named primitive of $\F$.
+
+\paragraph{$\EML$.} The pure single-operator grammar of
+Theorem~\ref{thm:headline}. The compiler $\EL \to \EML$ is the heart of
+the proof.
+
+\paragraph{$\EMLC$.} The complex-coefficient version of the EML
+grammar, with the same syntax but complex evaluation. Trig and the
+constants $\pi,\,i$ require Euler's formula and therefore complex
+intermediates; $\EMLC$ is where they live. The embedding $\iota$ is a
+\emph{homomorphism}: it does nothing on syntax (every constructor
+maps to itself) and changes only the evaluation rule.
+
+\medskip
+
+The architectural payoff is two short statements.
+
+\begin{theorem}[Real-fragment compiler]
+\label{thm:real-compiler}
+Suppose $f \in \F$ satisfies $\mathrm{translate?}(f) = \mathrm{some}\,e$
+with $e \in \EL$. Then for every environment
+$\mathrm{env}:\mathbb{N}\to\mathbb{R}$ and every value $v\in\mathbb{R}$,
+\[
+  f.\mathrm{eval?}(\mathrm{env}) = \mathrm{some}\,v
+  \;\Longrightarrow\;
+  \mathrm{compile}(e).\mathrm{eval?}(\mathrm{env}) = \mathrm{some}\,v.
+\]
+\end{theorem}
+
+\begin{theorem}[Complex bridges]
+\label{thm:complex-bridges}
+For each primitive in $\{\pi,\,i,\,\cos,\,\sin,\,\tan,\,\arctan,\,\arccos,\,\arcsin\}$,
+there is a finite witness $\mathsf{C}_f \in \EsetC$ and a projection
+$\Pi \in \{\Re,\Im\}$ such that, on a stated open subdomain of $f$'s
+natural domain,
+\[
+  \mathsf{C}_f \downarrow v
+  \quad\text{with}\quad
+  \Pi(v) = f(x).
+\]
+\end{theorem}
+
+The remaining sections open each box.
+
+% =====================================================================
+\section{The kernel: \texorpdfstring{$\EML$}{EML} grammar and partial evaluation}
+% =====================================================================
+
+\begin{definition}[$\EML$ grammar]
+\label{def:grammar}
+The set $\Eset$ of EML expressions is the smallest set generated by
+\[
+  \Eset \;\ni\; T \;::=\; \mathbf{1} \;\big|\; \mathbf{x}_n \;\big|\;
+   \mathrm{eml}(T,T),
+\]
+where $n\in\mathbb{N}$. The complex variant $\EsetC$ has the same
+syntax; only the evaluation rule changes.
+\end{definition}
+
+\begin{definition}[Partial evaluation]
+\label{def:eval}
+Fix an environment $\mathrm{env}: \mathbb{N} \to \mathbb{C}$. Define a
+partial function $\downarrow$ on $\EsetC$ by
+\[
+  \mathbf{1} \downarrow 1, \qquad
+  \mathbf{x}_n \downarrow \mathrm{env}(n),
+\]
+\[
+  \mathrm{eml}(a, b) \downarrow \exp(\alpha) - \log(\beta)
+  \quad\text{when}\quad a \downarrow \alpha,\;
+  b \downarrow \beta,\; \beta \ne 0,
+\]
+and undefined otherwise. The same rule with $\mathrm{env}:\mathbb{N}\to\mathbb{R}$
+defines the real-evaluation variant on $\Eset$, where additionally the
+side condition $\beta > 0$ is required (so that $\log\beta\in\mathbb{R}$).
+\end{definition}
+
+\paragraph{Why partial.}
+A total evaluation would force a junk value at the boundary, e.g.\ the
+convention $\log 0 = 0$. Bridge theorems would then have to dance
+around the points where this convention disagrees with the natural
+mathematical answer. Partial evaluation lets us state, cleanly, "the
+witness has no value at the boundary, and the paper claim is stated
+on a subset that excludes it" \textemdash\ which is also what the paper
+does.
+
+% =====================================================================
+\section{The combinator algebra}
+\label{sec:combinators}
+% =====================================================================
+
+The single binary operator $\mathrm{eml}$ is too low-level to write
+useful witnesses with directly. The proof accumulates a catalogue of
+\emph{derived combinators}, each defined as a fixed-shape sub-tree of
+$\Eset$ (or $\EsetC$), each accompanied by a \emph{closure lemma}
+stating the conditions under which the combinator evaluates correctly.
+
+\begin{definition}[Catalogue]
+\label{def:catalogue}
+The catalogue contains the following derived combinators. Each row
+gives the name, the value computed under the closure conditions, and
+the size of the underlying $\Eset$-tree.
+
+\smallskip
+\begin{center}
+\begin{tabular}{l l r}
+\toprule
+\textbf{Combinator} & \textbf{Computes (with appropriate side conditions)} & \textbf{Tree size} \\
+\midrule
+$\hexp(T)$       & $\exp(\alpha)$ & $2$ \\
+$\hlog(T)$       & $\log(\alpha)$, principal branch & $4$ \\
+$A \hadd B$      & $\alpha + \beta$ & $11$ \\
+$A \hsub B$      & $\alpha - \beta$ & $7$ \\
+$A \hmul B$      & $\alpha \cdot \beta$ via $\exp(\log\alpha + \log\beta)$ & $\approx 18$ \\
+$A \hdiv B$      & $\alpha / \beta$ & $\approx 22$ \\
+$\hsqrt(T)$      & $\sqrt{\alpha}$ via $\exp(\tfrac{1}{2}\log\alpha)$ & $\approx 10$ \\
+$\hsq(T)$        & $\alpha^{2}$ & $\approx 14$ \\
+$\hinv(T)$       & $\alpha^{-1}$ via $\exp(-\log\alpha)$ & $\approx 8$ \\
+$T \hpow U$      & $\alpha^{\beta}$ via $\exp(\beta \log\alpha)$ & $\approx 28$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\smallskip
+
+The complex variants $\hexpC,\hlogC,\haddC,\hsubC,\hmulC,\hdivC$ have
+the same shape; their closure lemmas include extra side conditions on
+imaginary parts (the principal-branch strip).
+\end{definition}
+
+\begin{remark}[The shape of a closure lemma]
+\label{rmk:closure}
+Every closure lemma has the form
+\[
+  \begin{aligned}
+   \text{premise:}\quad & A \downarrow \alpha,\; B \downarrow \beta;\\
+   \text{side conditions:}\quad & \text{a fixed list of inequalities and}\\
+   & \text{non-vanishing conditions on $\alpha,\beta$;}\\
+   \text{conclusion:}\quad & A \,\widehat{\star}\, B \downarrow \alpha \star \beta.
+  \end{aligned}
+\]
+The proof is mechanical: unfold the $\mathrm{eml}$-tree from leaves
+outward, applying Definition~\ref{def:eval} at each node and threading
+the side conditions to ensure that every $\log\circ\exp$ or
+$\exp\circ\log$ inverts. A tree of depth $d$ produces a closure
+proof with roughly $d$ "step" lines, each invoking one rule.
+\end{remark}
+
+\paragraph{The addition combinator, made explicit.}
+For concreteness, here is the smallest non-obvious case. Define
+
+\begin{align*}
+  L_A &:= \mathrm{eml}\!\bigl(\mathbf{1},\,
+   \mathrm{eml}(\mathrm{eml}(\mathbf{1},\mathrm{eml}(A,\mathbf{1})),\mathbf{1})\bigr), \\[2pt]
+  R_{A,B} &:= \mathrm{eml}\!\bigl(
+   \mathrm{eml}(\mathrm{eml}(\mathbf{1},\mathrm{eml}(A,\mathrm{eml}(A,\mathbf{1}))),\mathbf{1}),\,
+   \mathrm{eml}(B,\mathbf{1})\bigr), \\[2pt]
+  A \hadd B &:= \mathrm{eml}\!\bigl(L_A,\,\mathrm{eml}(R_{A,B},\mathbf{1})\bigr).
+\end{align*}
+
+The closure proof unfolds $A \hadd B$ in eleven sequential steps,
+exhibiting the chain
+\[
+  \begin{aligned}
+   \mathrm{eml}(A,\mathbf{1}) &\downarrow e^{\alpha}, &
+   \mathrm{eml}(\mathbf{1},\mathrm{eml}(A,\mathbf{1})) &\downarrow e - \alpha, &
+   L_A &\downarrow \alpha,\\
+   \mathrm{eml}(A,\mathrm{eml}(A,\mathbf{1})) &\downarrow e^{\alpha} - \alpha, &
+   \mathrm{eml}(B,\mathbf{1}) &\downarrow e^{\beta}, &
+   R_{A,B} &\downarrow e^{\alpha} - \alpha - \beta,\\
+  \end{aligned}
+\]
+\[
+  \mathrm{eml}(R_{A,B},\mathbf{1})\downarrow e^{e^{\alpha}-\alpha-\beta},
+  \qquad
+  A \hadd B \downarrow e^{\alpha} - \bigl(e^{\alpha}-\alpha-\beta\bigr) = \alpha + \beta.
+\]
+The arithmetic identity at the heart of the construction is just
+$\alpha = e - \log(\exp(e - \alpha))$, the principal-branch involution
+applied twice.
+
+% =====================================================================
+\section{The real-fragment compiler}
+\label{sec:real-compiler}
+% =====================================================================
+
+With the combinator catalogue in hand, the compiler $\EL \to \EML$ is
+straightforward: a structural recursion on $\EL$ expressions in which
+each constructor is sent to its catalogue counterpart.
+
+\begin{definition}[Compiler]
+\label{def:compile}
+The function $\mathrm{compile} : \EL \to \EML$ is defined by recursion.
+On atoms,
+\[
+  \mathrm{compile}(\mathbf{1}) := \mathbf{1}, \qquad
+  \mathrm{compile}(\mathbf{x}_n) := \mathbf{x}_n, \qquad
+  \mathrm{compile}(\mathbf{0}) := \mathsf{Z};
+\]
+on unary constructors,
+\[
+  \mathrm{compile}(\exp e) := \hexp(\mathrm{compile}(e)), \qquad
+  \mathrm{compile}(\log e) := \hlog(\mathrm{compile}(e)),
+\]
+and similarly for the other unaries; on binaries, writing
+$\widetilde{e_i} := \mathrm{compile}(e_i)$ for brevity,
+\[
+  \mathrm{compile}(e_1 + e_2) := \widetilde{e_1} \hadd \widetilde{e_2},
+  \qquad
+  \mathrm{compile}(e_1 \cdot e_2) := \widetilde{e_1} \hmul \widetilde{e_2},
+\]
+and similarly for $-$, $/$, $\hat{}\,$, $\log_b$, $\mathrm{avg}$,
+$\mathrm{hypot}$. Here $\mathsf{Z}$ is a fixed closed witness for $0$
+\textemdash\ a small EML tree that evaluates to $0$ unconditionally.
+\end{definition}
+
+\begin{theorem}[Compiler correctness]
+\label{thm:compile}
+For every $e \in \EL$, every $\mathrm{env}:\mathbb{N}\to\mathbb{R}$,
+and every value $v \in \mathbb{R}$,
+\[
+  e.\mathrm{eval?}(\mathrm{env}) = \mathrm{some}\,v
+  \;\Longrightarrow\;
+  \mathrm{compile}(e).\mathrm{eval?}(\mathrm{env}) = \mathrm{some}\,v.
+\]
+\end{theorem}
+
+\begin{proof}[Sketch of the structure]
+By induction on $e$. Each constructor case dispatches to one closure
+lemma from \S\ref{sec:combinators}: the induction hypothesis supplies
+the "$A\downarrow\alpha$" premise, the $\EL$-level evaluation side
+conditions (e.g.\ $\alpha > 0$ for $\log$, $\beta \ne 0$ for division)
+discharge the combinator's side conditions, and the conclusion is
+exactly what the closure lemma delivers.
+\end{proof}
+
+The architectural point is that the compiler's correctness proof
+contains \emph{one combinator-application per constructor case}. All
+the heavy machinery (the eleven-step unfolding for $\hadd$, the deep
+unfolding for $\hsqrt$, etc.) is amortised inside the catalogue,
+proved once and then invoked.
+
+% =====================================================================
+\section{The complex extension and Euler bridges}
+\label{sec:euler}
+% =====================================================================
+
+\paragraph{Why complex.}
+Six paper primitives \textemdash\ $\pi$, $i$, $\cos$, $\sin$, $\tan$,
+the inverse trig family \textemdash\ cannot be expressed in real EML alone.
+The underlying analytic identities (Euler's $e^{i\pi} = -1$, the
+exponential--trigonometric conversions) demand complex intermediates.
+We extend the grammar to $\EsetC$ \textemdash\ same syntax, complex
+evaluation \textemdash\ and copy the combinator catalogue with branch-cut
+side conditions.
+
+\paragraph{Closed constants as building blocks.}
+Five \emph{closed} expressions appear repeatedly across the trig
+witnesses:
+\[
+  \mathsf{Z} \downarrow 0,\qquad
+  \mathsf{C}_2 \downarrow 2,\qquad
+  \mathsf{N}_i \downarrow -i,\qquad
+  \mathsf{I} \downarrow i,\qquad
+  \mathsf{P} \downarrow \pi.
+\]
+Each is a finite $\EsetC$ tree paired with an unconditional evaluation
+lemma. Trig witnesses use them as plug-in factors rather than
+re-deriving Euler's formula at every step.
+
+\paragraph{Real-to-complex lift.}
+The embedding $\iota : \EML \to \EMLC$ is a structural homomorphism:
+each constructor maps to itself, and only the evaluation rule changes.
+Its bridge lemma states: if $T.\mathrm{eval?}(\mathrm{env}) =
+\mathrm{some}\,v$ in the real semantics, then
+$\iota(T).\mathrm{eval?}(\mathrm{env}\!\otimes\!\mathbb{C}) =
+\mathrm{some}\,(v : \mathbb{C})$. This lets every complex trig witness
+import the \emph{already-sealed} real arithmetic compositions
+($\sqrt{1-x^2}$, $x^2 + 1$, $\tfrac{1}{2}$, etc.) without redoing
+branch-cut work.
+
+\paragraph{The Euler bridges.}
+Each trig witness encodes one Euler identity, then projects to the
+real or imaginary part. The full list:
+\begin{equation}
+\label{eq:euler}
+\begin{aligned}
+  \cos x &= \Re\bigl(\exp(ix)\bigr), \\
+  \sin x &= \Re\bigl(\exp(i(x - \tfrac{\pi}{2}))\bigr), \\
+  \tan x &= \Im\!\left(\frac{\exp(2ix) - 1}{1 + \exp(2ix)}\right) \quad \text{(Cayley quotient)}, \\
+  \arctan x &= \Im\bigl(\log(1 + ix)\bigr), \\
+  \arccos x &= \Im\bigl(\log(x + i\sqrt{1-x^2})\bigr), \\
+  \arcsin x &= \Im\bigl(\log(\sqrt{1-x^2} + ix)\bigr).
+\end{aligned}
+\end{equation}
+
+The right-hand side of each line is a finite $\EsetC$ witness once the
+catalogue combinators and the closed constants $\mathsf{I}, \mathsf{P},
+\ldots$ are unfolded. The projection clause is then either $\Re$ or
+$\Im$, depending on which one carries the target real value.
+
+% =====================================================================
+\section{Coverage and limits}
+% =====================================================================
+
+\paragraph{The 36 paper primitives, by family.}
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item \textbf{Atoms (7).} Direct closed witnesses for $\mathbf{1}$,
+    $\mathbf{x}_n$, and the named constants.
+  \item \textbf{Real unaries (8) and binaries (8).} Sealed via
+    Theorem~\ref{thm:compile}: the $\F\to\EL$ translation expands
+    each primitive, the compiler then assembles a witness.
+  \item \textbf{Hyperbolic family (6).} Same mechanism: $\sinh$,
+    $\cosh$, $\tanh$, $\mathrm{arsinh}$, $\mathrm{arcosh}$,
+    $\mathrm{artanh}$ each translate to an $\EL$ composition of
+    $\exp$, $\log$, $\sqrt{\,}$, and the four arithmetic operations.
+  \item \textbf{Trig family (6).} Sealed via the Euler
+    bridges~\eqref{eq:euler}, plus the closed-constant scaffolding of
+    \S\ref{sec:euler}.
+\end{itemize}
+
+\paragraph{Three structural boundary points.}
+The points $\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0, 0)$ all
+share the form \emph{the natural EML witness collides with the
+junk-value boundary of $\log$}. The paper itself does not provide
+explicit EML terms for these; we document them as out-of-scope
+boundary artefacts, with concrete counterexample evaluations.
+
+\paragraph{Domain-narrowing companions.}
+The Euler bridges as stated narrow at the principal-branch cut. To
+widen, we introduce \emph{negative-side companions}: a witness
+$\mathsf{T}_f^{-}$ for the negative half-axis, constructed by feeding
+$-x$ \textemdash\ the real EL expression $\mathrm{neg}(\mathbf{x}_0)$
+lifted along $\iota$ \textemdash\ into the same Euler-bridge skeleton with
+appropriately flipped constants. The two witnesses (positive and
+negative) seal a substantial open neighbourhood of $0$, with $x = 0$
+itself filled in by a trivial constant witness.
+
+% =====================================================================
+\section{A worked example: \texorpdfstring{$\sin x$}{sin x} end-to-end}
+% =====================================================================
+
+We trace $\sin$ through every architectural layer, as the canonical
+case combining all the above.
+
+\paragraph{Step 1 \textemdash\ source.} The paper claim is
+\[
+  \exists\,\mathsf{T}_{\sin} \in \EsetC,\;
+  \forall\, x \in (0, \pi),\;
+  \exists\, v \in \mathbb{C},\;
+  \mathsf{T}_{\sin} \downarrow v
+  \;\wedge\; \Re(v) = \sin(x).
+\]
+
+\paragraph{Step 2 \textemdash\ choose the witness.} From the Euler list
+\eqref{eq:euler}, take the entry for $\sin$ and assemble its
+$\EsetC$ realisation:
+\[
+  \boxed{\;\;\mathsf{T}_{\sin} \;:=\;
+    \hexpC\!\bigl(\;
+      \hlogC(\mathsf{C}_{\cos}) \;\hsubC\; \hlogC(\mathsf{I})
+    \;\bigr).\;\;}
+\]
+Here $\mathsf{C}_{\cos}$ is the cosine-direction witness whose
+evaluation is $e^{ix}$ for $x > 0$; it is itself a closed-constants +
+$\mathbf{x}_0$ assembly using $\mathsf{I}$ and $\haddC$ to encode
+$\log i + \log x = \log(ix)$ before two outer $\hexpC$'s.
+
+\paragraph{Step 3 \textemdash\ evaluation chain.} Five sub-steps, each
+one closure-lemma application:
+\begin{enumerate}[label=(\roman*), topsep=2pt, itemsep=2pt]
+  \item $\mathsf{C}_{\cos} \downarrow e^{ix}$ \quad (Euler bridge for
+    $e^{ix}$, itself a small instance of the same template).
+  \item $\hlogC(\mathsf{C}_{\cos}) \downarrow ix$ \quad (closure for
+    $\hlogC$; side condition $\Im(ix) = x \in (-\pi, \pi]$ \checkmark).
+  \item $\hlogC(\mathsf{I}) \downarrow i\pi/2$ \quad (closure for
+    $\hlogC$, plus the Mathlib value $\log i = i\pi/2$).
+  \item $\hlogC(\mathsf{C}_{\cos}) \hsubC \hlogC(\mathsf{I})
+    \downarrow i(x - \pi/2)$ \quad (closure for $\hsubC$).
+  \item $\mathsf{T}_{\sin} \downarrow \exp\!\bigl(i(x - \pi/2)\bigr)$
+    \quad (closure for $\hexpC$, unconditional).
+\end{enumerate}
+
+\paragraph{Step 4 \textemdash\ projection.} Take the real part:
+\[
+  \Re\!\Bigl(\exp(i(x - \tfrac{\pi}{2}))\Bigr)
+   = \cos\!\Bigl(x - \tfrac{\pi}{2}\Bigr)
+   = \sin x,
+\]
+using the cofunction identity $\cos(x - \pi/2) = \sin x$. \(\square\)
+
+\medskip
+
+Every layer of the architecture appears here in concentrated form:
+the grammar of \S3, the catalogue of \S\ref{sec:combinators}, the
+closed constant $\mathsf{I}$ and the Euler closed-constant scaffolding
+of \S\ref{sec:euler}, the real-to-complex lift implicit in any use of
+$\hsubC$, the Euler identity for $\sin$, and the principal-branch
+projection. The fact that the same template handles all six trig
+primitives \textemdash\ with only the inner content of $\mathsf{C}_f$ and
+the choice of projection $\Re$ or $\Im$ varying from line to line of
+\eqref{eq:euler} \textemdash\ is what gives the proof its uniformity.
+
+% =====================================================================
+\section{What is novel}
+% =====================================================================
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+\item \textbf{The structural compiler.} Theorem~\ref{thm:compile} is a
+  single induction with one combinator application per constructor.
+  Each elementary composition reduces \emph{uniformly} \textemdash\ no
+  per-primitive cleverness. The heavy lifting (the eleven-step
+  unfolding for $\hadd$, the deep unfolding for $\hsqrt$, etc.) is
+  amortised inside the catalogue, proved once and re-used.
+
+\item \textbf{Compositional branch-cut bookkeeping.} The closure
+  lemmas for $\haddC$ and friends carry an explicit eleven-field
+  precondition (the so-called \emph{ADDsafe} bundle) that summarises
+  all imaginary-part-in-strip and non-vanishing conditions the
+  unfolding generates. Every trig witness's evaluation proof reduces
+  to discharging this precondition by a few line-of-reasoning
+  numerical inequalities. The branch-cut handling becomes
+  \emph{compositional}, not ad-hoc per primitive.
+
+\item \textbf{The real-to-complex lift.} The homomorphism
+  $\iota : \EML \to \EMLC$ lets complex trig witnesses re-use real
+  arithmetic that has already been structurally compiled. Without
+  $\iota$, every trig witness would have to reprove $\sqrt{1 - x^2}$
+  from first principles in the complex grammar; with it, the witness
+  for $\arccos$ literally uses the real $\sqrt{1 - x^2}$ tree, lifted.
+
+\item \textbf{Negative-side companions, from one observation.}
+  A surprising amount of trig domain expansion ($\sin$ to $(-\pi, \pi)$,
+  $\cos$ to $\mathbb{R}\setminus\{0\}$, $\arctan$ to
+  $(-\pi, \pi)\setminus\{0\}$, etc.) follows from a single observation:
+  the universal blocker is the same side condition (the strict
+  inequality $\arg < \pi$ for $\hlogC$). Once $-x$ is encoded via
+  $\iota$, the same Euler-bridge skeleton runs on the flipped argument
+  and produces the cofunction-shifted target. One template, five
+  widenings.
+\end{enumerate}
+
+% =====================================================================
+\section{The role of the principal branch}
+\label{sec:branch}
+% =====================================================================
+
+The fixed choice of branch for the complex logarithm is not a cosmetic
+detail of the construction; it is structural. Almost every quantitative
+constraint in the proof \textemdash\ the narrowed trig domains, the
+side-condition bookkeeping in the closure lemmas, the negative-side
+companion witnesses, and the structural exclusion of certain boundary
+points \textemdash\ traces back to the principal-branch convention.
+This section unpacks how.
+
+\paragraph{The convention.}
+Throughout the construction we use the principal branch
+\[
+  \log z \;=\; \log|z| \,+\, i\,\arg(z),
+  \qquad \arg(z) \in (-\pi, \pi].
+\]
+This is the convention of essentially every standard mathematical
+library. Its critical feature for our purposes is the inversion
+identity
+\begin{equation}
+  \log(\exp w) \;=\; w
+  \qquad\text{provided}\qquad
+  \Im(w) \;\in\; (-\pi, \pi].
+  \label{eq:strip}
+\end{equation}
+Outside this strip, $\log \circ \exp$ wraps by integer multiples of
+$2\pi i$, breaking the identity.
+
+\paragraph{How the constraint enters the closure lemmas.}
+Recall the logarithm combinator
+\[
+  \widehat{\log}(T) \;:=\;
+    \mathrm{eml}\!\bigl(\mathbf{1},\,
+      \mathrm{eml}(\mathrm{eml}(\mathbf{1}, T),\, \mathbf{1})\bigr).
+\]
+For $T \downarrow v$, the chain of $\mathrm{eml}$-unfoldings produces
+intermediate values whose imaginary parts must lie in the strip
+\eqref{eq:strip} for the inversion to fire. The decisive step is the
+outermost $\mathrm{eml}(\mathbf{1}, \cdots)$, where one applies
+$\log\!\circ\!\exp$ to the value $e - \log v$, which has imaginary part
+\[
+  \Im(e - \log v) \;=\; -\,\Im(\log v) \;=\; -\,\arg(v).
+\]
+The strip condition $\Im(\cdot) \in (-\pi, \pi]$ thus reads
+$-\arg(v) \in (-\pi, \pi]$, equivalently
+\[
+  \arg(v) \;\in\; [-\pi, \pi),
+\]
+which excludes only one possible value: $\arg(v) = \pi$, the negative
+real axis. The closure lemma for $\widehat{\log}$ therefore carries
+the side condition
+\[
+  v \ne 0 \quad\text{and}\quad \arg(v) < \pi \;\text{strictly}.
+\]
+\emph{This is the core branch-cut constraint of the entire proof.}
+
+\paragraph{The cascade.}
+Every higher combinator that internally applies $\widehat{\log}$
+inherits this constraint. In particular:
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item $\hmulC$ is implemented as
+    $\hexp\!\bigl(\hlogC(A) \haddC \hlogC(B)\bigr)$, so it requires
+    \emph{both} $A.\!\!\downarrow$ and $B.\!\!\downarrow$ to satisfy the
+    branch condition.
+  \item $\hdivC$ is implemented analogously and inherits the same
+    constraints from each operand.
+  \item Witnesses constructed by composition (the trig family, the
+    inverse trig family, $\sqrt{\,}$ in the complex extension) carry
+    a sum of constraints \textemdash\ one per occurrence of $\hlogC$
+    inside the witness.
+\end{itemize}
+This cascade is what determines the natural sealed subdomain of every
+trig primitive.
+
+\paragraph{Concrete consequences.}
+Three of the most visible narrowings have a direct branch-cut origin.
+\begin{itemize}[topsep=2pt, itemsep=4pt]
+  \item \emph{$\sin$ on $(0, \pi)$.} The witness applies $\hlogC$ to
+    $e^{ix}$, whose argument is $x$; the side condition $\arg < \pi$
+    becomes $x < \pi$. Pushing past $\pi$ would put $\arg(e^{ix})$ on
+    the cut.
+  \item \emph{$\arcsin$ originally on $(0, 1)$.} The witness multiplies
+    $i$ by $x$ via $\hmulC$, which requires $\arg(x) < \pi$;
+    \emph{positive} reals have $\arg = 0$ and pass, but \emph{negative}
+    reals have $\arg = \pi$ and fail. The bound $0 < x$ on the original
+    witness is not a topological accident \textemdash\ it is exactly
+    "$x$ is not on the branch cut".
+  \item \emph{$\tan$ on $(0, \pi/2)$.} The Cayley quotient witness
+    invokes $\hmulC$ on $2x$, again hitting the same constraint.
+\end{itemize}
+
+\paragraph{Branch-cut workarounds, made systematic.}
+The widening companions of \S7 are best understood as a unified
+collection of \emph{branch-cut workarounds}, all leveraging the same
+observation: \emph{if the natural witness fails because some
+sub-expression is a negative real, replace that sub-expression with
+$-(-\,\bullet)$, lifted into the complex grammar via $\iota$, so the
+inner $\bullet$ is positive}.
+
+For each of the five widenings, this reduces to choosing a different
+analytic identity:
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item For $\arcsin$, use $\arcsin x = \tfrac{\pi}{2} - \arccos x$.
+    The witness for $\arccos$ already covers $(-1, 1)$ in full because
+    its inner multiplication is $i \cdot \sqrt{1 - x^2}$, with
+    $\sqrt{1-x^2} > 0$ on the open interval, dodging the cut entirely.
+  \item For $\arctan$ on the negative side, use $1 + ix = 1 - i\cdot(-x)$
+    with $-x > 0$.
+  \item For $\cos$, use the parity $\cos(-x) = \cos(x)$ to feed $-x$
+    into the same Euler skeleton.
+  \item For $\sin$, use $\sin x = \cos(\tfrac{\pi}{2} - x)$ together
+    with $\log(-i) = -i\pi/2$ to keep the projection on the real part.
+  \item For $\tan$ on the negative side, use the swap-numerator Cayley
+    quotient $(1 - e^{-2ix}) / (1 + e^{-2ix}) = i\tan x$.
+\end{itemize}
+Each identity is the analytic content; the branch cut is the technical
+constraint each identity is chosen to dodge.
+
+\paragraph{An alternative would change the entire architecture.}
+The paper itself sketches a different approach: redefine the branch
+of $\log$ inside the EML evaluator so that the cut runs elsewhere.
+Concretely, the paper's compiler "manually corrects" the sign of $i$
+when crossing the cut, effectively choosing a branch matched to the
+specific witness shapes used. With such a tailored branch, several
+trig primitives could be sealed on their full real domain by a single
+witness rather than by positive- and negative-side companions.
+
+The price is structural: each closure lemma in the catalogue would
+have to be reproved against the alternative branch. Our construction
+chooses the standard convention \eqref{eq:strip} and pays the price
+in narrowed domains. Both choices are mathematically valid; they
+trade simplicity of side conditions for breadth of the sealed
+subdomain.
+
+% =====================================================================
+\section{Open questions}
+\label{sec:open}
+% =====================================================================
+
+The construction above resolves the headline existence claim of
+Theorem~\ref{thm:headline}. Several structural and quantitative
+questions remain. We organise them into three groups: questions
+inherited from the paper's own list, questions about strengthening
+the present construction, and questions about the optimal expression
+sizes.
+
+\subsection*{Questions from the paper}
+
+The paper's Supplementary Information lists seven open problems that
+neither the paper nor the present construction resolves. We restate
+the most accessible ones.
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt, label=\textbf{P\arabic*}]
+\item \textbf{Constant-free binary Sheffer.}
+  Does there exist a binary operator $\star : \mathbb{R}^2 \to \mathbb{R}$
+  (or $\mathbb{C}^2 \to \mathbb{C}$) such that $\{\mathbf{x}_n, \star\}$
+  alone, with no distinguished constant, generates all elementary
+  functions? An exhaustive numerical search to operator complexity
+  $K = 6$ has found no candidate, but no proof of impossibility is
+  known.
+
+\item \textbf{Real-only Sheffer.}
+  Does there exist a binary operator on $\mathbb{R}$ (no complex
+  intermediates) that forms a complete basis for the elementary
+  functions? The paper conjectures the answer is \emph{no}: every
+  candidate appears to require either a branch through $\mathbb{C}$
+  to compute $\pi$ and the trigonometric family, or an extended-real
+  intermediary $-\infty$. A formal impossibility proof is open.
+
+\item \textbf{$-\infty$-free EML.}
+  Can the EML operator (or one of its cousins EDL, $-\textsc{eml}$) be
+  used without the extended real axis, in particular without
+  $-\infty$ as a possible intermediate value? In our partial-evaluation
+  presentation we side-step this by returning $\bot$ instead of
+  $-\infty$, but the question of whether the elementary functions are
+  expressible \emph{purely on the real line} is independent.
+
+\item \textbf{Universal minimality of $\{1, \mathrm{eml}\}$.}
+  The pair (one constant, one binary operator) is empirically the
+  smallest known calculator for the elementary functions. A truly
+  universal minimality theorem would quantify over every continuous
+  binary operator and every constant, asserting that no two-element
+  basis is strictly smaller in any reasonable measure. The paper gives
+  a cautionary trap example, $B(x, y) = x - y/2$, to illustrate why
+  naive arguments fail.
+
+\item \textbf{Stern--Brocot enumeration for EML expressions.}
+  The set of EML expressions is enumerable, but with massive
+  redundancy: many syntactically distinct trees evaluate to the same
+  elementary function. Is there a canonical form, analogous to the
+  Stern--Brocot tree for rationals, that enumerates each elementary
+  function exactly once?
+
+\item \textbf{Taxonomy of the Sheffer family.}
+  The known cousins are EML, EDL ($\exp(x)/\log(y)$, requiring the
+  constant $e$), and $-\textsc{eml}$ ($\log(x) - \exp(y)$, requiring
+  $-\infty$). Are these three points isolated, members of a discrete
+  family, or random samples of a continuous one-parameter family of
+  Sheffer operators?
+\end{enumerate}
+
+\subsection*{Questions about the present construction}
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt, label=\textbf{C\arabic*}]
+\item \textbf{Full-real-domain trig.}
+  Our construction seals the trig family on wide symmetric subdomains
+  around $0$, using positive- and negative-side companions. Can the
+  same family be sealed on the \emph{full} real domain by a single
+  witness? Two paths suggest themselves:
+  \begin{itemize}[topsep=2pt, itemsep=2pt]
+    \item \emph{Via a custom branch}: re-derive the catalogue against
+      the paper's "manually corrected" branch. The closure lemmas
+      change, but the witnesses gain wider sealed subdomains by
+      construction.
+    \item \emph{Via multi-witness periodicity}: a witness family
+      indexed by period number, with each member covering one
+      fundamental period. The existential becomes weaker
+      ($\forall x.\,\exists\,T$ rather than $\exists\,T.\,\forall x$),
+      but the construction stays inside the principal branch.
+  \end{itemize}
+  Both are tractable but require non-trivial new infrastructure.
+
+\item \textbf{Per-primitive completeness for the cousins.}
+  Theorem~\ref{thm:headline} concerns the EML operator. The paper
+  presents EDL and $-\textsc{eml}$ as confirmed-empirically-equivalent
+  cousins; both deserve a parallel completeness theorem. The grammar
+  scaffolding is straightforward (replace $\mathrm{eml}$ by the cousin
+  operator); the witness search is genuinely new work, since the
+  cousin operators have a different algebraic shape and the EML
+  witnesses do not directly translate.
+
+\item \textbf{The three structural boundary points.}
+  $\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0, 0)$. Each fails
+  for the same reason: the natural EML expression for the value
+  collides with the convention $\log(0) = 0$ that any total
+  formalisation must adopt. Two candidate fixes:
+  \begin{itemize}[topsep=2pt, itemsep=2pt]
+    \item Extend the grammar with a primitive $\mathrm{rpow}$ operator
+      that bypasses the $\log$ at the boundary.
+    \item Move the affected witnesses entirely into the complex
+      extension, where the boundary lives in different coordinates.
+  \end{itemize}
+  Neither has been pursued; both would extend the grammar beyond
+  the paper's pure $\{1, \mathrm{eml}\}$ alphabet.
+\end{enumerate}
+
+\subsection*{Quantitative questions on tree size}
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt, label=\textbf{S\arabic*}]
+\item \textbf{Optimal tree size per primitive.}
+  Our construction produces witnesses whose tree sizes range from
+  $K = 7$ (for $0$) to $K \approx 10^{7}$ (for $\log_b$). The paper
+  records small hand-tuned figures (e.g.\ $K = 5$ for $\sin$ via the
+  identity $\sin x = \cos(x - \pi/2)$ in a setting where $\cos$ is
+  already available). The gap reflects that our witnesses are
+  produced by a uniform structural compiler, not optimised per
+  primitive. What is the smallest $K$ achievable for each primitive
+  under the principal-branch convention?
+
+\item \textbf{Asymptotic depth.}
+  The paper observes that the identity function appears at depth $4$
+  in the EML tree, allowing variable transplanting by multiples of
+  $4$. Are there non-trivial functions whose minimum-depth witness has
+  a different residue class modulo $4$? If so, what depths are
+  achievable?
+
+\item \textbf{Compositional bounds.}
+  Given $K(f), K(g)$, what is the best upper bound on $K(f \circ g)$
+  derivable from the EML grammar? Our compiler achieves something like
+  a multiplicative bound; tighter additive or near-additive bounds
+  would substantially shrink the witnesses for composite primitives
+  (and thereby narrow the gap with the paper's hand-tuned figures
+  in S1).
+\end{enumerate}
+
+% =====================================================================
+\section{Coverage scoreboard}
+% =====================================================================
+
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Family} & \textbf{Sealed coverage} & \textbf{Mechanism} \\
+\midrule
+Atoms (7)              & full                                                & direct closed witness \\
+Real unary (8)         & full $\setminus \{\sqrt{0}\}$                       & structural compiler \\
+Real binary (8)        & full $\setminus \{\mathrm{hypot}(0,0)\}$            & structural compiler \\
+Hyperbolic (6)         & full $\setminus \{\mathrm{arcosh}(1)\}$             & $\F\to\EL$ + compiler \\
+Trig (6)               & wide subdomains around $0$                          & Euler bridges + companions \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+
+\noindent\textbf{Net.} $36/36$ paper primitives sealed by finite EML
+expressions on non-empty open subdomains of their natural domains,
+modulo three structurally excluded boundary points \textemdash\ which
+the paper itself does not exhibit either. The headline theorem
+(Theorem~\ref{thm:headline}) holds.
+
+\end{document}
