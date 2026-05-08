@@ -486,6 +486,55 @@ theorem tan_full (x : ℝ) (hx : Real.cos x ≠ 0) :
       exact hv_eval
     · rw [htan]; exact hv_im
 
+/-! ## §C′.5b — Real-fragment compile of `x / √(1 + x²)` for arctan
+
+Per Pro's recommendation §3: arctan via arcsin uses the substitution
+input `x / √(1 + x²)`, which is reachable in the real fragment via
+the F36→EL→EML pipeline. The eval is unconditional: `1 + x² > 0`
+always holds, so neither the `sqrt` nor the `div` triggers `none`. -/
+
+/-- The real EL expression `x / √(1 + x²)`. -/
+def atanArgELℝ : ELExpr :=
+  .div (.var 0) (.sqrt (.add .one (.sq (.var 0))))
+
+/-- The complex-grammar witness for `x / √(1 + x²)`, obtained by
+compiling the real EL expression and lifting to ℂ. -/
+noncomputable def atanArgℂ : EMLTermℂ := atanArgELℝ.compile.toComplex
+
+/-- Eval lemma for `atanArgℂ`: for any real `x`, evaluates to
+`((x / √(1 + x²) : ℝ) : ℂ)`. -/
+lemma eval?_atanArgℂ_lift (x : ℝ) :
+    atanArgℂ.eval?
+        (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) =
+      some (((x / Real.sqrt (1 + x ^ 2) : ℝ) : ℂ)) := by
+  unfold atanArgℂ
+  set realEnv : Nat → ℝ := fun n => if n = 0 then x else 0 with hrealEnv
+  -- 1 + x² > 0 always
+  have h_one_add_sq_pos : 0 < 1 + x ^ 2 := by positivity
+  -- √(1 + x²) > 0
+  have h_sqrt_pos : 0 < Real.sqrt (1 + x ^ 2) :=
+    Real.sqrt_pos.mpr h_one_add_sq_pos
+  -- ELExpr.eval? gives the right value
+  have h_el_eval :
+      atanArgELℝ.eval? realEnv = some (x / Real.sqrt (1 + x ^ 2)) := by
+    unfold atanArgELℝ
+    simp [ELExpr.eval?, bind2, hrealEnv, h_one_add_sq_pos, h_sqrt_pos.ne']
+  -- Compile preserves eval
+  have h_compile :
+      atanArgELℝ.compile.eval? realEnv = some (x / Real.sqrt (1 + x ^ 2)) :=
+    ELExpr.compile_correct atanArgELℝ realEnv
+      (x / Real.sqrt (1 + x ^ 2)) h_el_eval
+  -- Show the complex env is the real-cast of realEnv
+  have h_env_eq :
+      (fun n : Nat => if n = 0 then ((x : ℝ) : ℂ) else 0)
+        = (fun n => ((realEnv n : ℝ) : ℂ)) := by
+    funext n
+    by_cases h : n = 0
+    · subst h; simp [hrealEnv]
+    · simp [hrealEnv, h]
+  rw [h_env_eq]
+  exact EMLTerm.eval?_toComplex_of_real h_compile
+
 /-! ## §C′.6 — `sin_full`: full-real-domain sin witness via cos(π/2 − x)
 
 Lifts Aristotle's chunk 075 proof (sin via cos) into our actual
@@ -509,5 +558,27 @@ theorem sin_full (x : ℝ) (hx : x ≠ Real.pi / 2) :
   · rw [EMLTermℂ.eval?_subst0 h_shift t, envShift0_baseAt0]
     exact hv_eval
   · rw [hv_re, Real.cos_pi_div_two_sub]
+
+/-! ## §C′.7 — `arctan_full`: full-real-domain arctan witness via arcsin
+
+Lifts Aristotle's chunk 078 proof into our actual framework. Uses
+`atanArgℂ` (real-fragment compile of `x / √(1+x²)`), `atanArg_in_Ioo`,
+and the existing `arcsin_im_bridge_open` on `(-1, 1)`. Final step:
+`Real.arctan_eq_arcsin`. -/
+
+theorem arctan_full (x : ℝ) :
+    ∃ t : EMLTermℂ, ∃ vc : ℂ,
+      t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+      vc.im = Real.arctan x := by
+  set env_x := (fun n : Nat => if n = 0 then ((x : ℝ) : ℂ) else 0)
+  have h_atan_eval : atanArgℂ.eval? env_x =
+                      some (((x / Real.sqrt (1 + x ^ 2) : ℝ) : ℂ)) :=
+    eval?_atanArgℂ_lift x
+  obtain ⟨h_lo, h_hi⟩ := atanArg_in_Ioo x
+  obtain ⟨vc, hv_eval, hv_im⟩ := arcsin_im_bridge_open h_lo h_hi
+  refine ⟨arcsinTermℂ_open.subst0 atanArgℂ, vc, ?_, ?_⟩
+  · rw [EMLTermℂ.eval?_subst0 h_atan_eval arcsinTermℂ_open, envShift0_baseAt0]
+    exact hv_eval
+  · rw [hv_im]; exact (Real.arctan_eq_arcsin x).symm
 
 end EML

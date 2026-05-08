@@ -418,6 +418,19 @@ theorem paper_claim_sin_full :
         vc.re = Real.sin x :=
   fun x hx => sin_full x hx
 
+/-- **Paper claim — `arctan x`** on the **full natural domain** `ℝ`
+(Path C′ §3 wrap-up). Witness `arcsinTermℂ_open.subst0 atanArgℂ` where
+`atanArgℂ` evaluates to `((x / √(1+x²) : ℝ) : ℂ)` (real fragment via
+`F36→EL→EML→toComplex`). The substitution argument lies in `(-1, 1)`
+(via `atanArg_in_Ioo`) so the existing `arcsin_im_bridge_open` applies;
+final step `Real.arctan_eq_arcsin`. -/
+theorem paper_claim_arctan_full :
+    ∀ x : ℝ,
+      ∃ t : EMLTermℂ, ∃ vc : ℂ,
+        t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+        vc.im = Real.arctan x :=
+  fun x => arctan_full x
+
 /-- **Paper claim — `tan x`** on the **full natural domain** `{x | cos x ≠ 0}`
 (Path C′ §4 wrap-up). For each such `x`, there exists a witness term
 `t : EMLTermℂ` (selected by the meta-level proof based on the period-π
