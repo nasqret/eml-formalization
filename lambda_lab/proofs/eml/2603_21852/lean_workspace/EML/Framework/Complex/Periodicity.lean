@@ -111,8 +111,41 @@ lemma eval?_mkAddℂ_ofReal
 /-! ## §C′.1 — Period constants -/
 
 /-- The complex constant `2π` as an `EMLTermℂ`, built as `mkMulℂ` of
-the public `2` and `π` terms. This is path-agnostic — needed in any
-approach involving period-`2π` shifts. -/
+the public `2` and `π` terms. -/
 noncomputable def twoPiPubℂ : EMLTermℂ := mkMulℂ twoPubℂ piPubℂ
+
+/-- Eval lemma for `twoPiPubℂ` — first concrete witness validation
+under the Path C′ approach. The ADDsafeℂ bundle on `log 2` and `log π`
+is discharged via `ADDsafeℂ_ofReal_ofReal` since both are real-valued. -/
+lemma eval?_twoPiPubℂ (env : Nat → ℂ) :
+    twoPiPubℂ.eval? env = some ((2 * Real.pi : ℝ) : ℂ) := by
+  unfold twoPiPubℂ
+  have hT : twoPubℂ.eval? env = some (2 : ℂ) := eval?_twoPubℂ env
+  have hP : piPubℂ.eval? env = some ((Real.pi : ℝ) : ℂ) := eval?_piPubℂ env
+  have h2_ne : (2 : ℂ) ≠ 0 := by norm_num
+  have hπ_ne : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast Real.pi_ne_zero
+  have h2_arg : Complex.arg (2 : ℂ) < Real.pi := by
+    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl,
+        Complex.arg_ofReal_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
+    exact Real.pi_pos
+  have hπ_arg : Complex.arg ((Real.pi : ℝ) : ℂ) < Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
+    exact Real.pi_pos
+  -- ADDsafeℂ on log(2) and log(π) — both are real (since 2 > 0 and π > 0).
+  have h_log2_eq : Complex.log (2 : ℂ) = ((Real.log 2 : ℝ) : ℂ) := by
+    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl]
+    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
+  have h_logπ_eq :
+      Complex.log ((Real.pi : ℝ) : ℂ) = ((Real.log Real.pi : ℝ) : ℂ) :=
+    (Complex.ofReal_log Real.pi_pos.le).symm
+  have h_addsafe :
+      ADDsafeℂ (Complex.log (2 : ℂ)) (Complex.log ((Real.pi : ℝ) : ℂ)) := by
+    rw [h_log2_eq, h_logπ_eq]
+    exact ADDsafeℂ_ofReal_ofReal (Real.log 2) (Real.log Real.pi)
+  -- Apply mkMulℂ closure.
+  have hMul := eval?_mkMulℂ hT hP h2_ne hπ_ne h2_arg hπ_arg h_addsafe
+  rw [hMul]
+  push_cast; ring_nf
 
 end EML
