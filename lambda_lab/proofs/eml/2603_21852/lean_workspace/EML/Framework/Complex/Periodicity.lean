@@ -386,6 +386,21 @@ lemma eval?_shiftByPeriodℂ
     push_cast
     ring
 
+/-! ## §C′.4b — `shiftByPiℂ` and `shiftBy2Piℂ` specializations -/
+
+/-- Period-π shift: `shiftByPiℂ k` evaluates to `((x − k·π : ℝ) : ℂ)`
+when `env 0 = ((x : ℝ) : ℂ)`. Uses `piPubℂ` and `negPiPubℂ` as the
+period constants. -/
+noncomputable def shiftByPiℂ : ℤ → EMLTermℂ :=
+  shiftByPeriodℂ piPubℂ negPiPubℂ
+
+/-- Eval lemma for `shiftByPiℂ`. -/
+lemma eval?_shiftByPiℂ (x : ℝ) (k : ℤ) (env : Nat → ℂ)
+    (henv0 : env 0 = ((x : ℝ) : ℂ)) :
+    (shiftByPiℂ k).eval? env = some (((x - (k : ℝ) * Real.pi : ℝ) : ℂ)) := by
+  unfold shiftByPiℂ
+  exact eval?_shiftByPeriodℂ (eval?_piPubℂ env) (eval?_negPiPubℂ env) henv0 k
+
 /-! ## §C′.4 — Period-π reduction for tan
 
 **Provenance:** sealed 2026-05-08 by Aristotle (project
