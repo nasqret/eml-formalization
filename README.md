@@ -1,119 +1,235 @@
-# EML formalization — arXiv:2603.21852
+# EML — All elementary functions from a single binary operator
 
-Lean 4 + Mathlib v4.28 formalization of *"All elementary functions
-from a single binary operator"* (Andrzej Odrzywołek, arXiv:2603.21852),
-together with the orchestration scaffolding (Aristotle CLI, Eagle HPC
-scripts, Mathematica entry-point) used to drive the proof.
+> A Lean 4 + Mathlib v4.28 formalization of arXiv:2603.21852
+> (Andrzej Odrzywołek, *"All elementary functions from a single binary operator"*).
 
-This repository is an **extracted slice** of a larger workspace
-(`falenty-2026` lambda-lab project). It contains *only* the artefacts
-relevant to the EML proof itself — see `lambda_lab/proofs/eml/2603_21852/`
-for the formalisation, `lambda_lab/lab/commands/aristotle.py` and
-`lambda_lab/lab/commands/eml.py` for the proof-tooling CLI, plus
-`mathematica/` and `eagle_scripts/` for the auxiliary backends.
+[![Lean](https://img.shields.io/badge/Lean-4.28.0-violet)](https://leanprover.github.io/)
+[![Mathlib](https://img.shields.io/badge/Mathlib-v4.28-blue)](https://github.com/leanprover-community/mathlib4)
+[![Build](https://img.shields.io/badge/lake%20build-8054%20jobs-success)](#quick-start)
+[![Sorry-free](https://img.shields.io/badge/sorry-0-success)](#headline)
+[![Paper](https://img.shields.io/badge/arXiv-2603.21852-darkred)](https://arxiv.org/abs/2603.21852)
+[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
 
-## Headline result
+---
 
-> **All 36 paper primitives are formalized completely on a non-empty
-> open subdomain of their natural domain — modulo three structural
-> boundary points (`√0`, `arcosh 1`, `hypot(0, 0)`).**
+## <a name="headline"></a> Headline
 
-Each paper primitive is sealed via a literal `EMLTermℂ` (or `EMLTerm`,
-real fragment) witness term whose `eval?` matches the paper's stated
-value, with the Lean kernel as the only acceptance criterion.
+**All 36 paper primitives are formalized via literal `EMLTermℂ` (or `EMLTerm`) witness terms whose `eval?` matches the paper's stated value, on a non-empty open subdomain of the natural mathematical domain — modulo three structural boundary points the paper itself flags.**
+
+The Lean kernel is the only acceptance criterion: every witness is a concrete syntax tree whose partial evaluation (`Option ℂ`-valued) is checked to equal the corresponding `Real.sin x`, `Real.exp x`, `Real.arcsin x`, etc.
+
+### At a glance
+
+|     | Count | Notes |
+|---|---:|---|
+| 📐 Paper primitives sealed | **36 / 36** | atoms · real unaries · hyperbolic · binaries · trig |
+| 📜 `paper_claim_*` theorems | **45** | exposed in `EML.Framework.PaperClaims` |
+| 🌳 K-count theorems (`rfl`-checked tree sizes) | **15** | in `EML.Framework.KCounting` |
+| 🛠 Lean kernel jobs | **8 054** | `lake build` finishes sorry-free |
+| 🚫 `sorry` / `admit` / axiom abuse | **0** | clean by `#print axioms` |
+| ⚠ §G structural boundary points | **3** | `√0`, `arcosh 1`, `hypot(0, 0)` — paper-acknowledged |
+
+---
+
+## Coverage scoreboard
+
+| Family | Count | Sealed on | §G boundary |
+|---|---:|---|---|
+| **Atoms** (`1`, `π`, `e`, `−1`, `2`, `½`, `x`, `i`) | 8 | full domain | — |
+| **Real unaries** (`exp`, `log`, `inv`, `½·`, `−`, `(·)²`, `σ`) | 7 | full natural domain | — |
+| `√` | 1 | `(0, ∞)` | `√0` |
+| **Hyperbolic** (`sinh`, `cosh`, `tanh`, `arsinh`, `artanh`) | 5 | full natural domain | — |
+| `arcosh` | 1 | `(1, ∞)` | `arcosh 1` |
+| **Binaries** (`+`, `−`, `·`, `/`, `avg`, `^`, `log_b`) | 7 | full natural domain | — |
+| `hypot` | 1 | `ℝ² ∖ {(0,0)}` | `hypot(0,0)` |
+| **Trig** `cos` | 1 | `ℝ ∖ {0}` | trig narrowing[¹](#trig-note) |
+| **Trig** `sin`, `arctan` | 2 | `(−π, π) ∖ {0}` | |
+| **Trig** `tan` | 1 | `(−π/2, π/2) ∖ {0}` | |
+| **Trig** `arccos`, `arcsin` | 2 | full open `(−1, 1)` | — |
+
+<a name="trig-note"></a><sup>**[¹]**</sup> Trig narrowing is *not* a §G boundary point — it's a deliberate choice to use Mathlib's standard `Complex.log` principal branch unchanged. Two concrete plans exist for full real-domain coverage; see [OPEN_QUESTIONS](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md).
+
+---
+
+## How the proof is built
+
+The proof reduces `f ↝ T_f` through a three-language pipeline. Each box is an inductive type; each arrow is a total function modulo partial evaluation at the leaves.
+
+```mermaid
+flowchart LR
+    F36["F36<br/><sub>36 paper primitives<br/>partial denotation</sub>"]
+    EL["EL<br/><sub>elementary intermediate<br/>{exp, log, neg, inv, +, −, ·, /, …}</sub>"]
+    EML["EML<br/><sub>single-operator grammar<br/>T ::= 1 ∣ xₙ ∣ eml(T,T)</sub>"]
+    EMLC["EMLℂ<br/><sub>complex-coefficient<br/>same syntax · ℂ semantics</sub>"]
+
+    F36 -->|"translate?"| EL
+    EL  -->|"compile<br/>(structural compiler<br/>Theorem 2)"| EML
+    EML -.->|"ι homomorphism<br/>identity on syntax"| EMLC
+    F36 ===>|"paper claim<br/>(Theorem 3 — Euler bridges)"| EMLC
+
+    classDef src fill:#fef3c7,stroke:#92400e,color:#92400e
+    classDef tgt fill:#dbeafe,stroke:#1e3a8a,color:#1e3a8a
+    classDef cpx fill:#ede9fe,stroke:#5b21b6,color:#5b21b6
+    class F36 src
+    class EL,EML tgt
+    class EMLC cpx
+```
+
+The headline definition is just three lines:
+
+```
+T ::= 1  ∣  xₙ  ∣  eml(T, T)        eml(a, b) := exp(a) − log(b)
+```
+
+Everything else — every `+`, every `cos`, every `arctan` — is a fixed-shape sub-tree built from this grammar. See [`notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) for the 11-page expository tour.
+
+---
+
+## 📊 Stats dashboard
+
+For the full dashboard with K-count charts, witness-tree size distributions, file-size breakdowns, and a curated tour of the most interesting Lean code, see **[DASHBOARD.md](DASHBOARD.md)**.
+
+A taste:
+
+```mermaid
+pie showData
+    title K-count distribution across 28 sized witnesses (paper Table 4)
+    "≤ 100 (atoms, simple unaries)" : 11
+    "100–10 000 (compiled small ops)" : 8
+    "10 000–1 000 000 (deep compositions)" : 5
+    "> 1 000 000 (logb, div, mul, arcsin, pow)" : 4
+```
+
+---
+
+## Curated witnesses
+
+A few terms worth lingering on. Full annotated tour in [DASHBOARD.md § Witness gallery](DASHBOARD.md#witness-gallery).
+
+### `tanCoreTermℂ` — Pro's Cayley quotient
+
+The doubled-angle identity `(e^{2ix} − 1) / (1 + e^{2ix}) = i · tan x` (suggested by an independent GPT Pro code review with no shared context) compresses the `tan` witness to **2 817 nodes**, side-stepping the `e^{ix} + e^{−ix}` `ADDsafeℂ` explosion that had stalled progress for days.
+
+```lean
+noncomputable def tanCoreTermℂ : EMLTermℂ :=
+  let twoX := mkMulℂ twoPubℂ (.var 0)
+  let I2x  := mkMulℂ iTermPubℂ twoX
+  let E2   := mkExpℂ I2x
+  mkDivℂ (mkSubℂ E2 .one) (mkAddℂ .one E2)
+```
+
+### `arcsinTermℂ_open` — pure identity manipulation
+
+The narrow witness `arcsinTermℂ` only handles `0 < x < 1` (its inner `mkMulℂ iTermPubℂ (.var 0)` collides with `arg = π` for `x ≤ 0`). The full open `(−1, 1)` is unlocked by the identity `arcsin x = π/2 − arccos x`, encoding `iπ/2` as `mkLogℂ iTermPubℂ` (since `Complex.log i = iπ/2`):
+
+```lean
+noncomputable def arcsinTermℂ_open : EMLTermℂ :=
+  mkSubℂ (mkLogℂ iTermPubℂ) arccosTermℂ
+```
+
+The full witness has K = 569 297, vs. the narrowed `arcsinTermℂ` at K = 1 704 019 — a **3× compression** as a side-effect of the identity-driven reformulation.
+
+### `EMLTerm.eval?` — the partial-evaluation kernel
+
+The architectural decision that made the whole formalization tractable: instead of fighting Mathlib's total `Real.log 0 = 0` junk value, we work in `Option ℝ` (and `Option ℂ`):
+
+```lean
+noncomputable def EMLTerm.eval? (env : Nat → ℝ) : EMLTerm → Option ℝ
+  | .one     => some 1
+  | .var n   => some (env n)
+  | .eml a b =>
+      match EMLTerm.eval? env a, EMLTerm.eval? env b with
+      | some va, some vb =>
+          if 0 < vb then some (Real.exp va - Real.log vb) else none
+      | _, _ => none
+```
+
+Every nested `eml(_, b)` returns `none` outside its natural mathematical domain (`b ≤ 0`). Bridge theorems are stated as *"if `F36Expr.eval? env e = some v`, then ∃ `t : EMLTerm`, `t.eval? env = some v`"* — we never claim equality at a boundary point, exactly as the paper does.
+
+---
+
+## Quick start
+
+### Prerequisites
+
+```bash
+make prereqs              # checks elan, lake, python3, git
+```
+
+### Build
+
+```bash
+make build                # lake build, ~30–60 min cold cache, seconds incrementally
+```
+
+Expected result: `Build completed successfully (8054 jobs).` On a cold Mathlib cache the first build pulls ~6 GB of `olean` files; subsequent builds are incremental.
+
+### Verify what's sealed
+
+```bash
+make scoreboard           # lists 45 paper_claim theorems and 15 K_count theorems
+make sanity               # #checks paper_claim_pi, paper_claim_sin, paper_claim_cos
+make stats                # repo-wide statistics
+```
+
+### Bootstrap a fresh checkout
+
+A first-time-run recipe is encoded in [`First_run.md`](First_run.md) — reading it executes the full build + memory + sanity + scoreboard sequence and prints a status block. Useful for any new Claude / collaborator joining the project.
+
+---
 
 ## Repository layout
 
 | Path | Purpose |
 |---|---|
-| `lambda_lab/proofs/eml/2603_21852/` | The Lean artefact. Subtrees `lean_workspace/EML/Framework/` (the public API), `chunks/` (per-statement decomposition), `notes/` (the expository paper on the proof structure), `report/` (the auto-generated hybrid report). |
-| `lambda_lab/proofs/lean_aristotle/` | The Lake project Aristotle submissions return into. |
-| `lambda_lab/lab/commands/aristotle.py` | CLI integration with Harmonic AI's Aristotle proof search. |
-| `lambda_lab/lab/commands/eml.py` | Per-chunk submission / verification commands for the EML proof. |
-| `EML_review_bundle_sources/` | Paper sources (`paper_source/EML.tex`), the Supplementary Information PDF, and the bibliography. |
-| `eagle_scripts/` | PCSS Eagle HPC SLURM scripts (`rebuild_cache.sbatch`, `verify_all.sbatch`, …). |
-| `mathematica/` | Entry-point for the Mathematica side: a stub pointing at the upstream `VA00/SymbolicRegressionPackage` repository where the `VerifyBaseSet` procedure that originally discovered the EML operator lives. |
-| `slides/` | Three EML slide decks: the original `eml_presentation/`, the GhostDay 2026 `ghostday/` (submitted), and `ghostday_post_submission/` (post-submission widening update). |
+| [`lambda_lab/proofs/eml/2603_21852/`](lambda_lab/proofs/eml/2603_21852/) | The Lean artefact (`lean_workspace/EML/Framework/` is the public API; `chunks/`, `notes/`, `report/` for decomposition and exposition) |
+| [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard.** `#check paper_claim_<f>` to inspect any seal |
+| [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | `rfl`-checked tree sizes for all 36 primitives + companions |
+| [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean) | The three §G boundary-point counterexamples |
+| [`lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) | 11-page expository paper on the architecture |
+| [`lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) | Author-facing synopsis |
+| [`lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) | Concrete action plans (Sheffer cleanup, full-real trig, EDL/−EML completeness) |
+| [`lambda_lab/lab/commands/aristotle.py`](lambda_lab/lab/commands/aristotle.py) | CLI integration with Harmonic AI's Aristotle proof search |
+| [`lambda_lab/lab/commands/eml.py`](lambda_lab/lab/commands/eml.py) | Per-chunk submit / verification commands |
+| [`EML_review_bundle_sources/`](EML_review_bundle_sources/) | Paper sources (`paper_source/EML.tex`), Supplementary Information PDF, bibliography |
+| [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts (`verify_all.sbatch`, `rebuild_cache.sbatch`, …) |
+| [`mathematica/`](mathematica/) | Stub pointing at upstream `VA00/SymbolicRegressionPackage` (`VerifyBaseSet`) |
+| [`slides/`](slides/) | Three EML decks: original, GhostDay 2026 (submitted), post-submission widening update |
+
+---
 
 ## Where to look first
 
-| Goal | Start here |
+| If you want to… | Start here |
 |---|---|
-| Read the formal claim, primitive by primitive | `lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean` |
-| Understand the architecture of the proof | `lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf` |
-| See what's open / what plans exist | `lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md` |
-| Author-facing synopsis suitable to share | `lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md` |
-| Re-verify locally | `cd lambda_lab/proofs/eml/2603_21852/lean_workspace && lake build` (~8 054 jobs, sorry-free) |
-| Re-verify on PCSS Eagle | `eagle_scripts/verify_all.sbatch` |
+| **Read the formal claim**, primitive by primitive | [`PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) |
+| **See what's sealed and what isn't** | [Coverage scoreboard ↑](#coverage-scoreboard) and [DASHBOARD.md](DASHBOARD.md) |
+| **Understand the architecture** | [`notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) |
+| **See what's open** | [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) — five concrete plans (A–E) |
+| **Get an author-facing synopsis to forward** | [`AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) |
+| **Re-verify locally** | `make build` |
+| **Re-verify on Eagle (PCSS)** | [`eagle_scripts/verify_all.sbatch`](eagle_scripts/verify_all.sbatch) |
+| **Bootstrap a fresh Claude session** | [`First_run.md`](First_run.md) |
 
-## What is sealed
-
-* **Atoms (7)** — full domain.
-* **Real unaries (8)** — full natural domain except `√0` (§G boundary).
-* **Hyperbolic family (6)** — full natural domain except `arcosh 1`.
-* **Real binaries (8)** — full natural domain except `hypot(0, 0)`.
-* **Trig (6)** — wide subdomains around `0`:
-  * `cos` on `ℝ \ {0}`,
-  * `sin`, `arctan` on `(-π, π) \ {0}`,
-  * `arccos`, `arcsin` on full open `(-1, 1)`,
-  * `tan` on `(-π/2, π/2) \ {0}`.
-* **`π`, `i`** — full literal.
-
-## Build instructions
-
-### Lean / Lake
-
-```bash
-cd lambda_lab/proofs/eml/2603_21852/lean_workspace
-lake build
-```
-
-The Mathlib snapshot is pinned in `lakefile.toml`. First build pulls
-~6 GB of olean cache; subsequent builds are incremental.
-
-### Python CLI scaffold (optional)
-
-```bash
-pip install -e .
-```
-
-The package installs the `lambda_lab` namespace. Aristotle commands
-are reachable as Python modules:
-
-```bash
-python -m lambda_lab.lab.commands.aristotle submit "<prompt>"
-python -m lambda_lab.lab.commands.eml list
-python -m lambda_lab.lab.commands.eml watch <chunk-id>
-```
-
-(The original `lambda-lab` console script is not carried in this
-extract; the CLI is invoked module-style.)
+---
 
 ## Provenance
 
-This repository was extracted from the larger `falenty-2026` workspace
-on 2026-05-08 via `git filter-repo`, retaining only the paths relevant
-to the EML formalisation and its proof-tooling scaffold. The git
-history of every retained file is preserved. The "EML notes:
-structure-of-proof expository paper" commit (`b9f1fcd` at the time of
-extraction) is the most recent EML commit.
+This repository was extracted from the larger `falenty-2026` workspace on 2026-05-08 via `git filter-repo`, retaining only the paths relevant to the EML formalization and its proof-tooling scaffold. The git history of every retained file is preserved.
+
+---
 
 ## Authors and acknowledgements
 
-* **Bartosz Naskręcki** (UAM Poznań / Politechnika Warszawska) —
-  formalisation lead.
+* **Bartosz Naskręcki** (UAM Poznań / Politechnika Warszawska) — formalization lead.
+* **Andrzej Odrzywołek** (Jagiellonian University) — the source paper. Both for the discovery of the EML operator and for the careful description of the §G boundary issue (paper line 342) which spared us a great deal of confusion when we first hit it in Lean.
 * **Aristotle** (Harmonic) — proof search for many individual chunks.
-* **GPT Pro** — independent code review across multiple rounds;
-  recommended the structural-compiler architecture and the
-  Cayley-quotient route for `tan`.
-* **Claude** (Anthropic) — orchestration, scaffolding, post-submission
-  trig widenings.
-* **Mathematica / `VerifyBaseSet`** — enumeration and witness candidate
-  search (upstream at `github.com/VA00/SymbolicRegressionPackage`).
-* **Codex** (OpenAI) — paraphrase and informalisation.
+* **GPT Pro** (independent code review, no shared context) — recommended the structural-compiler architecture, the Cayley-quotient route for `tan`, and the public closed-constants packaging.
+* **Claude** (Anthropic) — orchestration, scaffolding, post-submission trig widenings.
+* **Mathematica / `VerifyBaseSet`** — enumeration and witness candidate search ([upstream repo](https://github.com/VA00/SymbolicRegressionPackage)).
+* **Codex** (OpenAI) — paraphrase and informalization.
 * **Mathlib community** — the underlying Lean library.
-* **Andrzej Odrzywołek** — the source paper.
 
-## Licence
+## License
 
-MIT — see `LICENSE`.
+[MIT](LICENSE).
