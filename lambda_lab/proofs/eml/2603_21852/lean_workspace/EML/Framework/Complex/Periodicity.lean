@@ -386,6 +386,25 @@ lemma eval?_shiftByPeriodℂ
     push_cast
     ring
 
+/-! ## §C′.4a-bis — Unified `cos` witness family on `ℝ ∖ {0}`
+
+Combines `cos_re_bridge` (positive side) and `cos_re_bridge_neg`
+(negative side) into a single existential statement. This is exactly
+the form `sin_via_cos` needs from its substituted argument: given any
+`y ≠ 0`, produce *some* witness `t` whose eval projects to `Real.cos y`. -/
+
+theorem cos_full_witness_family (x : ℝ) (hx : x ≠ 0) :
+    ∃ t : EMLTermℂ, ∃ vc : ℂ,
+      t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+      vc.re = Real.cos x := by
+  set env : Nat → ℂ := fun n => if n = 0 then ((x : ℝ) : ℂ) else 0 with henv_def
+  have henv0 : env 0 = ((x : ℝ) : ℂ) := by simp [henv_def]
+  rcases lt_or_gt_of_ne hx with hx_neg | hx_pos
+  · obtain ⟨vc, hv_eval, hv_re⟩ := cos_re_bridge_neg hx_neg
+    exact ⟨cosTermℂ_neg, vc, hv_eval, hv_re⟩
+  · obtain ⟨v, hv_eval, hv_re⟩ := cos_re_bridge (env := env) hx_pos henv0
+    exact ⟨cosTermℂ, v, hv_eval, hv_re⟩
+
 /-! ## §C′.4b — `shiftByPiℂ` and `shiftBy2Piℂ` specializations -/
 
 /-- Period-π shift: `shiftByPiℂ k` evaluates to `((x − k·π : ℝ) : ℂ)`
