@@ -114,6 +114,13 @@ lemma eval?_mkAddℂ_ofReal
 the public `2` and `π` terms. -/
 noncomputable def twoPiPubℂ : EMLTermℂ := mkMulℂ twoPubℂ piPubℂ
 
+/-- The complex constant `−π` as an `EMLTermℂ`, built via the identity
+`−π = π − 2π`. Uses `mkSubℂ` (rather than building `−π` from scratch),
+which only needs `arg(π) < π` (true: `π > 0`) and `(2π).im ∈ (−π, π]`
+(true: real). Avoids the `mkMulℂ` constraint pile-up that an alternate
+construction `mkMulℂ negOnePubℂ piPubℂ` would face. -/
+noncomputable def negPiPubℂ : EMLTermℂ := mkSubℂ piPubℂ twoPiPubℂ
+
 /-- Eval lemma for `twoPiPubℂ` — first concrete witness validation
 under the Path C′ approach. The ADDsafeℂ bundle on `log 2` and `log π`
 is discharged via `ADDsafeℂ_ofReal_ofReal` since both are real-valued. -/
@@ -146,6 +153,26 @@ lemma eval?_twoPiPubℂ (env : Nat → ℂ) :
   -- Apply mkMulℂ closure.
   have hMul := eval?_mkMulℂ hT hP h2_ne hπ_ne h2_arg hπ_arg h_addsafe
   rw [hMul]
+  push_cast; ring_nf
+
+/-- Eval lemma for `negPiPubℂ`: evaluates to `((-Real.pi : ℝ) : ℂ)`. -/
+lemma eval?_negPiPubℂ (env : Nat → ℂ) :
+    negPiPubℂ.eval? env = some (((-Real.pi : ℝ) : ℂ)) := by
+  unfold negPiPubℂ
+  have hP : piPubℂ.eval? env = some ((Real.pi : ℝ) : ℂ) := eval?_piPubℂ env
+  have h2P : twoPiPubℂ.eval? env = some ((2 * Real.pi : ℝ) : ℂ) :=
+    eval?_twoPiPubℂ env
+  have hπ_ne : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
+    exact_mod_cast Real.pi_ne_zero
+  have hπ_arg : Complex.arg ((Real.pi : ℝ) : ℂ) < Real.pi := by
+    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
+    exact Real.pi_pos
+  have h2π_im_lo : -Real.pi < (((2 * Real.pi : ℝ) : ℂ)).im := by
+    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
+  have h2π_im_hi : (((2 * Real.pi : ℝ) : ℂ)).im ≤ Real.pi := by
+    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
+  have h := eval?_mkSubℂ hP h2P hπ_ne hπ_arg h2π_im_lo h2π_im_hi
+  rw [h]
   push_cast; ring_nf
 
 end EML
