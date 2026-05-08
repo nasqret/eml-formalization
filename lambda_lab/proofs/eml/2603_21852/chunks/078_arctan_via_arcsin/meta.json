@@ -1,0 +1,19 @@
+{
+  "id": "078_arctan_via_arcsin",
+  "title_pl": "arctan_via_arcsin: ∃ t, ∀ x : ℝ, vc.im = arctan x via subst0",
+  "title_en": "arctan_via_arcsin: ∃ t, ∀ x : ℝ, vc.im = arctan x via subst0",
+  "paper_section": "Path C′ §3 (post-paper, GPT Pro)",
+  "paper_quote": "GPT Pro consult §3: arctan via arcsin(x/√(1+x²)) reuses full-domain arcsinTermℂ_open",
+  "informal_pl": "Świadek arctanViaArcsinℂ przez subst0 arcsinTermℂ_full atanArgℂ; rzut .im przez Real.arctan_eq_arcsin.",
+  "informal_en": "arctanViaArcsinℂ = arcsinTermℂ_full.subst0 atanArgℂ; .im projection via Real.arctan_eq_arcsin.",
+  "kind": "theorem",
+  "difficulty": 3,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "theorem arctan_via_arcsin_correct (x : ℝ) : ∃ vc : ℂ, ... ∧ vc.im = Real.arctan x",
+  "depends_on": ["077_atan_arg_in_ioo"],
+  "status": "complete",
+  "aristotle_project_id": "b0b7515c-9c54-4ac5-9832-4a5a2345c56a",
+  "submitted_at": "2026-05-08T17:25:00Z",
+  "completed_at": "2026-05-08T17:46:00Z",
+  "notes": "SEALED 2026-05-08 by Aristotle, ~21 min. Strategy: rewrite via def, apply eval?_subst0 + eval?_atanArgℂ, extract bounds from atanArg_in_Ioo, apply arcsinTermℂ_full_correct, finish with Real.arctan_eq_arcsin. Both 077 (atanArg_in_Ioo) and 078 land cleanly. Framework lift: needs atanArgELℝ real-fragment compile + arcsinTermℂ_full env-irrelevance lemma."
+}

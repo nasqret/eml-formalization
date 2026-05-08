@@ -1,0 +1,19 @@
+{
+  "id": "075_sin_via_cos",
+  "title_pl": "sin_via_cos: ∃ t, ∀ x ≠ π/2, vc.re = sin x via subst0",
+  "title_en": "sin_via_cos: ∃ t, ∀ x ≠ π/2, vc.re = sin x via subst0",
+  "paper_section": "Path C′ §2 (post-paper, GPT Pro)",
+  "paper_quote": "GPT Pro consult §2: sin via cos(π/2 - x) reuses full-domain cosTermℂ",
+  "informal_pl": "Świadek sinViaCosℂ przez subst0 cosTermℂ_full halfPiMinusXℂ; rzut .re przez Real.cos_pi_div_two_sub.",
+  "informal_en": "sinViaCosℂ = cosTermℂ_full.subst0 halfPiMinusXℂ; .re projection via Real.cos_pi_div_two_sub.",
+  "kind": "theorem",
+  "difficulty": 3,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "theorem sin_via_cos_correct (x : ℝ) (hx : x ≠ Real.pi / 2) : ∃ vc : ℂ, ... ∧ vc.re = Real.sin x",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "f890b7ac-69e1-4940-a8fa-ed49991f043a",
+  "submitted_at": "2026-05-08T17:25:00Z",
+  "completed_at": "2026-05-08T17:46:00Z",
+  "notes": "SEALED 2026-05-08 by Aristotle, ~21 min. Strategy: rewrite via def, apply eval?_subst0 + eval?_halfPiMinusXℂ, derive π/2 - x ≠ 0 via sub_ne_zero, apply cosTermℂ_full_correct, finish with Real.cos_pi_div_two_sub. Note: framework lift requires sin_full_witness_family using cos_full_witness_family (since cosTermℂ_full is a witness FAMILY in our actual code, not a single term)."
+}
