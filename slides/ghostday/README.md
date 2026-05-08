@@ -17,7 +17,7 @@ by dr Bartosz Naskręcki, GhostDay 2026.
 Upload (or `cp`) all relevant `.pptx` files into:
 
 ```
-/Users/airbartek/claude/falenty_2026/slides/ghostday/source_decks/
+/Users/airbartek/claude/eml-formalization/slides/ghostday/source_decks/
 ```
 
 A useful naming convention while uploading multiple decks:
