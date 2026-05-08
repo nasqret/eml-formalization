@@ -30,9 +30,9 @@
 | | |
 |---|---:|
 | Paper primitives sealed | **36 / 36** (100%) |
-| `paper_claim_*` theorems exposed | **45** |
+| `paper_claim_*` theorems exposed | **48** (incl. Path C′ full-domain `sin_full`, `arctan_full`, `tan_full`) |
 | `K_count_*` `rfl`-checked tree sizes | **15** |
-| Lean kernel jobs in `lake build EML` | **8 054** |
+| Lean kernel jobs in `lake build EML` | **8 056** |
 | `sorry` / `admit` occurrences | **0** |
 | §G structural boundary points (documented) | **3** |
 | Witness-tree size — smallest | **K = 1** (the constant `1`) |
@@ -170,7 +170,7 @@ pie showData
 |---:|---|---|
 | 853 | [`Framework/F36ToEL.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/F36ToEL.lean) | F36 → EL translator: 36-case dispatch with closure lemmas |
 | 554 | [`Framework/Unconditional.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Unconditional.lean) | Domain-free wrapping helpers used by every paper claim |
-| 453 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 45 `paper_claim_*` theorems |
+| 453 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 48 `paper_claim_*` theorems |
 | 293 | [`Framework/ELToEML.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/ELToEML.lean) | The structural compiler (Theorem 2 in `proof_structure.pdf`) |
 | 275 | [`Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | All 15 `K_count_*` theorems, all `:= rfl` |
 | 238 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | §3.1 companion-grammar scaffolding |
@@ -187,7 +187,7 @@ pie showData
 
 ```
 $ make scoreboard
-==== Public paper claims (45 theorems) ====
+==== Public paper claims (48 theorems) ====
   paper_claim_var, paper_claim_one, paper_claim_negOne, paper_claim_two,
   paper_claim_half_const, paper_claim_e_const, paper_claim_pi, paper_claim_i,
   paper_claim_exp, paper_claim_log, paper_claim_inv, paper_claim_half,
@@ -201,7 +201,9 @@ $ make scoreboard
   paper_claim_arctan_narrow, paper_claim_arctan_neg, paper_claim_arctan_zero,
   paper_claim_arccos_open,
   paper_claim_arcsin_narrow, paper_claim_arcsin_open,
-  paper_claim_tan_narrow, paper_claim_tan_neg, paper_claim_tan_zero
+  paper_claim_tan_narrow, paper_claim_tan_neg, paper_claim_tan_zero,
+  -- Path C′ full-real-domain witness families (added 2026-05-09):
+  paper_claim_sin_full, paper_claim_arctan_full, paper_claim_tan_full
 ```
 
 ---
