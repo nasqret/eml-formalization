@@ -29,7 +29,7 @@ Faculty of Mathematics and Computer Science, Adam Mickiewicz University · Cente
 
 *Falenty · April 2026*
 
-`github.com/nasqret/falenty-2026`
+`github.com/nasqret/eml-formalization`
 
 ---
 
@@ -135,7 +135,7 @@ $\mathrm{eml}(x, y) \ =\ \exp(x) - \ln(y).$
 
 <img src="assets/formalization_factory.svg" alt="formalization factory"/>
 
-<small>Decompose → three parallel lines (Aristotle / Mathematica / manual composition) → QC (`lake env lean`) → five packaging artefacts. Output: `nasqret/falenty-2026`.</small>
+<small>Decompose → three parallel lines (Aristotle / Mathematica / manual composition) → QC (`lake env lean`) → five packaging artefacts. Output: `nasqret/eml-formalization`.</small>
 
 ---
 
@@ -468,7 +468,7 @@ Not yet, and not for the right reasons.
 
 <img src="assets/swiss_knife.svg" alt="Swiss army knife"/>
 
-Repo: `github.com/nasqret/falenty-2026` · License: MIT.
+Repo: `github.com/nasqret/eml-formalization` · License: MIT.
 
 ---
 
@@ -478,7 +478,7 @@ Repo: `github.com/nasqret/falenty-2026` · License: MIT.
 
 <img src="assets/by_the_numbers.svg" alt="by the numbers" style="max-height:430px;"/>
 
-**Repo:** `github.com/nasqret/falenty-2026` ·
+**Repo:** `github.com/nasqret/eml-formalization` ·
 **Hybrid report:** `lambda_lab/proofs/eml/2603_21852/report/` ·
 **Site:** `docs/` ·
 **Contact:** *bartosz.naskrecki at amu.edu.pl*

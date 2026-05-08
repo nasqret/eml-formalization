@@ -33,7 +33,7 @@ Assistant Professor · Adam Mickiewicz University, Poznań
 
 Center for Credible AI · Warsaw University of Technology
 
-*GhostDay · Saturday · 2026* · `github.com/nasqret/falenty-2026`
+*GhostDay · Saturday · 2026* · `github.com/nasqret/eml-formalization`
 
 <div class="title-logos">
 <img src="assets/photos/logo_uam.jpeg" alt="UAM"/>
@@ -916,7 +916,7 @@ Not yet, and not for the right reasons.
 
 <img src="assets/swiss_knife.svg" alt="Swiss army knife"/>
 
-Repo: `github.com/nasqret/falenty-2026` · License: MIT.
+Repo: `github.com/nasqret/eml-formalization` · License: MIT.
 
 ---
 
@@ -926,7 +926,7 @@ Repo: `github.com/nasqret/falenty-2026` · License: MIT.
 
 <img src="assets/by_the_numbers.svg" alt="by the numbers" style="max-height:430px;"/>
 
-**Repo:** `github.com/nasqret/falenty-2026` ·
+**Repo:** `github.com/nasqret/eml-formalization` ·
 **Hybrid report:** `lambda_lab/proofs/eml/2603_21852/report/` ·
 **Site:** `docs/` ·
 **Contact:** *bartosz.naskrecki at amu.edu.pl*
