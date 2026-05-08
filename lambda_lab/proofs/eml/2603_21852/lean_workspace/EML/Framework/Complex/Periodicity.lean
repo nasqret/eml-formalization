@@ -308,6 +308,84 @@ theorem atanArg_in_Ioo (x : ℝ) :
     nlinarith [Real.sqrt_nonneg (1 + x ^ 2),
                Real.sq_sqrt (by positivity : 0 ≤ 1 + x ^ 2)]
 
+/-! ## §C′.4a — Period shifts via repeated `mkAddℂ`
+
+Per Pro's recommendation: build period shifts by repeated addition of
+fixed real period constants. Each step uses `eval?_mkAddℂ_ofReal`,
+which has no side conditions when both args are real-valued. The
+shifted intermediate stays real, so no `arg = π` boundary appears. -/
+
+/-- A `k`-iteration period shift: starting from `.var 0`, apply
+`mkAddℂ T negPeriod` `k` times for `k ≥ 0`, or `mkAddℂ T period`
+`|k|` times for `k < 0`. The eval semantics are designed so that
+`shiftByPeriodℂ period negPeriod k` evaluates to `((x − k·p : ℝ) : ℂ)`
+when `period` evaluates to `((p : ℝ) : ℂ)` and `env 0 = ((x : ℝ) : ℂ)`. -/
+noncomputable def shiftByPeriodℂ (period negPeriod : EMLTermℂ) : ℤ → EMLTermℂ
+  | Int.ofNat n   => Nat.iterate (fun T => mkAddℂ T negPeriod) n (.var 0)
+  | Int.negSucc n => Nat.iterate (fun T => mkAddℂ T period) (n + 1) (.var 0)
+
+/-- Helper: forward iteration of `mkAddℂ _ negPeriod` evaluates to
+`x − n·p`. -/
+private lemma eval?_iterate_addNeg
+    {env : Nat → ℂ} {negPeriod : EMLTermℂ} {p x : ℝ}
+    (hnp : negPeriod.eval? env = some (((-p : ℝ) : ℂ)))
+    (henv0 : env 0 = ((x : ℝ) : ℂ)) (n : ℕ) :
+    (Nat.iterate (fun T => mkAddℂ T negPeriod) n (.var 0)).eval? env =
+      some (((x - (n : ℝ) * p : ℝ) : ℂ)) := by
+  induction n with
+  | zero =>
+    show (EMLTermℂ.var 0).eval? env = some (((x - (0 : ℕ) * p : ℝ) : ℂ))
+    rw [EMLTermℂ.eval?_var, henv0]
+    push_cast; ring_nf
+  | succ n ih =>
+    rw [Function.iterate_succ_apply']
+    have h := eval?_mkAddℂ_ofReal ih hnp
+    rw [h]
+    congr 1
+    push_cast; ring
+
+/-- Helper: forward iteration of `mkAddℂ _ period` evaluates to
+`x + n·p` (used for negative `k`). -/
+private lemma eval?_iterate_addPos
+    {env : Nat → ℂ} {period : EMLTermℂ} {p x : ℝ}
+    (hp : period.eval? env = some (((p : ℝ) : ℂ)))
+    (henv0 : env 0 = ((x : ℝ) : ℂ)) (n : ℕ) :
+    (Nat.iterate (fun T => mkAddℂ T period) n (.var 0)).eval? env =
+      some (((x + (n : ℝ) * p : ℝ) : ℂ)) := by
+  induction n with
+  | zero =>
+    show (EMLTermℂ.var 0).eval? env = some (((x + (0 : ℕ) * p : ℝ) : ℂ))
+    rw [EMLTermℂ.eval?_var, henv0]
+    push_cast; ring_nf
+  | succ n ih =>
+    rw [Function.iterate_succ_apply']
+    have h := eval?_mkAddℂ_ofReal ih hp
+    rw [h]
+    congr 1
+    push_cast; ring
+
+/-- **Eval lemma for `shiftByPeriodℂ`.** Given period terms evaluating
+to `±p` and `env 0 = ((x : ℝ) : ℂ)`, the `k`-shift evaluates to
+`((x − k·p : ℝ) : ℂ)` for any `k : ℤ`. -/
+lemma eval?_shiftByPeriodℂ
+    {env : Nat → ℂ} {period negPeriod : EMLTermℂ} {p x : ℝ}
+    (hp : period.eval? env = some (((p : ℝ) : ℂ)))
+    (hnp : negPeriod.eval? env = some (((-p : ℝ) : ℂ)))
+    (henv0 : env 0 = ((x : ℝ) : ℂ)) (k : ℤ) :
+    (shiftByPeriodℂ period negPeriod k).eval? env =
+      some (((x - (k : ℝ) * p : ℝ) : ℂ)) := by
+  cases k with
+  | ofNat n =>
+    show (Nat.iterate (fun T => mkAddℂ T negPeriod) n (.var 0)).eval? env = _
+    rw [eval?_iterate_addNeg hnp henv0 n]
+    norm_cast
+  | negSucc n =>
+    show (Nat.iterate (fun T => mkAddℂ T period) (n + 1) (.var 0)).eval? env = _
+    rw [eval?_iterate_addPos hp henv0 (n + 1)]
+    congr 1
+    push_cast
+    ring
+
 /-! ## §C′.4 — Period-π reduction for tan
 
 **Provenance:** sealed 2026-05-08 by Aristotle (project
