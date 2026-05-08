@@ -373,6 +373,20 @@ lemma eval?_shiftByPeriodℂ
     push_cast
     ring
 
+/-! ## §C′.helper — Env extensionality for the witness-family pattern -/
+
+/-- Useful when chaining `eval?_subst0` with witness theorems that take
+the standard "if n = 0 then (input cast) else 0" env shape: shifting
+that env at index 0 gives back the same shape with the new value. -/
+lemma envShift0_baseAt0 (v : ℂ) (x : ℝ) :
+    EMLTermℂ.envShift0 v (fun n : Nat => if n = 0 then ((x : ℝ) : ℂ) else 0) =
+      (fun n : Nat => if n = 0 then v else 0) := by
+  funext n
+  rcases Nat.eq_zero_or_pos n with hn | hn
+  · subst hn; simp [EMLTermℂ.envShift0]
+  · have hn' : n ≠ 0 := Nat.pos_iff_ne_zero.mp hn
+    simp [EMLTermℂ.envShift0, hn']
+
 /-! ## §C′.4a-bis — Unified `cos` witness family on `ℝ ∖ {0}`
 
 Combines `cos_re_bridge` (positive side) and `cos_re_bridge_neg`
@@ -435,5 +449,65 @@ theorem tan_period_reduction (x : ℝ) (hx : Real.cos x ≠ 0) :
                  mul_div_cancel₀ (x + Real.pi / 2) Real.pi_ne_zero]
   exact ⟨k, ⟨by linarith [hk.1], by linarith [hk.2]⟩,
          by simp +decide [Real.tan_sub_int_mul_pi]⟩
+
+/-! ## §C′.5 — `tan_full`: full-real-domain tan witness family
+
+Lifts Aristotle's chunk 080 proof into our actual framework, replacing
+the axiomatized opaque framework symbols with `tan_im_bridge` /
+`tan_im_bridge_neg` (existing) plus our `shiftByPiℂ` and `subst0`. -/
+
+theorem tan_full (x : ℝ) (hx : Real.cos x ≠ 0) :
+    ∃ t : EMLTermℂ, ∃ vc : ℂ,
+      t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+      vc.im = Real.tan x := by
+  obtain ⟨k, hk_mem, htan⟩ := tan_period_reduction x hx
+  set y := x - (k : ℝ) * Real.pi with hy_def
+  set env := (fun n : Nat => if n = 0 then ((x : ℝ) : ℂ) else 0) with henv_def
+  have henv0 : env 0 = ((x : ℝ) : ℂ) := by simp [env]
+  have h_shift : (shiftByPiℂ k).eval? env = some (((y : ℝ) : ℂ)) := by
+    rw [hy_def]; exact eval?_shiftByPiℂ x k env henv0
+  rw [Set.mem_Ioo] at hk_mem
+  have hk_lo : -Real.pi / 2 < y := by linarith [hk_mem.1]
+  have hk_hi : y < Real.pi / 2 := hk_mem.2
+  rcases lt_trichotomy y 0 with hy_neg | hy_zero | hy_pos
+  · -- y < 0: subst0 tanCoreTermℂ_neg
+    obtain ⟨vc, hv_eval, hv_im⟩ := tan_im_bridge_neg hy_neg hk_lo
+    refine ⟨tanCoreTermℂ_neg.subst0 (shiftByPiℂ k), vc, ?_, ?_⟩
+    · rw [EMLTermℂ.eval?_subst0 h_shift tanCoreTermℂ_neg, envShift0_baseAt0]
+      exact hv_eval
+    · rw [htan]; exact hv_im
+  · -- y = 0: .one (tan 0 = 0)
+    refine ⟨EMLTermℂ.one, 1, EMLTermℂ.eval?_one env, ?_⟩
+    rw [htan, hy_zero]; simp [Complex.one_im, Real.tan_zero]
+  · -- y > 0: subst0 tanCoreTermℂ
+    obtain ⟨vc, hv_eval, hv_im⟩ := tan_im_bridge hy_pos hk_hi
+    refine ⟨tanCoreTermℂ.subst0 (shiftByPiℂ k), vc, ?_, ?_⟩
+    · rw [EMLTermℂ.eval?_subst0 h_shift tanCoreTermℂ, envShift0_baseAt0]
+      exact hv_eval
+    · rw [htan]; exact hv_im
+
+/-! ## §C′.6 — `sin_full`: full-real-domain sin witness via cos(π/2 − x)
+
+Lifts Aristotle's chunk 075 proof (sin via cos) into our actual
+framework, replacing axiomatized `cosTermℂ_full` with our witness-family
+`cos_full_witness_family`. The key Mathlib step is
+`Real.cos_pi_div_two_sub`. -/
+
+theorem sin_full (x : ℝ) (hx : x ≠ Real.pi / 2) :
+    ∃ t : EMLTermℂ, ∃ vc : ℂ,
+      t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+      vc.re = Real.sin x := by
+  set env_x := (fun n : Nat => if n = 0 then ((x : ℝ) : ℂ) else 0) with henv_def
+  have h_diff_ne : Real.pi / 2 - x ≠ 0 := sub_ne_zero.mpr (Ne.symm hx)
+  obtain ⟨t, vc, hv_eval, hv_re⟩ :=
+    cos_full_witness_family (Real.pi / 2 - x) h_diff_ne
+  have henv0 : env_x 0 = ((x : ℝ) : ℂ) := by simp [env_x]
+  have h_shift : halfPiMinusXℂ.eval? env_x =
+                  some (((Real.pi / 2 - x : ℝ) : ℂ)) :=
+    eval?_halfPiMinusXℂ x env_x henv0
+  refine ⟨t.subst0 halfPiMinusXℂ, vc, ?_, ?_⟩
+  · rw [EMLTermℂ.eval?_subst0 h_shift t, envShift0_baseAt0]
+    exact hv_eval
+  · rw [hv_re, Real.cos_pi_div_two_sub]
 
 end EML

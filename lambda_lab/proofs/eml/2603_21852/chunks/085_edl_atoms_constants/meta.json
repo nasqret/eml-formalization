@@ -1,0 +1,19 @@
+{
+  "id": "085_edl_atoms_constants",
+  "title_pl": "Plan D — EDL stałe i log x",
+  "title_en": "Plan D — EDL constant atoms and log x",
+  "paper_section": "Plan D atoms (paper §3.1 EDL completeness)",
+  "paper_quote": "Sheffer companions §3.1 — per-primitive completeness for EDL is paper-open",
+  "informal_pl": "D5/-1, D6/2, D7/1/2 (analiza Aristotle: niedostępne z zamkniętych termów EDL — związane z hipotezą Schanuela). D8/log x: ZBUDOWANY przez edl(1, edl(edl(1, x), e_const)).",
+  "informal_en": "D5/-1, D6/2, D7/1/2: Aristotle analysis says unreachable from closed EDL terms (Schanuel-like obstruction). D8/log x: CONSTRUCTED via edl(1, edl(edl(1, x), e_const)).",
+  "kind": "theorem_pack",
+  "difficulty": 5,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "edl_witness_{neg_one, two, half, log_x} — four ∃ t, ∀ env, ... existentials",
+  "depends_on": ["084_edl_atoms_pilot"],
+  "status": "partial",
+  "aristotle_project_id": "bc8abf1b-3f17-4117-962d-39bacf8b600f",
+  "submitted_at": "2026-05-08T17:30:00Z",
+  "completed_at": "2026-05-08T20:30:00Z",
+  "notes": "PARTIAL 2026-05-08. Aristotle SOLVED D8 (log x) with the witness `edl one (edl (edl one (var 0)) e_const)` — beautiful 3-step composition. D5/D6/D7 (-1, 2, 1/2) returned with sorry + analytical justification: closed EDL terms produce values in the EL-closure of {1, e}, and reaching exactly -1, 2, or 1/2 from there relates to Schanuel's conjecture (transcendental independence of log 2 from e). The negative side has reachable values (e.g., e/(1-e) ≈ -1.582) but exact -1 is conjecturally unreachable. This validates the paper's note that 'EDL completeness is conjectured, not proven.' Major contribution: D8 is the first EDL log-x witness — unblocks Plan D's harder primitives that compose via log."
+}
