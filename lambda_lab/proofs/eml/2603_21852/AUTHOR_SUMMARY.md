@@ -215,15 +215,21 @@ symbolic equivalence. **Out of scope for this formalisation.**
   Rust `VerifyBaseSet` procedure. A full parallel sealing effort for
   either cousin is **1–2 weeks per cousin**. Plans D and E in
   `OPEN_QUESTIONS.md`.
-* **Sheffer naming cleanup.** Our scaffolding currently has four
-  operators (`EDL`, `LDE`, `T₁`, `T₂`) — only `EDL` matches the paper.
-  `LDE = log(x)/exp(y)` (division) is **not** the paper's
-  `−EML = log(x) − exp(y)` (subtraction). `T₁`, `T₂` in our scaffolding
-  are *binary* but the paper's actual T₁/T₂ are **ternary** operators
-  (SI §1.4, page 8): `T₁(x, y, z) = e^(x−y) ln x / ln z`,
+* **Sheffer naming cleanup — DONE (Plan A complete).** Our scaffolding
+  now has exactly the **two paper-named cousins** (`EDL` and `−EML`)
+  matching paper §3.1 (lines 273–284). The previously-misnamed
+  `LDETerm` (which was `log(x)/exp(y)` division, *not* the paper's
+  `−EML = log(x) − exp(y)` subtraction) has been replaced by the
+  correct `NegEMLTerm`. The fabricated binary `T1Term`/`T2Term` (the
+  paper's actual T₁/T₂ are **ternary** — SI §1.4, page 8:
+  `T₁(x, y, z) = e^(x−y) ln x / ln z`,
   `T₂(x, y, z) = e^(x−y) ln z / ln x`, with the special property
-  `T₂(x, x, x) = 1`. Our `T1Term`/`T2Term` should be removed; cleanup
-  is a 1–2 hour task (Plan A).
+  `T₂(x, x, x) = 1`) have been removed; the SI flags them as
+  *preliminary unverified candidates* for the constant-free Sheffer
+  open question (SI §1.5 #3) and they are out of scope for this
+  formalisation. See
+  [`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md)
+  for the full audit trail.
 
 ### Three §G boundary points (architectural)
 `√0`, `arcosh 1`, `hypot(0, 0)` — Mathlib's `Real.log 0 = 0` makes

@@ -230,13 +230,16 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 | **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | scaffolding in `Sheffer.lean`; **no per-primitive proofs** (Plan D — 1–2 wk) |
 | **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | scaffolding; **no per-primitive proofs** (Plan E — 1–2 wk; needs `EReal` for `−∞`) |
 
-> **Naming caveat in current `Sheffer.lean`.** Our scaffolding currently has four
-> operators (EDL, LDE, T₁, T₂). Only `EDL` matches the paper. `LDE = log(x)/exp(y)`
-> is **division**, *not* the paper's `−EML = log(x) − exp(y)` (subtraction). T₁ and
-> T₂ in our scaffolding are *binary* but the paper's actual T₁ / T₂ are **ternary**
-> operators (SI §1.4, page 8: `T₁(x,y,z) = e^(x−y)·ln x/ln z`). Plan A in
-> [OPEN_QUESTIONS.md](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md#plan-a--sheffer-naming-cleanup-1-2-hours)
-> is the 1–2 hour cleanup that aligns naming with the paper.
+> ✅ **Naming cleanup complete (Plan A done).** `Sheffer.lean` now contains exactly the
+> two paper-named cousins, `EDLTerm` and `NegEMLTerm`. The previously-misnamed
+> `LDETerm` (`log(x)/exp(y)`, division — *not* the paper's `−EML = log(x) − exp(y)`
+> subtraction) has been replaced. The fabricated *binary* `T1Term`/`T2Term` have been
+> removed; the paper's actual T₁ / T₂ are **ternary** (SI §1.4, page 8:
+> `T₁(x,y,z) = e^(x−y)·ln x/ln z`, `T₂(x,y,z) = e^(x−y)·ln z/ln x` with
+> `T₂(x,x,x) = 1`) and are out of scope for the present formalisation —
+> the SI flags them as preliminary candidates for the constant-free Sheffer
+> open question (SI §1.5 #3). Line-level paper sourcing in
+> [`Sheffer/PaperSourcing.md`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer/PaperSourcing.md).
 
 ---
 

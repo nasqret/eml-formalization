@@ -11,7 +11,7 @@ direction, or a future-work extension.
 
 | Direction | Feasibility | Effort | Action plan |
 |---|---|---|---|
-| **Sheffer cleanup** (align names with paper §3.1) | Easy | 1–2 h | [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours) |
+| **Sheffer cleanup** (align names with paper §3.1) | ✅ **DONE** | — | See [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours-complete) for the audit trail |
 | **Full-real-domain trig — custom branch** | Medium | 1–3 d | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) |
 | **Full-real-domain trig — multi-witness periodicity** | Medium | 2–3 d | [Plan C](#plan-c--full-real-domain-trig-via-multi-witness-periodicity-2-3-days) |
 | **EDL per-primitive completeness** | Large | 1–2 wk | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) |
@@ -234,17 +234,19 @@ existing `EML.Framework.Sheffer` provides the grammar substrate so that
 the proof effort can begin without re-doing the inductive-type
 infrastructure.
 
-**Note on the codebase's `Sheffer.lean`.** Current scaffolding has four
-operators (EDL, LDE, T₁, T₂). Of these:
-- `EDL` matches the paper exactly.
-- `LDE = log(x)/exp(y)` is **not** the paper's `−EML = log(x) − exp(y)`
-  (subtraction, not division). They are different operators.
-- `T₁`, `T₂` are exploratory operators not in the paper.
+**Note on the codebase's `Sheffer.lean` (post-Plan-A).** Scaffolding
+now hosts exactly the **two paper-named cousins**:
+- `EDLTerm` (`edl(x, y) = exp(x) / log(y)`, paper line 281) — matches
+  paper exactly.
+- `NegEMLTerm` (`negEml(x, y) = log(x) − exp(y)`, paper line 282)
+  — matches paper exactly.
 
-**Recommended cleanup.** Replace `LDE` with the paper's `−EML` form
-(`log(x) − exp(y)`), and either remove `T₁`/`T₂` or label them as
-exploratory non-paper extensions. The current naming is misleading
-relative to the paper's own §3.1 nomenclature.
+The previously-misnamed `LDETerm` (which was *division*, not paper's
+*subtraction*) has been replaced; the fabricated binary `T1Term` /
+`T2Term` (the paper's actual T₁ / T₂ are **ternary**, SI §1.4) have
+been removed. See
+[`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md)
+for line-level paper citations.
 
 ---
 
@@ -252,7 +254,16 @@ relative to the paper's own §3.1 nomenclature.
 
 ## Concrete action plans
 
-### Plan A — Sheffer naming cleanup (1–2 hours)
+### Plan A — Sheffer naming cleanup (1–2 hours, COMPLETE)
+
+> **Status: ✅ DONE.** `Sheffer.lean` now hosts only the two paper-named
+> cousins; `LDETerm` was replaced by `NegEMLTerm` with the correct
+> subtraction operator; the fabricated binary `T1Term`/`T2Term` were
+> removed; line-level paper sourcing lives in
+> [`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md);
+> README.md, lambda_lab/.../README.md, AUTHOR_SUMMARY.md, and
+> DASHBOARD.md updated. `lake build EML.Framework.Sheffer` clean.
+> The plan-of-record below is preserved for the audit trail.
 
 **Goal.** Align `EML.Framework.Sheffer` with the paper's actual
 companion set. The current scaffolding has four operators; only `EDL`
