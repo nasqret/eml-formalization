@@ -1,0 +1,19 @@
+{
+  "id": "079_tan_period_reduction",
+  "title_pl": "Redukcja okresu π dla tan: ∃k:ℤ, x − kπ ∈ (−π/2, π/2)",
+  "title_en": "Period-π reduction for tan",
+  "paper_section": "Path C′ (post-paper, GPT Pro)",
+  "paper_quote": "GPT Pro consult §4: tan_full requires this period-π reduction lemma",
+  "informal_pl": "Dla cos x ≠ 0, k = ⌊x/π + 1/2⌋ daje x − kπ ∈ (−π/2, π/2); peirodyczność tan zamyka równość.",
+  "informal_en": "For cos x ≠ 0, take k = ⌊x/π + 1/2⌋; then x − kπ ∈ (−π/2, π/2), and Real.tan_periodic gives the equality.",
+  "kind": "theorem",
+  "difficulty": 3,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "theorem tan_period_reduction (x : ℝ) (hx : Real.cos x ≠ 0) : ∃ k : ℤ, x - (k : ℝ) * Real.pi ∈ Set.Ioo (-(Real.pi / 2)) (Real.pi / 2) ∧ Real.tan x = Real.tan (x - (k : ℝ) * Real.pi)",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "1030d31b-81b4-48ff-bb14-16d89d4d4bff",
+  "submitted_at": "2026-05-08T17:08:00Z",
+  "completed_at": "2026-05-08T17:21:00Z",
+  "notes": "SEALED 2026-05-08 by Aristotle. Proof time: ~13 minutes. Strategy: take k = ⌊(x + π/2)/π⌋; upper bound from Int.lt_floor_add_one, lower bound by contrapositive (if x - kπ ≤ -π/2 then x = (2m+1)π/2 → cos x = 0 by Real.cos_eq_zero_iff, contradiction); equality by Real.tan_sub_int_mul_pi. Ready to inline into Framework/Complex/Periodicity.lean for tan_full."
+}

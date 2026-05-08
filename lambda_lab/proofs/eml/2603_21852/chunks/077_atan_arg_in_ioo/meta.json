@@ -1,0 +1,19 @@
+{
+  "id": "077_atan_arg_in_ioo",
+  "title_pl": "x/√(1+x²) ∈ (-1, 1) dla x rzeczywistego",
+  "title_en": "x / √(1 + x²) ∈ (-1, 1) for real x",
+  "paper_section": "Path C′ (post-paper, GPT Pro)",
+  "paper_quote": "GPT Pro consult §3: arctanViaArcsinℂ requires this Mathlib lemma",
+  "informal_pl": "Standardowa nierówność |x| < √(1+x²) pociąga, że x/√(1+x²) jest w (-1, 1).",
+  "informal_en": "Standard inequality |x| < √(1+x²) implies x/√(1+x²) ∈ (-1, 1).",
+  "kind": "theorem",
+  "difficulty": 2,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "theorem atanArg_in_Ioo (x : ℝ) : x / Real.sqrt (1 + x^2) ∈ Set.Ioo (-1 : ℝ) 1",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "2b0e3d5d-ed06-4d73-b2ac-2b42ea8844bc",
+  "submitted_at": "2026-05-08T17:08:00Z",
+  "completed_at": "2026-05-08T17:15:00Z",
+  "notes": "SEALED 2026-05-08 by Aristotle. ~3-line proof using `lt_div_iff₀`/`div_lt_iff₀` plus `nlinarith` with `Real.sq_sqrt`. Proof time: ~6 minutes. Ready to inline into Framework/Complex/Periodicity.lean for the arctanViaArcsin construction."
+}
