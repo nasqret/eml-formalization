@@ -108,6 +108,24 @@ lemma eval?_mkAddℂ_ofReal
   push_cast
   ring_nf
 
+/-! ### Real-positive helpers — code-golf shortcuts
+
+These helpers package the constraint chains for `mkMulℂ` / `mkSubℂ` /
+`mkDivℂ` when both arguments are real-valued and (where required)
+strictly positive. They cut every period-constant proof from ~30
+lines to ~5. -/
+
+/-- For `0 ≤ r`, `Complex.arg ((r : ℝ) : ℂ) < Real.pi`. -/
+private lemma arg_ofReal_lt_pi {r : ℝ} (hr : 0 ≤ r) :
+    Complex.arg ((r : ℝ) : ℂ) < Real.pi := by
+  rw [Complex.arg_ofReal_of_nonneg hr]; exact Real.pi_pos
+
+/-- For `r : ℝ`, the imag part of `((r : ℝ) : ℂ)` is in `(−π, π]`. -/
+private lemma ofReal_im_in_strip (r : ℝ) :
+    -Real.pi < (((r : ℝ) : ℂ)).im ∧ (((r : ℝ) : ℂ)).im ≤ Real.pi := by
+  rw [Complex.ofReal_im]
+  exact ⟨by linarith [Real.pi_pos], by linarith [Real.pi_pos]⟩
+
 /-- Real-safe subtraction: subtracting two real-valued `EMLTermℂ`
 evaluations gives the cast of their real difference, provided the
 minuend is **strictly positive** (so `mkSubℂ`'s `arg(va) < π` and
@@ -124,17 +142,67 @@ lemma eval?_mkSubℂ_ofReal
     (hB : B.eval? env = some ((b : ℝ) : ℂ))
     (ha_pos : 0 < a) :
     (mkSubℂ A B).eval? env = some (((a - b : ℝ) : ℂ)) := by
-  have ha_ne : ((a : ℝ) : ℂ) ≠ 0 := by exact_mod_cast ha_pos.ne'
-  have ha_arg : Complex.arg ((a : ℝ) : ℂ) < Real.pi := by
-    rw [Complex.arg_ofReal_of_nonneg ha_pos.le]; exact Real.pi_pos
-  have hb_im_lo : -Real.pi < (((b : ℝ) : ℂ)).im := by
-    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
-  have hb_im_hi : (((b : ℝ) : ℂ)).im ≤ Real.pi := by
-    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
-  have h := eval?_mkSubℂ hA hB ha_ne ha_arg hb_im_lo hb_im_hi
-  rw [h]
-  push_cast
-  ring_nf
+  have ⟨hb_lo, hb_hi⟩ := ofReal_im_in_strip b
+  have h := eval?_mkSubℂ hA hB
+              (by exact_mod_cast ha_pos.ne')
+              (arg_ofReal_lt_pi ha_pos.le)
+              hb_lo hb_hi
+  rw [h]; push_cast; ring_nf
+
+/-- Real-positive multiplication: `mkMulℂ` of two strictly-positive
+real-valued evaluations gives the cast of their product. -/
+lemma eval?_mkMulℂ_realPos
+    {env : Nat → ℂ} {A B : EMLTermℂ} {a b : ℝ}
+    (hA : A.eval? env = some ((a : ℝ) : ℂ))
+    (hB : B.eval? env = some ((b : ℝ) : ℂ))
+    (ha_pos : 0 < a) (hb_pos : 0 < b) :
+    (mkMulℂ A B).eval? env = some (((a * b : ℝ) : ℂ)) := by
+  have h_log_a : Complex.log ((a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) :=
+    (Complex.ofReal_log ha_pos.le).symm
+  have h_log_b : Complex.log ((b : ℝ) : ℂ) = ((Real.log b : ℝ) : ℂ) :=
+    (Complex.ofReal_log hb_pos.le).symm
+  have h_addsafe :
+      ADDsafeℂ (Complex.log ((a : ℝ) : ℂ)) (Complex.log ((b : ℝ) : ℂ)) := by
+    rw [h_log_a, h_log_b]
+    exact ADDsafeℂ_ofReal_ofReal (Real.log a) (Real.log b)
+  have h := eval?_mkMulℂ hA hB
+              (by exact_mod_cast ha_pos.ne')
+              (by exact_mod_cast hb_pos.ne')
+              (arg_ofReal_lt_pi ha_pos.le)
+              (arg_ofReal_lt_pi hb_pos.le)
+              h_addsafe
+  rw [h]; push_cast; ring_nf
+
+/-- Real-`> 1` division: `mkDivℂ` of `a / b` where `1 < a` and `0 < b`
+both real-valued. The `1 < a` hypothesis ensures `log a > 0` (so
+`log a ≠ 0` AND `arg(log a) = 0 < π`), discharging two of `mkDivℂ`'s
+constraints in one shot. -/
+lemma eval?_mkDivℂ_realGtOne_realPos
+    {env : Nat → ℂ} {A B : EMLTermℂ} {a b : ℝ}
+    (hA : A.eval? env = some ((a : ℝ) : ℂ))
+    (hB : B.eval? env = some ((b : ℝ) : ℂ))
+    (ha_gt : 1 < a) (hb_pos : 0 < b) :
+    (mkDivℂ A B).eval? env = some (((a / b : ℝ) : ℂ)) := by
+  have ha_pos : 0 < a := lt_trans zero_lt_one ha_gt
+  have h_log_a : Complex.log ((a : ℝ) : ℂ) = ((Real.log a : ℝ) : ℂ) :=
+    (Complex.ofReal_log ha_pos.le).symm
+  have h_log_b : Complex.log ((b : ℝ) : ℂ) = ((Real.log b : ℝ) : ℂ) :=
+    (Complex.ofReal_log hb_pos.le).symm
+  have h_loga_pos : 0 < Real.log a := Real.log_pos ha_gt
+  have h_logA_ne : Complex.log ((a : ℝ) : ℂ) ≠ 0 := by
+    rw [h_log_a]; exact_mod_cast h_loga_pos.ne'
+  have h_logA_arg : Complex.arg (Complex.log ((a : ℝ) : ℂ)) < Real.pi := by
+    rw [h_log_a]; exact arg_ofReal_lt_pi h_loga_pos.le
+  have ⟨h_logB_lo, h_logB_hi⟩ : -Real.pi < (Complex.log ((b : ℝ) : ℂ)).im
+                                ∧ (Complex.log ((b : ℝ) : ℂ)).im ≤ Real.pi := by
+    rw [h_log_b]; exact ofReal_im_in_strip _
+  have h := eval?_mkDivℂ hA hB
+              (by exact_mod_cast ha_pos.ne')
+              (by exact_mod_cast hb_pos.ne')
+              (arg_ofReal_lt_pi ha_pos.le)
+              (arg_ofReal_lt_pi hb_pos.le)
+              h_logA_ne h_logA_arg h_logB_lo h_logB_hi
+  rw [h]; push_cast; ring_nf
 
 /-! ## §C′.1 — Period constants -/
 
@@ -161,117 +229,36 @@ substitution input for `cosTermℂ.subst0 halfPiMinusXℂ` to produce
 `sin x` via `Real.cos_pi_div_two_sub`. -/
 noncomputable def halfPiMinusXℂ : EMLTermℂ := mkSubℂ halfPiPubℂ (.var 0)
 
-/-- Eval lemma for `twoPiPubℂ` — first concrete witness validation
-under the Path C′ approach. The ADDsafeℂ bundle on `log 2` and `log π`
-is discharged via `ADDsafeℂ_ofReal_ofReal` since both are real-valued. -/
+/-- Eval lemma for `twoPiPubℂ`. Golfed via `eval?_mkMulℂ_realPos` —
+~30 lines collapse to 5 once the `twoPubℂ` cast `(2 : ℂ) = ((2:ℝ):ℂ)`
+is in scope. -/
 lemma eval?_twoPiPubℂ (env : Nat → ℂ) :
     twoPiPubℂ.eval? env = some ((2 * Real.pi : ℝ) : ℂ) := by
   unfold twoPiPubℂ
-  have hT : twoPubℂ.eval? env = some (2 : ℂ) := eval?_twoPubℂ env
-  have hP : piPubℂ.eval? env = some ((Real.pi : ℝ) : ℂ) := eval?_piPubℂ env
-  have h2_ne : (2 : ℂ) ≠ 0 := by norm_num
-  have hπ_ne : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast Real.pi_ne_zero
-  have h2_arg : Complex.arg (2 : ℂ) < Real.pi := by
-    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl,
-        Complex.arg_ofReal_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
-    exact Real.pi_pos
-  have hπ_arg : Complex.arg ((Real.pi : ℝ) : ℂ) < Real.pi := by
-    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
-    exact Real.pi_pos
-  -- ADDsafeℂ on log(2) and log(π) — both are real (since 2 > 0 and π > 0).
-  have h_log2_eq : Complex.log (2 : ℂ) = ((Real.log 2 : ℝ) : ℂ) := by
-    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl]
-    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
-  have h_logπ_eq :
-      Complex.log ((Real.pi : ℝ) : ℂ) = ((Real.log Real.pi : ℝ) : ℂ) :=
-    (Complex.ofReal_log Real.pi_pos.le).symm
-  have h_addsafe :
-      ADDsafeℂ (Complex.log (2 : ℂ)) (Complex.log ((Real.pi : ℝ) : ℂ)) := by
-    rw [h_log2_eq, h_logπ_eq]
-    exact ADDsafeℂ_ofReal_ofReal (Real.log 2) (Real.log Real.pi)
-  -- Apply mkMulℂ closure.
-  have hMul := eval?_mkMulℂ hT hP h2_ne hπ_ne h2_arg hπ_arg h_addsafe
-  rw [hMul]
-  push_cast; ring_nf
+  have hT : twoPubℂ.eval? env = some (((2 : ℝ) : ℂ)) := by
+    rw [eval?_twoPubℂ env]; norm_cast
+  have h := eval?_mkMulℂ_realPos hT (eval?_piPubℂ env)
+              (by norm_num : (0:ℝ) < 2) Real.pi_pos
+  rw [h]
 
-/-- Eval lemma for `negPiPubℂ`: evaluates to `((-Real.pi : ℝ) : ℂ)`. -/
+/-- Eval lemma for `negPiPubℂ`: evaluates to `((-Real.pi : ℝ) : ℂ)`.
+Golfed via `eval?_mkSubℂ_ofReal` (3 lines vs. 18). -/
 lemma eval?_negPiPubℂ (env : Nat → ℂ) :
     negPiPubℂ.eval? env = some (((-Real.pi : ℝ) : ℂ)) := by
   unfold negPiPubℂ
-  have hP : piPubℂ.eval? env = some ((Real.pi : ℝ) : ℂ) := eval?_piPubℂ env
-  have h2P : twoPiPubℂ.eval? env = some ((2 * Real.pi : ℝ) : ℂ) :=
-    eval?_twoPiPubℂ env
-  have hπ_ne : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast Real.pi_ne_zero
-  have hπ_arg : Complex.arg ((Real.pi : ℝ) : ℂ) < Real.pi := by
-    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
-    exact Real.pi_pos
-  have h2π_im_lo : -Real.pi < (((2 * Real.pi : ℝ) : ℂ)).im := by
-    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
-  have h2π_im_hi : (((2 * Real.pi : ℝ) : ℂ)).im ≤ Real.pi := by
-    rw [Complex.ofReal_im]; linarith [Real.pi_pos]
-  have h := eval?_mkSubℂ hP h2P hπ_ne hπ_arg h2π_im_lo h2π_im_hi
-  rw [h]
-  push_cast; ring_nf
+  have h := eval?_mkSubℂ_ofReal (eval?_piPubℂ env) (eval?_twoPiPubℂ env) Real.pi_pos
+  rw [h]; congr 1; push_cast; ring
 
-/-- Eval lemma for `halfPiPubℂ`: evaluates to `((Real.pi / 2 : ℝ) : ℂ)`. -/
+/-- Eval lemma for `halfPiPubℂ`: evaluates to `((Real.pi / 2 : ℝ) : ℂ)`.
+Golfed via `eval?_mkDivℂ_realGtOne_realPos` (Real.pi > 3 > 1). -/
 lemma eval?_halfPiPubℂ (env : Nat → ℂ) :
     halfPiPubℂ.eval? env = some (((Real.pi / 2 : ℝ) : ℂ)) := by
   unfold halfPiPubℂ
-  have hP : piPubℂ.eval? env = some ((Real.pi : ℝ) : ℂ) := eval?_piPubℂ env
-  have hT : twoPubℂ.eval? env = some (2 : ℂ) := eval?_twoPubℂ env
-  -- π ≠ 0
-  have hπ_ne : ((Real.pi : ℝ) : ℂ) ≠ 0 := by
-    exact_mod_cast Real.pi_ne_zero
-  -- 2 ≠ 0
-  have h2_ne : (2 : ℂ) ≠ 0 := by norm_num
-  -- arg π = 0 < π
-  have hπ_arg : Complex.arg ((Real.pi : ℝ) : ℂ) < Real.pi := by
-    rw [Complex.arg_ofReal_of_nonneg Real.pi_pos.le]
-    exact Real.pi_pos
-  -- arg 2 = 0 < π
-  have h2_arg : Complex.arg (2 : ℂ) < Real.pi := by
-    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl,
-        Complex.arg_ofReal_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
-    exact Real.pi_pos
-  -- log π ≠ 0 (since π ≠ 1)
-  have h_logπ_ne : Complex.log ((Real.pi : ℝ) : ℂ) ≠ 0 := by
-    rw [show Complex.log ((Real.pi : ℝ) : ℂ) = ((Real.log Real.pi : ℝ) : ℂ) from
-        (Complex.ofReal_log Real.pi_pos.le).symm]
-    intro h
-    have h_log_eq_zero : Real.log Real.pi = 0 := by exact_mod_cast h
-    have h_pi_eq_one : Real.pi = 1 := by
-      have := Real.log_eq_zero.mp h_log_eq_zero
-      rcases this with h1 | h2 | h3
-      · exact absurd h1 (ne_of_gt Real.pi_pos)
-      · exact h2
-      · linarith [Real.pi_pos]
-    -- Real.pi > 3
-    have : (3 : ℝ) < Real.pi := Real.pi_gt_three
-    linarith
-  -- arg(log π) = 0 < π (since log π > 0 for π > 1)
-  have h_logπ_arg : Complex.arg (Complex.log ((Real.pi : ℝ) : ℂ)) < Real.pi := by
-    rw [show Complex.log ((Real.pi : ℝ) : ℂ) = ((Real.log Real.pi : ℝ) : ℂ) from
-        (Complex.ofReal_log Real.pi_pos.le).symm]
-    have h_log_pos : 0 < Real.log Real.pi := by
-      apply Real.log_pos
-      have : (3 : ℝ) < Real.pi := Real.pi_gt_three
-      linarith
-    rw [Complex.arg_ofReal_of_nonneg h_log_pos.le]
-    exact Real.pi_pos
-  -- (log 2).im = 0 ∈ (-π, π]
-  have h_log2_real : Complex.log (2 : ℂ) = ((Real.log 2 : ℝ) : ℂ) := by
-    rw [show (2 : ℂ) = (((2 : ℝ)) : ℂ) from by push_cast; rfl]
-    exact (Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2)).symm
-  have h_log2_im_lo : -Real.pi < (Complex.log (2 : ℂ)).im := by
-    rw [h_log2_real, Complex.ofReal_im]; linarith [Real.pi_pos]
-  have h_log2_im_hi : (Complex.log (2 : ℂ)).im ≤ Real.pi := by
-    rw [h_log2_real, Complex.ofReal_im]; linarith [Real.pi_pos]
-  have h := eval?_mkDivℂ hP hT hπ_ne h2_ne hπ_arg h2_arg
-                          h_logπ_ne h_logπ_arg h_log2_im_lo h_log2_im_hi
-  rw [h]
-  push_cast; ring_nf
+  have hP := eval?_piPubℂ env
+  have hT : twoPubℂ.eval? env = some (((2 : ℝ) : ℂ)) := by
+    rw [eval?_twoPubℂ env]; norm_cast
+  have hπ_gt_one : (1 : ℝ) < Real.pi := lt_trans (by norm_num) Real.pi_gt_three
+  exact eval?_mkDivℂ_realGtOne_realPos hP hT hπ_gt_one (by norm_num : (0 : ℝ) < 2)
 
 /-- Eval lemma for `halfPiMinusXℂ`: evaluates to `((π/2 - x : ℝ) : ℂ)`
 when `env 0 = ((x : ℝ) : ℂ)`.
