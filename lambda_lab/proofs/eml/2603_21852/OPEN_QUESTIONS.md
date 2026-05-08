@@ -324,49 +324,82 @@ no fabricated operators remain in the scaffolding.
 
 ### Plan B — Full-real-domain trig via custom branch (1–3 days)
 
-**Goal.** Match the paper's claim (line 328: "EML-compiled expressions
-work on the real axis, both positive and negative, except for a few
-isolated points") by introducing a custom complex-log branch that
-matches the paper's "manual `i`-sign correction" convention (line 333).
+> **Status update (2026-05-08): architectural finding documented below.**
+> The original "custom log branch" framing turns out to *not* be
+> implementable as a different log function — the EML grammar's eval
+> rule is hard-coded to use Mathlib's principal `Complex.log` (see
+> `Framework/Complex/Term.lean:34`). What's actually feasible (and what
+> the paper's compiler effectively does) is the more subtle `2πi`-shift
+> insight in §B.0 below, which is structurally equivalent to Plan C —
+> i.e. **Plans B and C describe the same underlying mathematics in two
+> different presentations.** Plan C is the cleaner Lean formulation;
+> Plan B is the paper-faithful framing of the same construction.
 
-**Approach.**
+#### §B.0 — The actual architectural finding
 
-1. **Define a custom log.** Add `EML.Framework.Complex.LogBranch`:
-   ```lean
-   noncomputable def logEML (z : ℂ) : ℂ := ...
-   ```
-   The exact branch convention to match the paper's compiler is **the
-   first research question** — paper says "redefine the branch for EML
-   itself in such a way that `ln z` follows standard implementation of
-   principal branch", which is internally inconsistent (you can't use
-   the standard principal branch and avoid the cut). Concretely, the
-   paper's convention seems to be: use principal branch and then
-   manually flip the sign of `i` at compile time when crossing the cut.
-   Recommend a `GPT Pro consultation` to pin down the exact convention.
+The `EMLTermℂ` grammar's eval rule is fixed in `Framework/Complex/Term.lean`:
+```lean
+| .eml a b =>
+    match ..., ... with
+    | some va, some vb =>
+        if vb = 0 then none else some (Complex.exp va - Complex.log vb)
+    ...
+```
+There is **no way** to inject a different `log` branch from inside the
+EML term language — every `eml(_, b)` evaluates with Mathlib's principal
+`Complex.log`. The macro `mkLogℂ T = eml(1, eml(eml(1, T), 1))` reduces
+to `Complex.log v` only when `arg(T.eval) ∈ (-π, π)` strictly, by way of
+`Complex.log_exp`'s `w.im ∈ (-π, π]` constraint with `w = e − log v` and
+`w.im = -arg v`.
 
-2. **Re-derive `mkLogℂ` against `logEML`.** Each `eval?_mkLogℂ` lemma
-   currently uses `Complex.log`; introduce a parallel
-   `eval?_mkLogEMLℂ` against the new branch. The constraint
-   `arg < π` becomes `arg ≠ π` (the cut), enabling more witnesses.
+**At the cut `arg v = π` exactly** (i.e. `v` a negative real), the
+macro is *still* evaluable — `Complex.log` is total — but the value is
+**`Complex.log v − 2πi`**, not `Complex.log v`. The `−2πi` arises
+because `Complex.log_exp` then steps to the next Riemann sheet:
+`log(exp w) = w + 2πi` for `w.im = −π`, and the macro's outer
+subtraction propagates this as a `−2πi` shift in the result.
 
-3. **Re-derive each trig witness's eval lemma.** With `logEML` in
-   place, the bridge proofs for `cos`, `sin`, `arctan`, `tan` should
-   extend from `(0, π)` etc. to wider strips. Estimated 4–8 lemmas to
-   re-prove.
+**Why `cos` already covers `ℝ ∖ {0}`.** `cosTermℂ = mkExpℂ (mkExpℂ
+(.eml cosLhsℂ cosRhsℂ))` — its outermost layer is an `exp`. Any `2πi`
+shift inside the inner log calls is absorbed by `exp(z + 2πi) = exp z`.
+So `cos` extends across the cut **for free**, which is why the existing
+`paper_claim_cos` already lives on `ℝ ∖ {0}` rather than just `(0, ∞)`.
 
-4. **Bridge between `Complex.log` (Mathlib) and `logEML` (ours).** A
-   small lemma: `logEML z = Complex.log z + 2πi · k(z)` for an explicit
-   integer-valued `k(z)`. This is needed to connect to Mathlib's
-   `Real.cos`, `Real.sin`, `Real.tan` which use the standard branch.
+**Why `sin`, `arctan`, `tan` don't.** Their witnesses' final operation
+involves an `mkLogℂ` whose imaginary part is the answer (e.g. `arctan`'s
+witness is `mkLogℂ (1 + i·x) / 2`, with `arctan x = (eval).im`). A
+`−2πi` shift in the final log makes `(eval).im` differ from
+`Real.arctan x` by `−2π`. The paper's "manual `i`-sign correction" is
+the meta-level operation of choosing a different witness shape (one
+that *doesn't* go through the cut) for inputs in different regions —
+which is exactly Plan C's witness-family construction.
 
-**Risk.** The paper's "manual sign correction" is described in prose
-but not formally specified. We may discover that what works in their
-Python compiler does not have a clean Lean formulation. **Pre-flight
-GPT Pro consult is recommended** before committing to this path.
+#### §B.1 — Reformulated Plan B (= Plan C in Plan B's clothing)
 
-**Acceptance.** `paper_claim_sin_full : ∃ t, ∀ x : ℝ, x ≠ 0 →
-∃ vc, ... ∧ vc.re = Real.sin x` with parallel claims for the four
-remaining trig primitives.
+A plan-B-faithful formulation: *for each x ∈ ℝ \ (excluded points), pick
+a witness `t_x : EMLTermℂ` whose intermediate evaluations stay in
+`{ z : ℂ | arg z ∈ (-π, π) }` (i.e. avoid the cut), such that
+`t_x.eval? env_x` projects to `Real.sin x` (resp. `cos`, `arctan`,
+`tan`).*
+
+This is **exactly** Plan C's `∀ x, ∃ t_x, ...` framing, with the
+"different witness shapes" justified by the paper's prose ("manual
+i-sign correction") rather than by abstract periodicity. The
+mathematical content is identical to Plan C.
+
+**Recommendation.** Treat Plan B as the **paper-faithful narrative** of
+Plan C. Implementation lives in Plan C below; Plan B is the
+documentation that explains why this is what the paper meant. No
+separate Plan-B-only deliverable is feasible without changing the EML
+grammar's eval rule (which would be off-paper).
+
+**Acceptance for "Plan B style" claims.** The same as Plan C:
+`paper_claim_sin_full : ∀ x : ℝ, x ≠ 0 ∧ x ≠ ±π ∧ ... → ∃ t : EMLTermℂ,
+∃ vc, t.eval? env_x = some vc ∧ vc.re = Real.sin x`. Whether the
+witness is *presented* as a single witness with a custom branch (Plan B
+narrative) or as a family `(t_k)_{k:ℤ}` with periodicity reduction
+(Plan C narrative) is a documentation choice; the Lean artefact is
+identical.
 
 ---
 
