@@ -22,10 +22,12 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 
 |     | Count | Notes |
 |---|---:|---|
-| 📐 Paper primitives sealed | **36 / 36** | atoms · real unaries · hyperbolic · binaries · trig |
-| 📜 `paper_claim_*` theorems | **45** | exposed in `EML.Framework.PaperClaims` |
+| 📐 EML paper primitives sealed | **36 / 36** | atoms · real unaries · hyperbolic · binaries · trig |
+| 📜 `paper_claim_*` theorems (EML) | **48** | in `EML.Framework.PaperClaims`; includes Path C′ `sin_full`, `arctan_full`, `tan_full` |
+| 📜 EDL `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan D progress; `one`, `var`, `e_const`, `exp x`, `log x`) |
+| 📜 −EML `paper_claim_*` theorems | **2** | in `EML.Framework.Sheffer` (Plan E pilot; `one`, `var`) |
 | 🌳 K-count theorems (`rfl`-checked tree sizes) | **15** | in `EML.Framework.KCounting` |
-| 🛠 Lean kernel jobs | **8 054** | `lake build` finishes sorry-free |
+| 🛠 Lean kernel jobs | **8 056** | `lake build` finishes sorry-free |
 | 🚫 `sorry` / `admit` / axiom abuse | **0** | clean by `#print axioms` |
 | ⚠ §G structural boundary points | **3** | `√0`, `arcosh 1`, `hypot(0, 0)` — paper-acknowledged |
 
@@ -42,12 +44,15 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 | `arcosh` | 1 | `(1, ∞)` | `arcosh 1` |
 | **Binaries** (`+`, `−`, `·`, `/`, `avg`, `^`, `log_b`) | 7 | full natural domain | — |
 | `hypot` | 1 | `ℝ² ∖ {(0,0)}` | `hypot(0,0)` |
-| **Trig** `cos` | 1 | `ℝ ∖ {0}` | trig narrowing[¹](#trig-note) |
-| **Trig** `sin`, `arctan` | 2 | `(−π, π) ∖ {0}` | |
-| **Trig** `tan` | 1 | `(−π/2, π/2) ∖ {0}` | |
+| **Trig** `cos` | 1 | `ℝ ∖ {0}` | — (full domain) |
+| **Trig** `sin` | 1 | `ℝ ∖ {π/2}` (full domain via Path C′) | — |
+| **Trig** `arctan` | 1 | full ℝ (full domain via Path C′) | — |
+| **Trig** `tan` | 1 | `{x ∣ cos x ≠ 0}` (full natural domain via Path C′) | — |
 | **Trig** `arccos`, `arcsin` | 2 | full open `(−1, 1)` | — |
 
-<a name="trig-note"></a><sup>**[¹]**</sup> Trig narrowing is *not* a §G boundary point — it's a deliberate choice to use Mathlib's standard `Complex.log` principal branch unchanged. Two concrete plans exist for full real-domain coverage; see [OPEN_QUESTIONS](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md).
+**Path C′ delivered full-real-domain witnesses for `sin`, `arctan`, `tan`** via GPT Pro's recommendation: range-reduction by substitution. See [`gpt_pro_bundle/trig_widening/RESPONSE.md`](gpt_pro_bundle/trig_widening/RESPONSE.md) for the consult and [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for status of the remaining plans.
+
+<a name="trig-note"></a>**Trig full-domain coverage delivered** (Path C′, 2026-05-09): the previously narrow `sin`, `arctan`, `tan` witnesses are now lifted to full natural domain via range-reduction substitution. See [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for the architectural finding (Plan B's "custom log branch" was found infeasible) and Pro's recommended Path C′.
 
 ---
 
