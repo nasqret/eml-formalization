@@ -94,13 +94,17 @@ def size : EDLTerm → Nat
 
 /-- Partial evaluation under an environment. Returns `none` exactly
 when some `edl` sub-expression has `log` of its second argument equal
-to zero (junk-value boundary). -/
+to zero (junk-value boundary). The if-test is **inlined** rather than
+factored through `edl?` so that step-by-step proofs (per Aristotle
+chunk 085) compose cleanly via `simp [eval?]`. -/
 noncomputable def eval? (env : Nat → ℝ) : EDLTerm → Option ℝ
   | one     => some 1
   | var n   => some (env n)
   | e_const => some (Real.exp 1)
   | edl a b => (eval? env a).bind fun va =>
-                 (eval? env b).bind fun vb => edl? va vb
+                 (eval? env b).bind fun vb =>
+                   if Real.log vb = 0 then none
+                   else some (Real.exp va / Real.log vb)
 
 /-- Every `EDLTerm` has at least one node. -/
 lemma size_pos : ∀ t : EDLTerm, 1 ≤ t.size
@@ -222,26 +226,32 @@ theorem edl_paper_claim_e_const :
   ⟨.e_const, fun _ => rfl⟩
 
 /-- **D4 / EDL `exp x`** — `edl(x, e) = exp(x) / log(e) = exp(x) / 1 =
-exp(x)`. Witness `edl (var 0) e_const`. Reuses the existing
-`edl_x_eConst` collapse identity. (Aristotle chunk 084.) -/
+exp(x)`. Witness `edl (var 0) e_const`. (Aristotle chunk 084.) -/
 theorem edl_paper_claim_exp :
     ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (Real.exp (env 0)) := by
   refine ⟨.edl (.var 0) .e_const, fun env => ?_⟩
   simp only [EDLTerm.eval?, Option.bind_some]
-  exact edl_x_eConst (env 0)
+  rw [show Real.log (Real.exp 1) = 1 from Real.log_exp 1]
+  simp
 
-/-! **D8 / EDL `log x`** — Witness: `edl one (edl (edl one (var 0)) e_const)`.
+set_option linter.unusedSimpArgs false in
+/-- **D8 / EDL `log x`** — Three-step composition discovered by Aristotle:
+- `edl(1, x) = e/log(x)`
+- `edl(edl(1, x), e) = exp(e/log(x))/log(e) = exp(e/log(x))`
+- `edl(1, edl(edl(1, x), e)) = e/log(exp(e/log(x))) = e/(e/log(x)) = log(x)`
 
-Aristotle (chunk 085, project bc8abf1b) discovered the construction and
-proved it in a self-contained chunk. Lifting that proof into our actual
-Sheffer.lean encounters a recurring `simp_all +decide` linter conflict
-(our `eval?` calls `edl?` as a separate function, while the chunk's
-`eval?` inlined the if-test, leading to slightly different unfolding
-behavior). The witness is **mathematically sealed** in
-`chunks/085_edl_atoms_constants/result.lean` under the inlined-`edl?`
-form; lifting requires either restructuring our `eval?` to inline
-`edl?`, or rewriting the chunk proof step-by-step without `simp_all`.
-Marked as a deferred lift; follow-up. -/
+Witness: `edl one (edl (edl one (var 0)) e_const)`. Domain hypothesis:
+`0 < env 0` and `env 0 ≠ 1`. (Aristotle chunk 085.) -/
+theorem edl_paper_claim_log :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, 0 < env 0 → env 0 ≠ 1 →
+      t.eval? env = some (Real.log (env 0)) := by
+  refine ⟨.edl .one (.edl (.edl .one (.var 0)) .e_const), fun env hpos hne1 => ?_⟩
+  simp [EDLTerm.eval?]
+  split_ifs <;> simp_all +decide [ne_of_gt, Real.exp_pos]
+  · grind
+  · linarith
+  · linarith [Real.exp_pos 1]
+  · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
 
 /-! ## Public summary
 
