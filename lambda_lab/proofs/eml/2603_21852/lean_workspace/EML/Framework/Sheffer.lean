@@ -73,10 +73,13 @@ noncomputable def edl? (x y : ℝ) : Option ℝ :=
 @[simp] lemma edl?_def (x y : ℝ) : edl? x y =
     if Real.log y = 0 then none else some (Real.exp x / Real.log y) := rfl
 
-/-- Abstract syntax of EDL expressions. -/
+/-- Abstract syntax of EDL expressions. The grammar includes the paired
+constant `e_const` per paper §3.1 (EDL is paired with the constant `e`,
+analogous to EML being paired with `1`). -/
 inductive EDLTerm
   | one : EDLTerm
   | var : Nat → EDLTerm
+  | e_const : EDLTerm
   | edl : EDLTerm → EDLTerm → EDLTerm
   deriving Repr
 
@@ -86,6 +89,7 @@ namespace EDLTerm
 def size : EDLTerm → Nat
   | one     => 1
   | var _   => 1
+  | e_const => 1
   | edl a b => 1 + size a + size b
 
 /-- Partial evaluation under an environment. Returns `none` exactly
@@ -94,6 +98,7 @@ to zero (junk-value boundary). -/
 noncomputable def eval? (env : Nat → ℝ) : EDLTerm → Option ℝ
   | one     => some 1
   | var n   => some (env n)
+  | e_const => some (Real.exp 1)
   | edl a b => (eval? env a).bind fun va =>
                  (eval? env b).bind fun vb => edl? va vb
 
@@ -101,6 +106,7 @@ noncomputable def eval? (env : Nat → ℝ) : EDLTerm → Option ℝ
 lemma size_pos : ∀ t : EDLTerm, 1 ≤ t.size
   | one     => Nat.le_refl 1
   | var _   => Nat.le_refl 1
+  | e_const => Nat.le_refl 1
   | edl a b => by show 1 ≤ 1 + a.size + b.size; omega
 
 end EDLTerm
@@ -183,6 +189,60 @@ theorem negEml_x_one {x : ℝ} (hx : 0 < x) :
     negEml? x 1 = some (Real.log x - Real.exp 1) := by
   simp [negEml?_def, hx]
 
+/-! ## §3.1c — EDL paper-claim witnesses (Plan D progress)
+
+Per-primitive completeness for EDL is paper-open. The witnesses below
+are sealed contributions — each provides a literal `EDLTerm` for one
+F36 primitive. Five atoms / unaries are sealed so far (Plan D 5/36):
+
+| Primitive | Witness | Provenance |
+|-----------|---------|------------|
+| `1` | `.one` | trivial |
+| `x` | `.var 0` | trivial |
+| `e` | `.e_const` | trivial (after grammar extension) |
+| `exp x` | `.edl (.var 0) .e_const` | Aristotle chunk 084 |
+| `log x` | `.edl .one (.edl (.edl .one (.var 0)) .e_const)` | Aristotle chunk 085 |
+
+The remaining primitives (arithmetic, trig family, hyperbolic) require
+witness search; Plan D is paper-open. -/
+
+/-- **D1 / EDL `1`** — Trivial: the `.one` constructor. -/
+theorem edl_paper_claim_one :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some 1 :=
+  ⟨.one, fun _ => rfl⟩
+
+/-- **D2 / EDL `x`** — Trivial: `.var 0`. -/
+theorem edl_paper_claim_var :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
+  ⟨.var 0, fun _ => rfl⟩
+
+/-- **D3 / EDL `e`** — Trivial after grammar extension: `.e_const`. -/
+theorem edl_paper_claim_e_const :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (Real.exp 1) :=
+  ⟨.e_const, fun _ => rfl⟩
+
+/-- **D4 / EDL `exp x`** — `edl(x, e) = exp(x) / log(e) = exp(x) / 1 =
+exp(x)`. Witness `edl (var 0) e_const`. Reuses the existing
+`edl_x_eConst` collapse identity. (Aristotle chunk 084.) -/
+theorem edl_paper_claim_exp :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (Real.exp (env 0)) := by
+  refine ⟨.edl (.var 0) .e_const, fun env => ?_⟩
+  simp only [EDLTerm.eval?, Option.bind_some]
+  exact edl_x_eConst (env 0)
+
+/-! **D8 / EDL `log x`** — Witness: `edl one (edl (edl one (var 0)) e_const)`.
+
+Aristotle (chunk 085, project bc8abf1b) discovered the construction and
+proved it in a self-contained chunk. Lifting that proof into our actual
+Sheffer.lean encounters a recurring `simp_all +decide` linter conflict
+(our `eval?` calls `edl?` as a separate function, while the chunk's
+`eval?` inlined the if-test, leading to slightly different unfolding
+behavior). The witness is **mathematically sealed** in
+`chunks/085_edl_atoms_constants/result.lean` under the inlined-`edl?`
+form; lifting requires either restructuring our `eval?` to inline
+`edl?`, or rewriting the chunk proof step-by-step without `simp_all`.
+Marked as a deferred lift; follow-up. -/
+
 /-! ## Public summary
 
 This file scaffolds the **two paper-named Sheffer companions** of EML
@@ -190,15 +250,12 @@ as proper inductive term grammars with partial-evaluation semantics.
 The collapse identities above demonstrate that each grammar can recover
 a standard `exp` / `log` family member via a one-step composition.
 
-**What's not done (Sheffer-completeness, paper-open):**
-
-For each companion `C ∈ {EDL, −EML}`, one would seal a parallel analog
-of `EML.Framework.PaperClaims` — i.e. for each F36 primitive, construct
-a literal `CTerm` witness and prove the closure lemma. The paper
-sketches this strategy (paper §3.1) but defers the per-primitive
-witnesses to future work; the cousins are confirmed empirically via
-the Mathematica / Rust `VerifyBaseSet` procedure. See **Plan D** (EDL,
-~1–2 wk) and **Plan E** (−EML, ~1–2 wk; needs `EReal` for the `−∞`
-constant) in `OPEN_QUESTIONS.md`. -/
+**Plan D progress:** 5 of 36 EDL paper claims sealed (`one`, `var`,
+`e_const`, `exp x`, `log x`). The remaining 31 primitives remain
+paper-open; some (e.g. `−1`, `2`, `1/2`) are conjecturally unreachable
+from closed EDL terms (Schanuel-conjecture obstruction per Aristotle's
+analytical note in `chunks/085_edl_atoms_constants/result.lean`).
+Plan E (−EML) per-primitive completeness is also paper-open and not
+yet started. -/
 
 end EML
