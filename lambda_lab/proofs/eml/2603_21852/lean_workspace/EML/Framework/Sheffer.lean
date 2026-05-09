@@ -253,6 +253,91 @@ theorem edl_paper_claim_log :
   · linarith [Real.exp_pos 1]
   · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
 
+/-! ### Helper lemmas for Plan D compositions (Aristotle chunk 087) -/
+
+/-- Apply `edl` when both children evaluate and `log vb ≠ 0`. -/
+private lemma eval_edl_of_log_ne_zero {env : Nat → ℝ} {a b : EDLTerm}
+    {va vb : ℝ} (ha : a.eval? env = some va) (hb : b.eval? env = some vb)
+    (hlog : Real.log vb ≠ 0) :
+    (EDLTerm.edl a b).eval? env = some (Real.exp va / Real.log vb) := by
+  simp only [EDLTerm.eval?, ha, hb, Option.bind_some]
+  simp only [if_neg hlog]
+
+private lemma log_exp1_ne_zero : Real.log (Real.exp 1) ≠ (0 : ℝ) := by
+  rw [Real.log_exp]; exact one_ne_zero
+
+/-- `edl(a, e_const)` evaluates to `exp(va)` (since `log e = 1`). -/
+private lemma eval_edl_e {env : Nat → ℝ} {a : EDLTerm} {va : ℝ}
+    (ha : a.eval? env = some va) :
+    (EDLTerm.edl a .e_const).eval? env = some (Real.exp va) := by
+  rw [eval_edl_of_log_ne_zero ha rfl log_exp1_ne_zero, Real.log_exp, div_one]
+
+/-- **D10 / EDL `exp(exp x)`** — Witness: `edl (edl (var 0) e_const) e_const`.
+Each `edl _ e_const` layer applies `exp` (since `log e = 1`), so the
+double-wrapping gives `exp(exp x)`. (Aristotle chunk 087.) -/
+theorem edl_paper_claim_exp_exp :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      t.eval? env = some (Real.exp (Real.exp (env 0))) :=
+  ⟨.edl (.edl (.var 0) .e_const) .e_const,
+   fun _ => eval_edl_e (eval_edl_e rfl)⟩
+
+/-- The D8 witness for `log x` packaged as a private definition for use
+in nested compositions like `log(log x)`. -/
+private noncomputable def d8 : EDLTerm :=
+  .edl .one (.edl (.edl .one (.var 0)) .e_const)
+
+private lemma d8_eval (env : Nat → ℝ) (h0 : 0 < env 0) (h1 : env 0 ≠ 1) :
+    d8.eval? env = some (Real.log (env 0)) := by
+  convert eval_edl_of_log_ne_zero _ _ _ using 1
+  rotate_left
+  exact 1
+  exact Real.exp (Real.exp 1 / Real.log (env 0))
+  · rfl
+  · convert eval_edl_e _ using 1
+    convert eval_edl_of_log_ne_zero _ _ _ using 1
+    · rfl
+    · rfl
+    · exact fun h => h1 <| Real.eq_one_of_pos_of_log_eq_zero h0 h
+  · norm_num
+    exact ⟨h0.ne', h1, by linarith⟩
+  · norm_num [Real.exp_ne_zero, Real.log_exp]
+
+/-- The D11 witness `log(log x)` substitutes `d8` (which computes
+`log x`) for `var 0` inside another copy of `d8`. -/
+private noncomputable def d8d8 : EDLTerm :=
+  .edl .one (.edl (.edl .one d8) .e_const)
+
+set_option linter.unusedSimpArgs false in
+private lemma d8d8_eval (env : Nat → ℝ)
+    (h0 : 0 < env 0) (h1 : env 0 ≠ 1)
+    (h2 : 0 < Real.log (env 0)) (h3 : Real.log (env 0) ≠ 1) :
+    d8d8.eval? env = some (Real.log (Real.log (env 0))) := by
+  have h_eval : (EDLTerm.edl (.edl .one d8) .e_const).eval? env =
+      some (Real.exp (Real.exp 1 / Real.log (Real.log (env 0)))) := by
+    rw [eval_edl_e]
+    apply eval_edl_of_log_ne_zero
+    · rfl
+    · exact d8_eval env h0 h1
+    · exact fun h => h3 <| Real.eq_one_of_pos_of_log_eq_zero h2 h
+  have h_final : (EDLTerm.edl .one (.edl (.edl .one d8) .e_const)).eval? env =
+      some (Real.exp 1 / Real.log
+        (Real.exp (Real.exp 1 / Real.log (Real.log (env 0))))) := by
+    rw [eval_edl_of_log_ne_zero] <;> norm_num [h_eval]
+    · rfl
+    · exact ⟨⟨h0.ne', h1, by linarith⟩, h3, by linarith⟩
+  convert h_final using 2
+  norm_num [Real.exp_ne_zero]
+
+/-- **D11 / EDL `log(log x)`** — Witness: nested D8 composition.
+Domain: `0 < x`, `x ≠ 1`, `0 < log x`, `log x ≠ 1` (so `log(log x)`
+is well-defined). (Aristotle chunk 087.) -/
+theorem edl_paper_claim_log_log :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      0 < env 0 → env 0 ≠ 1 →
+      0 < Real.log (env 0) → Real.log (env 0) ≠ 1 →
+      t.eval? env = some (Real.log (Real.log (env 0))) :=
+  ⟨d8d8, fun env h0 h1 h2 h3 => d8d8_eval env h0 h1 h2 h3⟩
+
 set_option linter.unusedSimpArgs false in
 /-- **D9 / EDL `x / y`** — Division witness via composition of D8 (log)
 and D4 (exp): `edl(D8(x), D4(y)) = exp(log x) / log(exp y) = x / y`.
