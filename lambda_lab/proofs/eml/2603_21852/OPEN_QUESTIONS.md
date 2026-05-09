@@ -12,11 +12,10 @@ direction, or a future-work extension.
 | Direction | Feasibility | Effort | Action plan |
 |---|---|---|---|
 | **Sheffer cleanup** (align names with paper §3.1) | ✅ **DONE** | — | See [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours-complete) for the audit trail |
-| **Full-real-domain trig** | 🔄 **In progress** (Plan C′) | ~3–5 d remaining | [Plan C′](#plan-c-prime--gpt-pro-recommendation-in-progress) — GPT Pro recommendation; foundations landed |
-| **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding; structurally equivalent to Plan C |
-| **Full-real-domain trig — multi-witness periodicity (raw)** | Superseded by C′ | — | [Plan C](#plan-c--full-real-domain-trig-via-multi-witness-periodicity-2-3-days) — Pro refined this into Plan C′ |
-| **EDL per-primitive completeness** | Large | 1–2 wk | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) |
-| **−EML per-primitive completeness** | Large | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) |
+| **Full-real-domain trig** | ✅ **DONE** (Plan C′) | — | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
+| **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding |
+| **EDL per-primitive completeness** | 🔄 **5/36** | 1–2 wk | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — atoms `one`, `var`, `e_const`, `exp x`, `log x` sealed; `−1`, `2`, `1/2` conjecturally unreachable per Schanuel |
+| **−EML per-primitive completeness** | 🔄 **2/36** | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — atoms `one`, `var` sealed; `minusInf` requires switch to `EReal` grammar |
 | **§3.2 universal minimality** | Paper-open | — | research result, not a formalization task |
 | **§4.3 gradient training** | Out of scope | — | needs Mathlib infrastructure that doesn't exist |
 | **Three §G boundary points** | Architectural | — | not closeable in the current grammar |
