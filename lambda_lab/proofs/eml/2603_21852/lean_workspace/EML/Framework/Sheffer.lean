@@ -253,6 +253,26 @@ theorem edl_paper_claim_log :
   · linarith [Real.exp_pos 1]
   · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
 
+/-! ## §3.1d — −EML paper-claim witnesses (Plan E pilot)
+
+Per Aristotle chunk 088 (project 66bbfbf3), the two trivial atoms that
+don't require the `−∞` constant are sealable in our `ℝ`-based
+`NegEMLTerm` grammar. The paper's `−EML` is paired with `−∞`, so
+**E3 (witness for `−∞`)** would require switching `NegEMLTerm` to
+`EReal` (with a `minusInf` constructor) — Aristotle's chunk 088 does
+this in its self-contained file. Lifting that to our framework is
+deferred (Plan E proper, ~1–2 wk per OPEN_QUESTIONS.md). -/
+
+/-- **E1 / −EML `1`** — Trivial: `.one` constructor. -/
+theorem negEml_paper_claim_one :
+    ∃ t : NegEMLTerm, ∀ env : Nat → ℝ, t.eval? env = some 1 :=
+  ⟨.one, fun _ => rfl⟩
+
+/-- **E2 / −EML `x`** — Trivial: `.var 0`. -/
+theorem negEml_paper_claim_var :
+    ∃ t : NegEMLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
+  ⟨.var 0, fun _ => rfl⟩
+
 /-! ## Public summary
 
 This file scaffolds the **two paper-named Sheffer companions** of EML
