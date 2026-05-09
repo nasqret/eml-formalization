@@ -30,7 +30,7 @@
 | | |
 |---|---:|
 | Paper primitives sealed | **36 / 36** (100%) |
-| `paper_claim_*` theorems exposed | **48** (incl. Path C′ full-domain `sin_full`, `arctan_full`, `tan_full`) |
+| `paper_claim_*` theorems exposed | **53** (48 EML in `PaperClaims`, 5 EDL in `Sheffer.lean`) |
 | `K_count_*` `rfl`-checked tree sizes | **15** |
 | Lean kernel jobs in `lake build EML` | **8 056** |
 | `sorry` / `admit` occurrences | **0** |
@@ -170,7 +170,7 @@ pie showData
 |---:|---|---|
 | 853 | [`Framework/F36ToEL.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/F36ToEL.lean) | F36 → EL translator: 36-case dispatch with closure lemmas |
 | 554 | [`Framework/Unconditional.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Unconditional.lean) | Domain-free wrapping helpers used by every paper claim |
-| 453 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 48 `paper_claim_*` theorems |
+| 453 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 53 paper_claim theorems (48 EML + 5 EDL) |
 | 293 | [`Framework/ELToEML.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/ELToEML.lean) | The structural compiler (Theorem 2 in `proof_structure.pdf`) |
 | 275 | [`Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | All 15 `K_count_*` theorems, all `:= rfl` |
 | 238 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | §3.1 companion-grammar scaffolding |
@@ -229,7 +229,7 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 | Sheffer | Operator | Constant | Status (paper) | Status (this artefact) |
 |---|---|---|---|---|
 | **EML** | `eml(x, y) = exp(x) − log(y)` | `1` | **proved complete for 36 primitives** | ✅ formalized end-to-end (this repo) |
-| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | scaffolding in `Sheffer.lean`; **no per-primitive proofs** (Plan D — 1–2 wk) |
+| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **5 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`); D8/log x discovered by Aristotle (chunk 085) via `edl one (edl (edl one (var 0)) e_const)` |
 | **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | scaffolding; **no per-primitive proofs** (Plan E — 1–2 wk; needs `EReal` for `−∞`) |
 
 > ✅ **Naming cleanup complete (Plan A done).** `Sheffer.lean` now contains exactly the
