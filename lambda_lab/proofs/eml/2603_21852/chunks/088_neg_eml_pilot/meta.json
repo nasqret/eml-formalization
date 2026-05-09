@@ -1,0 +1,8 @@
+{
+  "id": "088_neg_eml_pilot",
+  "kind": "theorem_pack",
+  "lean_imports": ["Mathlib"],
+  "depends_on": ["084_edl_atoms_pilot", "085_edl_atoms_constants"],
+  "status": "complete_partial",
+  "notes": "Plan D continuation chunk submitted 2026-05-08."
+}
