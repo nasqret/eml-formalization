@@ -30,7 +30,7 @@
 | | |
 |---|---:|
 | Paper primitives sealed | **36 / 36** (100%) |
-| `paper_claim_*` theorems exposed | **53** (48 EML in `PaperClaims`, 5 EDL in `Sheffer.lean`) |
+| `paper_claim_*` theorems exposed | **58** (48 EML in `PaperClaims` + 8 EDL + 2 −EML in `Sheffer`) |
 | `K_count_*` `rfl`-checked tree sizes | **15** |
 | Lean kernel jobs in `lake build EML` | **8 056** |
 | `sorry` / `admit` occurrences | **0** |
@@ -170,7 +170,9 @@ pie showData
 |---:|---|---|
 | 853 | [`Framework/F36ToEL.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/F36ToEL.lean) | F36 → EL translator: 36-case dispatch with closure lemmas |
 | 554 | [`Framework/Unconditional.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Unconditional.lean) | Domain-free wrapping helpers used by every paper claim |
-| 453 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 53 paper_claim theorems (48 EML + 5 EDL) |
+| 460 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 48 EML paper_claim theorems (incl. Path C′ `sin_full`, `arctan_full`, `tan_full`) |
+| 397 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | EDL + −EML scaffolding + 8 EDL + 2 −EML paper claims |
+| 584 | [`Framework/Complex/Periodicity.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Complex/Periodicity.lean) | Path C′ infrastructure: `subst0`, `ADDsafeℂ_ofReal_ofReal`, period constants, shift terms, witness families |
 | 293 | [`Framework/ELToEML.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/ELToEML.lean) | The structural compiler (Theorem 2 in `proof_structure.pdf`) |
 | 275 | [`Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | All 15 `K_count_*` theorems, all `:= rfl` |
 | 238 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | §3.1 companion-grammar scaffolding |
@@ -229,8 +231,8 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 | Sheffer | Operator | Constant | Status (paper) | Status (this artefact) |
 |---|---|---|---|---|
 | **EML** | `eml(x, y) = exp(x) − log(y)` | `1` | **proved complete for 36 primitives** | ✅ formalized end-to-end (this repo) |
-| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **5 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`); D8/log x discovered by Aristotle (chunk 085) via `edl one (edl (edl one (var 0)) e_const)` |
-| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | scaffolding; **no per-primitive proofs** (Plan E — 1–2 wk; needs `EReal` for `−∞`) |
+| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **8 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`); D8/log x via Aristotle's 3-step composition; **structural ceiling** — Aristotle's analysis shows the remaining 28 primitives (arithmetic, trig, hyperbolic) need addition of sub-expression values, structurally absent in `edl(a,b) = exp(a)/log(b)` |
+| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | **2 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`); pilot in `chunks/088` shows EReal-grammar for the `−∞` constant; full Plan E needs `NegEMLTerm` switch to `EReal` |
 
 > ✅ **Naming cleanup complete (Plan A done).** `Sheffer.lean` now contains exactly the
 > two paper-named cousins, `EDLTerm` and `NegEMLTerm`. The previously-misnamed
@@ -337,17 +339,56 @@ $ make build
 Build completed successfully (8054 jobs).
 ```
 
-### PCSS Eagle HPC re-verification
+### PCSS Eagle HPC re-verification (May 9, 2026)
 
-The artefact has been independently re-verified on PCSS Eagle (job 7 041 555, May 7 2026):
+Most recent re-verify: SLURM job 7052986 after the Path C′ + Plan D + Plan E framework lifts:
 
 | Metric | Value |
 |---|---:|
-| Files re-built | 88 |
+| Lake jobs built | **8056 / 8056** |
 | Failures | 0 |
-| Wall time | 42 s |
+| Wall time | ~90 s (warm cache) |
 
-Re-launch with `eagle_scripts/verify_all.sbatch`.
+Earlier Eagle access was blocked by a group-quota issue (writes
+defaulted to the `users` group instead of `pl0414-02`); fixed by
+applying `chgrp -R pl0414-02` plus the setgid bit on
+`lean_workspace/`. Re-launch with `eagle_scripts/verify_all.sbatch`
+or the smaller `verify_eml_only.sbatch`.
+
+### Aristotle integration scoreboard
+
+| Round | Chunks | Wins | Avg time |
+|---|---:|---:|---:|
+| Initial (003–070) | 67 | 67 | varies |
+| Path C′ (075–080) | 5 | 5 | ~16 min |
+| Plan D pilot (077, 079, 084) | 3 | 3 | ~16 min |
+| Plan D continuation (085–087, 089) | 4 | 4 | ~30–180 min |
+| Plan E pilot (088) | 1 | 1 | ~16 min |
+| **Total this thread** | **10** | **9** | — |
+
+Aristotle proofs were deployed in two modes: pure-Mathlib
+auxiliaries (`atanArg_in_Ioo`, `tan_period_reduction`) inlined
+directly into `Periodicity.lean`; and framework-as-axioms
+end-of-pipeline assembly proofs (`sin_via_cos`, `arctan_via_arcsin`,
+`tan_full`) used as references for hand-coded framework lifts.
+
+### Path C′ — full-real-domain trig (post-submission)
+
+GPT Pro's recommendation (consult bundle in `gpt_pro_bundle/`)
+delivered three witness-family theorems extending the previously
+narrow `sin`, `arctan`, `tan` to their full natural domains:
+
+| Theorem | Domain | Construction |
+|---|---|---|
+| `paper_claim_sin_full` | `ℝ ∖ {π/2}` | `cosTermℂ.subst0 halfPiMinusXℂ` + `Real.cos_pi_div_two_sub` |
+| `paper_claim_arctan_full` | full ℝ | `arcsinTermℂ.subst0 atanArgℂ` + `Real.arctan_eq_arcsin` |
+| `paper_claim_tan_full` | `{x : cos x ≠ 0}` | `tanCoreTermℂ.subst0 (shiftByPiℂ k)` + `Real.tan_sub_int_mul_pi` |
+
+Foundation: `ADDsafeℂ_ofReal_ofReal` discharges the 11-condition
+`mkAddℂ` precondition bundle for any pair of real-valued operands,
+which makes period shifts via repeated `mkAddℂ` of fixed real
+constants stay entirely in the real fragment — the `arg = π`
+boundary trap never appears.
 
 ### <a name="audit-trail"></a> `#print axioms` audit
 
