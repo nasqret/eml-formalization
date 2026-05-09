@@ -253,6 +253,27 @@ theorem edl_paper_claim_log :
   · linarith [Real.exp_pos 1]
   · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
 
+set_option linter.unusedSimpArgs false in
+/-- **D9 / EDL `x / y`** — Division witness via composition of D8 (log)
+and D4 (exp): `edl(D8(x), D4(y)) = exp(log x) / log(exp y) = x / y`.
+Domain: `0 < x ≠ 1`, `y ≠ 0`. (Aristotle chunk 086.) -/
+theorem edl_paper_claim_div :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      0 < env 0 → env 0 ≠ 1 → env 1 ≠ 0 →
+      t.eval? env = some (env 0 / env 1) := by
+  refine ⟨.edl (.edl .one (.edl (.edl .one (.var 0)) .e_const))
+              (.edl (.var 1) .e_const), fun env h₀ h₁ h₂ => ?_⟩
+  simp [EDLTerm.eval?]
+  split_ifs <;> simp_all +decide [Real.exp_ne_zero]
+  · linarith [Real.exp_pos 1]
+  · grind
+  · linarith [Real.exp_pos 1]
+  · split_ifs <;> simp_all +decide [ne_of_gt]
+    · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
+    · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
+    · linarith [Real.exp_pos (env 1)]
+    · rw [Real.exp_log h₀]
+
 /-! ## §3.1d — −EML paper-claim witnesses (Plan E pilot)
 
 Per Aristotle chunk 088 (project 66bbfbf3), the two trivial atoms that
