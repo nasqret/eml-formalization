@@ -14,7 +14,7 @@ direction, or a future-work extension.
 | **Sheffer cleanup** (align names with paper §3.1) | ✅ **DONE** | — | See [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours-complete) for the audit trail |
 | **Full-real-domain trig** | ✅ **DONE** (Plan C′) | — | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
 | **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding |
-| **EDL per-primitive completeness** | 🔄 **5/36** | 1–2 wk | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — atoms `one`, `var`, `e_const`, `exp x`, `log x` sealed; `−1`, `2`, `1/2` conjecturally unreachable per Schanuel |
+| **EDL per-primitive completeness** | 🔄 **8/36 in framework** + analysis | — | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — `one`, `var`, `e_const`, `exp`, `log`, `div`, `exp(exp)`, `log(log)` sealed; arithmetic (`+`, `−`, `·`, `−1`, `2`, `½`, `sqr`, `sqrt`) conjecturally unreachable from closed EDL terms (Aristotle analysis: addition of sub-expression values is structurally impossible in the `edl(a,b) = exp(a)/log(b)` combinator, ruling out trigonometric/hyperbolic primitives too) |
 | **−EML per-primitive completeness** | 🔄 **2/36** | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — atoms `one`, `var` sealed; `minusInf` requires switch to `EReal` grammar |
 | **§3.2 universal minimality** | Paper-open | — | research result, not a formalization task |
 | **§4.3 gradient training** | Out of scope | — | needs Mathlib infrastructure that doesn't exist |
