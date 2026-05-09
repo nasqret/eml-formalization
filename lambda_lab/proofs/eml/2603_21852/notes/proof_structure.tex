@@ -66,6 +66,11 @@ correctness theorem for the compiler; and a small zoo of
 \emph{Euler bridges} from the complex EML grammar back to the real
 elementary functions. We trace one paper claim end-to-end as a worked
 example, and finish with the scoreboard summarising what is sealed.
+A closing addendum (\S\ref{sec:post-submission}) records the post-
+submission widening to full real-domain trig (Path~C$'$), the cleanup
+of the Sheffer companion scaffolding (Plan~A), and partial progress
+on per-primitive completeness for the paper's Sheffer cousins
+(Plans~D and~E).
 \end{abstract}
 
 \tableofcontents
@@ -876,13 +881,14 @@ the most accessible ones.
 \begin{center}
 \begin{tabular}{l l l}
 \toprule
-\textbf{Family} & \textbf{Sealed coverage} & \textbf{Mechanism} \\
+\textbf{Family} & \textbf{Sealed coverage (post-submission)} & \textbf{Mechanism} \\
 \midrule
 Atoms (7)              & full                                                & direct closed witness \\
 Real unary (8)         & full $\setminus \{\sqrt{0}\}$                       & structural compiler \\
 Real binary (8)        & full $\setminus \{\mathrm{hypot}(0,0)\}$            & structural compiler \\
 Hyperbolic (6)         & full $\setminus \{\mathrm{arcosh}(1)\}$             & $\F\to\EL$ + compiler \\
-Trig (6)               & wide subdomains around $0$                          & Euler bridges + companions \\
+$\cos$, $\arccos$, $\arcsin$ (3) & full natural domain                       & Euler bridges + companions \\
+$\sin$, $\arctan$, $\tan$ (3) & full natural domain (Path~C$'$)             & Euler bridges + range-reduction \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -890,9 +896,200 @@ Trig (6)               & wide subdomains around $0$                          & E
 \medskip
 
 \noindent\textbf{Net.} $36/36$ paper primitives sealed by finite EML
-expressions on non-empty open subdomains of their natural domains,
-modulo three structurally excluded boundary points \textemdash\ which
-the paper itself does not exhibit either. The headline theorem
-(Theorem~\ref{thm:headline}) holds.
+expressions on their natural domains (modulo three structurally
+excluded $\sqrt{0}$-collision boundary points). The trig family was
+narrowed to symmetric subdomains around $0$ at submission time; the
+post-submission Path~C$'$ widening (\S\ref{sec:post-submission}) lifts
+that narrowing for $\sin$, $\arctan$, $\tan$. The headline theorem
+(Theorem~\ref{thm:headline}) holds in its strongest form.
+
+\medskip
+
+\noindent\textbf{Public Lean API.} $48$ \texttt{paper\_claim\_*}
+theorems exported by \texttt{EML.Framework.PaperClaims}, plus $8$
+\texttt{edl\_paper\_claim\_*} (Plan~D) and $2$
+\texttt{negEml\_paper\_claim\_*} (Plan~E pilot) in
+\texttt{EML.Framework.Sheffer} \textemdash\ a total of $58$
+machine-checked completeness theorems. Local \texttt{lake build}:
+$8056$ jobs, sorry-free. Independent re-verification on PCSS Eagle
+HPC: clean.
+
+% =====================================================================
+\section{Addendum: post-submission progress (Path~C$'$ + Plans A/D/E)}
+\label{sec:post-submission}
+% =====================================================================
+
+This section records four developments after the submission deck froze.
+The mathematical content of the original construction is unchanged;
+these are extensions, cleanups, and Sheffer-cousin progress.
+
+\subsection*{Plan~A \textemdash\ Sheffer naming cleanup}
+
+The submission-era \texttt{Sheffer.lean} contained four operator
+grammars (\texttt{EDLTerm}, \texttt{LDETerm},
+\texttt{T1Term}, \texttt{T2Term}). Three of those names were misnomers
+relative to the paper's \S3.1:
+\texttt{LDE}~$=\log(x)/\exp(y)$ (division) was misnamed as the paper's
+\textbf{$-$EML}~$=\log(x)-\exp(y)$ (subtraction); \texttt{T1Term} and
+\texttt{T2Term} were binary, but the paper's actual T$_1$ and T$_2$ are
+\emph{ternary} operators (Supplementary Information \S1.4) flagged by
+the paper itself as preliminary unverified candidates for a constant-free
+Sheffer.
+
+After cleanup, \texttt{Sheffer.lean} hosts exactly the two
+paper-named cousins, $\mathrm{EDL}$ and $-\mathrm{EML}$, with the
+correct definitions and a line-level paper-sourcing audit trail in
+\texttt{Sheffer/PaperSourcing.md}. The fabricated binary T$_1$/T$_2$
+are removed; the paper's real ternary T$_1$/T$_2$ are documented as
+preliminary future work, not as part of the present scaffolding.
+
+\subsection*{Plan~B \textemdash\ architectural finding (custom log
+branch infeasible)}
+
+The paper at line~333 sketches an alternative route to full real-domain
+trig coverage by ``manually correcting the $i$-sign'' inside the
+compiler. Implementing this in Lean was the original Plan~B and
+foundered on a structural fact: the $\EML_{\mathbb{C}}$ partial
+evaluation (\texttt{EMLTerm}\textsuperscript{$\mathbb{C}$}.\texttt{eval?}
+in \texttt{Framework/Complex/Term.lean}) hard-codes Mathlib's
+principal-branch \texttt{Complex.log}; there is no place in the
+grammar to substitute a different branch convention.
+
+The constructive observation \textemdash\ that \texttt{mkLog}$_{\mathbb{C}}T$
+\emph{does} evaluate at the cut $\arg v = \pi$, returning
+$\mathrm{Complex.log}\,v - 2\pi i$ instead of
+$\mathrm{Complex.log}\,v$, so any witness whose final operation is
+$\mathrm{exp}_{\mathbb{C}}$ (such as $\cos$) absorbs the
+$2\pi i$-shift via $\exp$-periodicity \textemdash\ identifies why $\cos$
+already covers $\mathbb{R}\setminus\{0\}$ but $\sin$, $\arctan$, $\tan$
+do not. The fix-point of this analysis is that the paper's
+``manual correction'' is necessarily a meta-level operation choosing a
+different witness shape per region of $x$, mathematically equivalent
+to the witness-family construction of Path~C$'$.
+
+\subsection*{Plan~C$'$ \textemdash\ full-real-domain trig via
+range-reduction by substitution}
+
+A GPT~Pro consultation (transcript in \texttt{gpt\_pro\_bundle/}) gave
+a refined plan that uses the existing positive/negative companion
+witnesses but lifts them to full real domain by \emph{substitution}.
+Three engineering moves:
+
+\begin{enumerate}[topsep=2pt, itemsep=2pt]
+  \item \textbf{Variable substitution on $\EsetC$.} Define
+    $\mathrm{subst}_0 : \EsetC \to \EsetC \to \EsetC$ that replaces
+    every $\mathbf{x}_0$ in $t$ with a given term $s$. Prove
+    $\mathrm{eval}_{?}(t.\mathrm{subst}_0\,s,\,\mathrm{env})
+      = \mathrm{eval}_{?}(t,\,\mathrm{env}[\mathbf{x}_0 \mapsto
+      \mathrm{eval}_{?}(s,\,\mathrm{env})])$. (\texttt{Subst.lean}.)
+
+  \item \textbf{Real-safe addition.} The lemma
+    $\mathrm{ADDsafe}_{\mathbb{C}}((\overline{a},0), (\overline{b},0))$
+    \textemdash\ the gnarly 11-condition $\mathrm{mk}\widehat{+}_{\mathbb{C}}$
+    precondition bundle \textemdash\ holds automatically when both
+    arguments are real-valued, the only nontrivial case being
+    $\exp(a) - a \neq 0$ (true since $\exp(a) \geq a + 1$). With this
+    foundation lemma, every period-shift via repeated
+    $\mathrm{mk}\widehat{+}_{\mathbb{C}}$ stays in the real fragment,
+    so the $\arg = \pi$ boundary trap never appears.
+
+  \item \textbf{Reuse, don't reshape.} For each narrow primitive,
+    pick an algebraic identity that reduces to a primitive whose
+    witness is \emph{already} full-domain or full-natural-open:
+    \begin{itemize}[topsep=2pt, itemsep=2pt]
+      \item $\sin x = \cos(\pi/2 - x)$: substitute $\pi/2 - x$ for
+        $\mathbf{x}_0$ in the existing $\cos$ witness; finish with
+        \texttt{Real.cos\_pi\_div\_two\_sub}. Coverage:
+        $\mathbb{R}\setminus\{\pi/2\}$.
+      \item $\arctan x = \arcsin(x/\sqrt{1+x^2})$: substitute the
+        real-fragment compile of $x/\sqrt{1+x^2}$ for $\mathbf{x}_0$
+        in $\arcsin$'s already-full witness; finish with
+        \texttt{Real.arctan\_eq\_arcsin}. Coverage: full $\mathbb{R}$.
+      \item $\tan x = \tan(x - k\pi)$: range-reduce arbitrary $x$ with
+        $\cos x \neq 0$ to the fundamental strip $(-\pi/2, \pi/2)$ via
+        repeated $\pm\pi$ shifts; apply the existing local Cayley
+        witness on the reduced argument; finish with
+        \texttt{Real.tan\_sub\_int\_mul\_pi}. Coverage:
+        $\{x : \cos x \neq 0\}$.
+    \end{itemize}
+\end{enumerate}
+
+\noindent\textbf{Result.} Three new public theorems
+$\mathrm{paper\_claim}_{\sin\_\mathrm{full}}$,
+$\mathrm{paper\_claim}_{\arctan\_\mathrm{full}}$,
+$\mathrm{paper\_claim}_{\tan\_\mathrm{full}}$ \textemdash\
+\emph{witness-family} statements of the shape
+\[
+  \forall\, x \in \mathrm{Domain}(f),\;
+  \exists\, t \in \EsetC,\;
+  \exists\, v \in \mathbb{C},\;
+  t \downarrow v \;\wedge\; \pi(v) = f(x).
+\]
+The witness depends on $x$'s region (positive/negative side, or
+period number for $\tan$); paper-faithfulness is preserved via the
+analogy with the paper compiler's manual sign correction.
+
+\subsection*{Plan~D \textemdash\ EDL per-primitive completeness}
+
+The paper's \S3.1 promotes the EDL cousin
+$\mathrm{edl}(x, y) = \exp(x) / \log(y)$ to the same completeness
+status as EML, but supplies no Lean-style proof. Eight of the $36$
+paper primitives are now sealed in our framework via Aristotle-aided
+witness search:
+
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Primitive} & \textbf{Witness} & \textbf{Provenance} \\
+\midrule
+$1$, $\mathbf{x}_0$, $e$       & atomic                                                         & grammar \\
+$\exp x$                       & $\mathrm{edl}(\mathbf{x}_0, e)$                                & identity (collapse) \\
+$\log x$                       & $\mathrm{edl}(1, \mathrm{edl}(\mathrm{edl}(1, \mathbf{x}_0), e))$ & Aristotle \\
+$x / y$                        & $\mathrm{edl}(\mathrm{D8}(\mathbf{x}_0), \mathrm{D4}(\mathbf{x}_1))$ & Aristotle \\
+$\exp(\exp x)$                 & $\mathrm{edl}(\mathrm{edl}(\mathbf{x}_0, e), e)$              & Aristotle \\
+$\log(\log x)$                 & nested D8                                                       & Aristotle \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Structural ceiling.} Aristotle's analytical work
+(transcripts in \texttt{chunks/085\_*}, \texttt{chunks/089\_*}) shows
+that the EDL combinator
+$\mathrm{edl}(a, b) = \exp(a)/\log(b)$ admits no mechanism for
+\emph{addition} of sub-expression values. Multiplication ($x \cdot y =
+\exp(\log x + \log y)$), squaring, square-root, and the entire
+trigonometric and hyperbolic family are therefore conjecturally
+unreachable from closed EDL terms over $\{1, e, \mathrm{var},
+\mathrm{edl}\}$. The constants $-1$, $2$, $\frac12$ are also conjecturally
+unreachable on Schanuel-conjecture grounds (their construction would
+require $\log 2 \in$ EL-closure of $\{1, e\}$, which Schanuel forbids).
+This validates the paper's own framing of EDL completeness as
+\emph{conjectured}, not proven.
+
+\subsection*{Plan~E \textemdash\ $-$EML pilot}
+
+The third Sheffer cousin in the paper's \S3.1 is $-$EML, paired with
+the constant $-\infty$. Two trivial atoms ($1$, $\mathrm{var}$) are
+sealed in our $\mathbb{R}$-based \texttt{NegEMLTerm}. Sealing the
+$-\infty$ constant requires switching the grammar to $\mathrm{EReal}$
+(extended reals); a self-contained pilot in
+\texttt{chunks/088\_neg\_eml\_pilot} demonstrates the approach.
+Per-primitive completeness for $-$EML is paper-open, with the same
+addition-unreachability obstruction as Plan~D applying to the
+arithmetic and trig families.
+
+\subsection*{Aristotle integration}
+
+Of the 10 chunks submitted in this round, 9 returned successful
+proofs, accounting for: two pure-Mathlib auxiliaries
+(\texttt{atanArg\_in\_Ioo}, \texttt{tan\_period\_reduction}); three
+end-of-pipeline assembly proofs for Path~C$'$
+($\mathrm{sin\_via\_cos}$, $\mathrm{arctan\_via\_arcsin}$,
+$\mathrm{tan\_full}$); five Plan~D / Plan~E witness searches
+(D1\textendash D11, E1\textendash E3). Aristotle's role was strictly
+within the \emph{audit blade} category: the architectural design
+came from human + GPT~Pro, the framework integration was
+hand-coded, and Aristotle's contribution was witness search and
+proof-tactic discovery within self-contained chunk files.
 
 \end{document}

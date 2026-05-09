@@ -12,10 +12,10 @@ direction, or a future-work extension.
 | Direction | Feasibility | Effort | Action plan |
 |---|---|---|---|
 | **Sheffer cleanup** (align names with paper §3.1) | ✅ **DONE** | — | See [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours-complete) for the audit trail |
-| **Full-real-domain trig — custom branch** | Medium | 1–3 d | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) |
-| **Full-real-domain trig — multi-witness periodicity** | Medium | 2–3 d | [Plan C](#plan-c--full-real-domain-trig-via-multi-witness-periodicity-2-3-days) |
-| **EDL per-primitive completeness** | Large | 1–2 wk | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) |
-| **−EML per-primitive completeness** | Large | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) |
+| **Full-real-domain trig** | ✅ **DONE** (Plan C′) | — | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
+| **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding |
+| **EDL per-primitive completeness** | 🔄 **8/36 in framework** + analysis | — | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — `one`, `var`, `e_const`, `exp`, `log`, `div`, `exp(exp)`, `log(log)` sealed; arithmetic (`+`, `−`, `·`, `−1`, `2`, `½`, `sqr`, `sqrt`) conjecturally unreachable from closed EDL terms (Aristotle analysis: addition of sub-expression values is structurally impossible in the `edl(a,b) = exp(a)/log(b)` combinator, ruling out trigonometric/hyperbolic primitives too) |
+| **−EML per-primitive completeness** | 🔄 **2/36** | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — atoms `one`, `var` sealed; `minusInf` requires switch to `EReal` grammar |
 | **§3.2 universal minimality** | Paper-open | — | research result, not a formalization task |
 | **§4.3 gradient training** | Out of scope | — | needs Mathlib infrastructure that doesn't exist |
 | **Three §G boundary points** | Architectural | — | not closeable in the current grammar |
@@ -491,6 +491,72 @@ oracle, but each candidate still needs Lean-side formalization.
 **Recommended split.** Spawn `Aristotle` jobs in parallel for the
 identity-style EDL witnesses (atoms + exp + log). The arithmetic and
 trig require a more deliberate witness-search loop.
+
+---
+
+### <a name="plan-c-prime--gpt-pro-recommendation-in-progress"></a>Plan C′ — GPT Pro recommendation, in progress
+
+> **Plan-of-record for full-real-domain trig.** Refines Plan C with
+> GPT Pro's specific recommendations (see
+> [`gpt_pro_bundle/trig_widening/RESPONSE.md`](../../../gpt_pro_bundle/trig_widening/RESPONSE.md)
+> for the verbatim consult). Rejects Path A (boundary lemmas) and
+> Path B (Euler-form reshaping) as global strategies; keeps the
+> witness-substitution architecture from Plan C but generalises it.
+
+**Four sub-paths**, one per primitive:
+
+1. **`sin x`** via `cos(π/2 − x)`. The existing `cosTermℂ` already
+   covers `ℝ ∖ {0}`; substituting `(π/2 − x)` for `var 0` gives a
+   full-real-domain `sin` witness for all `x ≠ π/2`. Isolated point
+   `x = π/2`: use `.one` constant witness (since `sin(π/2) = 1`).
+
+2. **`arctan x`** via `Real.arctan_eq_arcsin : arctan x = arcsin(x / √(1+x²))`.
+   The existing `arcsinTermℂ_open` already covers full open `(−1, 1)`;
+   the input `x / √(1+x²)` is in `(−1, 1)` for all `x ∈ ℝ`. Build a
+   real-fragment compiled term for the input, lift via `.toComplex`,
+   substitute into `arcsinTermℂ_open`. **`arcsin` projects to `.im`,
+   so the arctan paper-claim follows the same convention.**
+
+3. **`tan x`** via period-`π` reduction. Reduce arbitrary `x` (with
+   `cos x ≠ 0`) to the fundamental domain `(−π/2, π/2)` via repeated
+   real-safe addition of `±π`, then apply existing `tanCoreTermℂ` /
+   `tanCoreTermℂ_neg`. Witness depends on `k = round(x/π) : ℤ`.
+
+4. **`cos x`** is already complete on `ℝ ∖ {0}` — no extension needed.
+
+**The engineering move.** Build period shifts using **repeated
+`mkAddℂ`** with fixed real-period constants — never `mkMulℂ` an
+integer by `π`. This keeps every shift in the real fragment, so the
+`arg = π` boundary trap never appears. The foundation is one lemma:
+
+```lean
+lemma ADDsafeℂ_ofReal_ofReal (a b : ℝ) :
+    ADDsafeℂ ((a : ℝ) : ℂ) ((b : ℝ) : ℂ)
+```
+
+When both arguments are real-valued, the 11-condition `ADDsafeℂ`
+bundle holds automatically: 9 `.im = 0` inequalities trivially in
+`(−π, π]`, plus non-vanishing of `Real.exp a − a` (via
+`Real.add_one_le_exp`).
+
+**Status (2026-05-08):**
+
+- ✅ `EMLTermℂ.subst0` + `eval?_subst0` — substitution machinery
+  (in `Framework/Complex/Subst.lean`)
+- ✅ `ADDsafeℂ_ofReal_ofReal` — foundation for real-safe addition
+  (in `Framework/Complex/Periodicity.lean`)
+- ✅ `eval?_mkAddℂ_ofReal` — packaged form (no side conditions)
+- ✅ `twoPiPubℂ` + `eval?_twoPiPubℂ` — first concrete witness; validates
+  the foundation end-to-end (~30 lines vs. ~80 without the helper)
+- ⏳ `negPiPubℂ` — negative-π constant for shift-term construction
+- ⏳ `shiftByPeriodℂ : ℤ → EMLTermℂ` — recursive period shift
+- ⏳ `eval?_shiftByPeriodℂ` — induction on `k`
+- ⏳ `sinViaCosℂ`, `arctanViaArcsinℂ`, `tan_full` — witness families
+
+**Effort remaining.** ~3–5 days of mostly mechanical proof work, much
+compressed by `ADDsafeℂ_ofReal_ofReal` and `eval?_subst0`. The
+substantial design questions are settled; what's left is
+identity-driven plumbing.
 
 ---
 

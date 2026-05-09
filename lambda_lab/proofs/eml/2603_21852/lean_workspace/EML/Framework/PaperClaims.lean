@@ -2,6 +2,7 @@ import EML.Framework.Compilers.F36ToEL
 import EML.Framework.Compilers.ELToEML
 import EML.Framework.Complex.Bridge
 import EML.Framework.Complex.Builders.Trig
+import EML.Framework.Complex.Periodicity
 
 /-!
 # PaperClaims — explicit per-primitive paper-faithful theorems
@@ -404,6 +405,49 @@ theorem paper_claim_tan_neg :
         t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc
         ∧ vc.im = Real.tan x :=
   ⟨tanCoreTermℂ_neg, fun _ hxlo hxhi => tan_im_bridge_neg hxhi hxlo⟩
+
+/-- **Paper claim — `sin x`** on the **full natural domain** `ℝ ∖ {π/2}`
+(Path C′ §2 wrap-up). Witness family via `sin x = cos(π/2 − x)` — the
+existing `cosTermℂ` (positive subdomain) and `cosTermℂ_neg` (negative
+subdomain) cover all `(π/2 − x) ≠ 0` between them, and substituting
+`halfPiMinusXℂ` for `var 0` produces a per-input witness. -/
+theorem paper_claim_sin_full :
+    ∀ x : ℝ, x ≠ Real.pi / 2 →
+      ∃ t : EMLTermℂ, ∃ vc : ℂ,
+        t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+        vc.re = Real.sin x :=
+  fun x hx => sin_full x hx
+
+/-- **Paper claim — `arctan x`** on the **full natural domain** `ℝ`
+(Path C′ §3 wrap-up). Witness `arcsinTermℂ_open.subst0 atanArgℂ` where
+`atanArgℂ` evaluates to `((x / √(1+x²) : ℝ) : ℂ)` (real fragment via
+`F36→EL→EML→toComplex`). The substitution argument lies in `(-1, 1)`
+(via `atanArg_in_Ioo`) so the existing `arcsin_im_bridge_open` applies;
+final step `Real.arctan_eq_arcsin`. -/
+theorem paper_claim_arctan_full :
+    ∀ x : ℝ,
+      ∃ t : EMLTermℂ, ∃ vc : ℂ,
+        t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+        vc.im = Real.arctan x :=
+  fun x => arctan_full x
+
+/-- **Paper claim — `tan x`** on the **full natural domain** `{x | cos x ≠ 0}`
+(Path C′ §4 wrap-up). For each such `x`, there exists a witness term
+`t : EMLTermℂ` (selected by the meta-level proof based on the period-π
+reduction `k = ⌊(x + π/2)/π⌋`) whose imaginary part is `Real.tan x`.
+
+This is a witness *family* (∀ x, ∃ t shape, in contrast to
+`paper_claim_tan_narrow`'s ∃ t, ∀ x form), reflecting the regional
+compiler theorem GPT Pro recommended. The witness depends on `x`'s
+period-π region: `tanCoreTermℂ.subst0 (shiftByPiℂ k)` for `x − kπ ∈
+(0, π/2)`, the negative-side companion for `x − kπ ∈ (−π/2, 0)`, or
+`EMLTermℂ.one` at `x − kπ = 0`. -/
+theorem paper_claim_tan_full :
+    ∀ x : ℝ, Real.cos x ≠ 0 →
+      ∃ t : EMLTermℂ, ∃ vc : ℂ,
+        t.eval? (fun n => if n = 0 then ((x : ℝ) : ℂ) else 0) = some vc ∧
+        vc.im = Real.tan x :=
+  fun x hx => tan_full x hx
 
 /-! ## Single-point witnesses at `x = 0` for the trig family
 

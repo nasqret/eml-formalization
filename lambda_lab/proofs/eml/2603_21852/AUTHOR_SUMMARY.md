@@ -198,23 +198,35 @@ infrastructure for gradient flow / projection / floating-point ↔
 symbolic equivalence. **Out of scope for this formalisation.**
 
 ### Future-work extensions (deliberately deferred)
-* **Full-real-domain trig.** Closeable via two paths:
-  * **Plan B — custom complex-log branch** (1–3 days). Faithful to the
-    paper's "manual `i`-sign correction" approach. Best done after a
-    GPT Pro consult to pin down the exact branch convention the paper
-    intends.
-  * **Plan C — multi-witness periodicity** (2–3 days). Mathematically
-    clean, fully constructive in Lean, but produces a witness *family*
-    indexed by period number rather than a single witness — slightly
-    less faithful to the paper's "one witness per primitive" framing.
-  See `OPEN_QUESTIONS.md` for full plans.
+* **Full-real-domain trig — DONE (Plan C′ complete).** The paper's
+  claim (line 328) of essentially-full-real-domain coverage for sin,
+  arctan, tan is now sealed via three witness-family theorems
+  (`paper_claim_sin_full`, `paper_claim_arctan_full`,
+  `paper_claim_tan_full`). The construction follows GPT Pro's Path C′
+  recommendation: real-safe period shifts via repeated `mkAddℂ`
+  (foundation: `ADDsafeℂ_ofReal_ofReal`), substitution of the shifted
+  argument into the existing local witness via
+  `EMLTermℂ.subst0`, and Mathlib identities (`Real.cos_pi_div_two_sub`
+  for sin via cos, `Real.arctan_eq_arcsin` for arctan via arcsin,
+  `Real.tan_sub_int_mul_pi` for tan via period-π reduction).
+  Plan B (custom log branch) was found architecturally infeasible —
+  the EML grammar's eval rule hard-codes Mathlib's principal
+  `Complex.log`. See `OPEN_QUESTIONS.md` §B.0 for the finding and
+  GPT Pro consult bundle (`gpt_pro_bundle/trig_widening/`) for the
+  reasoning.
 * **Sheffer companions — per-primitive completeness for EDL and −EML.**
   The paper presents EML, EDL, and −EML as a "family" (paper §3,
   equation block `\label{Sheffers}`) but proves completeness only for
   EML; the cousins are confirmed empirically via the Mathematica /
   Rust `VerifyBaseSet` procedure. A full parallel sealing effort for
   either cousin is **1–2 weeks per cousin**. Plans D and E in
-  `OPEN_QUESTIONS.md`.
+  `OPEN_QUESTIONS.md`. **Plan D — IN PROGRESS:** 5 of 36 paper
+  claims sealed (`edl_paper_claim_{one, var, e_const, exp, log}`).
+  D8 / log x is non-trivial — Aristotle (chunk 085) discovered the
+  three-step composition `edl one (edl (edl one (var 0)) e_const)`.
+  Constants `−1`, `2`, `1/2` appear conjecturally unreachable from
+  closed EDL terms (Aristotle's Schanuel-conjecture analytical note).
+  Trig and hyperbolic primitives blocked by addition unreachability.
 * **Sheffer naming cleanup — DONE (Plan A complete).** Our scaffolding
   now has exactly the **two paper-named cousins** (`EDL` and `−EML`)
   matching paper §3.1 (lines 273–284). The previously-misnamed

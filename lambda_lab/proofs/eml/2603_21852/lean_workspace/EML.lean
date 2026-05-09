@@ -5,3 +5,4 @@ import EML.Framework.StructuralLimits
 import EML.Framework.KCounting
 import EML.Framework.Sheffer
 import EML.Framework.Complex.Subst
+import EML.Framework.Complex.Periodicity

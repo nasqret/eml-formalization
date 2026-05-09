@@ -1,0 +1,19 @@
+{
+  "id": "084_edl_atoms_pilot",
+  "title_pl": "Plan D pilot — 4 podstawowe świadki EDL",
+  "title_en": "Plan D pilot — 4 trivial EDL atom witnesses",
+  "paper_section": "Plan D atoms (paper §3.1 EDL completeness)",
+  "paper_quote": "Sheffer companions §3.1 — per-primitive completeness for EDL is paper-open",
+  "informal_pl": "D1 .one, D2 .var 0, D3 .e_const, D4 .edl (.var 0) .e_const.",
+  "informal_en": "D1 .one, D2 .var 0, D3 .e_const, D4 .edl (.var 0) .e_const for exp via edl(x, e).",
+  "kind": "theorem_pack",
+  "difficulty": 1,
+  "lean_imports": ["Mathlib"],
+  "lean_target_signature": "edl_witness_{one, var, e_const, exp} — four ∃ t, ∀ env, ... existentials",
+  "depends_on": [],
+  "status": "complete",
+  "aristotle_project_id": "ffba8150-bbce-40af-9e84-a3ec47d0b640",
+  "submitted_at": "2026-05-08T17:30:00Z",
+  "completed_at": "2026-05-08T17:58:00Z",
+  "notes": "SEALED 2026-05-08 by Aristotle, ~28 min. All 4 trivial atoms cracked: .one (rfl), .var 0 (rfl), .e_const (simp), .edl (.var 0) .e_const (simp + linarith for log e = 1 ≠ 0). Validates the Plan D delegation pipeline; harder atoms (log x, neg, etc.) are 085 which is still in progress."
+}

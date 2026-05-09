@@ -73,10 +73,13 @@ noncomputable def edl? (x y : ℝ) : Option ℝ :=
 @[simp] lemma edl?_def (x y : ℝ) : edl? x y =
     if Real.log y = 0 then none else some (Real.exp x / Real.log y) := rfl
 
-/-- Abstract syntax of EDL expressions. -/
+/-- Abstract syntax of EDL expressions. The grammar includes the paired
+constant `e_const` per paper §3.1 (EDL is paired with the constant `e`,
+analogous to EML being paired with `1`). -/
 inductive EDLTerm
   | one : EDLTerm
   | var : Nat → EDLTerm
+  | e_const : EDLTerm
   | edl : EDLTerm → EDLTerm → EDLTerm
   deriving Repr
 
@@ -86,21 +89,28 @@ namespace EDLTerm
 def size : EDLTerm → Nat
   | one     => 1
   | var _   => 1
+  | e_const => 1
   | edl a b => 1 + size a + size b
 
 /-- Partial evaluation under an environment. Returns `none` exactly
 when some `edl` sub-expression has `log` of its second argument equal
-to zero (junk-value boundary). -/
+to zero (junk-value boundary). The if-test is **inlined** rather than
+factored through `edl?` so that step-by-step proofs (per Aristotle
+chunk 085) compose cleanly via `simp [eval?]`. -/
 noncomputable def eval? (env : Nat → ℝ) : EDLTerm → Option ℝ
   | one     => some 1
   | var n   => some (env n)
+  | e_const => some (Real.exp 1)
   | edl a b => (eval? env a).bind fun va =>
-                 (eval? env b).bind fun vb => edl? va vb
+                 (eval? env b).bind fun vb =>
+                   if Real.log vb = 0 then none
+                   else some (Real.exp va / Real.log vb)
 
 /-- Every `EDLTerm` has at least one node. -/
 lemma size_pos : ∀ t : EDLTerm, 1 ≤ t.size
   | one     => Nat.le_refl 1
   | var _   => Nat.le_refl 1
+  | e_const => Nat.le_refl 1
   | edl a b => by show 1 ≤ 1 + a.size + b.size; omega
 
 end EDLTerm
@@ -183,6 +193,192 @@ theorem negEml_x_one {x : ℝ} (hx : 0 < x) :
     negEml? x 1 = some (Real.log x - Real.exp 1) := by
   simp [negEml?_def, hx]
 
+/-! ## §3.1c — EDL paper-claim witnesses (Plan D progress)
+
+Per-primitive completeness for EDL is paper-open. The witnesses below
+are sealed contributions — each provides a literal `EDLTerm` for one
+F36 primitive. Five atoms / unaries are sealed so far (Plan D 5/36):
+
+| Primitive | Witness | Provenance |
+|-----------|---------|------------|
+| `1` | `.one` | trivial |
+| `x` | `.var 0` | trivial |
+| `e` | `.e_const` | trivial (after grammar extension) |
+| `exp x` | `.edl (.var 0) .e_const` | Aristotle chunk 084 |
+| `log x` | `.edl .one (.edl (.edl .one (.var 0)) .e_const)` | Aristotle chunk 085 |
+
+The remaining primitives (arithmetic, trig family, hyperbolic) require
+witness search; Plan D is paper-open. -/
+
+/-- **D1 / EDL `1`** — Trivial: the `.one` constructor. -/
+theorem edl_paper_claim_one :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some 1 :=
+  ⟨.one, fun _ => rfl⟩
+
+/-- **D2 / EDL `x`** — Trivial: `.var 0`. -/
+theorem edl_paper_claim_var :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
+  ⟨.var 0, fun _ => rfl⟩
+
+/-- **D3 / EDL `e`** — Trivial after grammar extension: `.e_const`. -/
+theorem edl_paper_claim_e_const :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (Real.exp 1) :=
+  ⟨.e_const, fun _ => rfl⟩
+
+/-- **D4 / EDL `exp x`** — `edl(x, e) = exp(x) / log(e) = exp(x) / 1 =
+exp(x)`. Witness `edl (var 0) e_const`. (Aristotle chunk 084.) -/
+theorem edl_paper_claim_exp :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, t.eval? env = some (Real.exp (env 0)) := by
+  refine ⟨.edl (.var 0) .e_const, fun env => ?_⟩
+  simp only [EDLTerm.eval?, Option.bind_some]
+  rw [show Real.log (Real.exp 1) = 1 from Real.log_exp 1]
+  simp
+
+set_option linter.unusedSimpArgs false in
+/-- **D8 / EDL `log x`** — Three-step composition discovered by Aristotle:
+- `edl(1, x) = e/log(x)`
+- `edl(edl(1, x), e) = exp(e/log(x))/log(e) = exp(e/log(x))`
+- `edl(1, edl(edl(1, x), e)) = e/log(exp(e/log(x))) = e/(e/log(x)) = log(x)`
+
+Witness: `edl one (edl (edl one (var 0)) e_const)`. Domain hypothesis:
+`0 < env 0` and `env 0 ≠ 1`. (Aristotle chunk 085.) -/
+theorem edl_paper_claim_log :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ, 0 < env 0 → env 0 ≠ 1 →
+      t.eval? env = some (Real.log (env 0)) := by
+  refine ⟨.edl .one (.edl (.edl .one (.var 0)) .e_const), fun env hpos hne1 => ?_⟩
+  simp [EDLTerm.eval?]
+  split_ifs <;> simp_all +decide [ne_of_gt, Real.exp_pos]
+  · grind
+  · linarith
+  · linarith [Real.exp_pos 1]
+  · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
+
+/-! ### Helper lemmas for Plan D compositions (Aristotle chunk 087) -/
+
+/-- Apply `edl` when both children evaluate and `log vb ≠ 0`. -/
+private lemma eval_edl_of_log_ne_zero {env : Nat → ℝ} {a b : EDLTerm}
+    {va vb : ℝ} (ha : a.eval? env = some va) (hb : b.eval? env = some vb)
+    (hlog : Real.log vb ≠ 0) :
+    (EDLTerm.edl a b).eval? env = some (Real.exp va / Real.log vb) := by
+  simp only [EDLTerm.eval?, ha, hb, Option.bind_some]
+  simp only [if_neg hlog]
+
+private lemma log_exp1_ne_zero : Real.log (Real.exp 1) ≠ (0 : ℝ) := by
+  rw [Real.log_exp]; exact one_ne_zero
+
+/-- `edl(a, e_const)` evaluates to `exp(va)` (since `log e = 1`). -/
+private lemma eval_edl_e {env : Nat → ℝ} {a : EDLTerm} {va : ℝ}
+    (ha : a.eval? env = some va) :
+    (EDLTerm.edl a .e_const).eval? env = some (Real.exp va) := by
+  rw [eval_edl_of_log_ne_zero ha rfl log_exp1_ne_zero, Real.log_exp, div_one]
+
+/-- **D10 / EDL `exp(exp x)`** — Witness: `edl (edl (var 0) e_const) e_const`.
+Each `edl _ e_const` layer applies `exp` (since `log e = 1`), so the
+double-wrapping gives `exp(exp x)`. (Aristotle chunk 087.) -/
+theorem edl_paper_claim_exp_exp :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      t.eval? env = some (Real.exp (Real.exp (env 0))) :=
+  ⟨.edl (.edl (.var 0) .e_const) .e_const,
+   fun _ => eval_edl_e (eval_edl_e rfl)⟩
+
+/-- The D8 witness for `log x` packaged as a private definition for use
+in nested compositions like `log(log x)`. -/
+private noncomputable def d8 : EDLTerm :=
+  .edl .one (.edl (.edl .one (.var 0)) .e_const)
+
+private lemma d8_eval (env : Nat → ℝ) (h0 : 0 < env 0) (h1 : env 0 ≠ 1) :
+    d8.eval? env = some (Real.log (env 0)) := by
+  convert eval_edl_of_log_ne_zero _ _ _ using 1
+  rotate_left
+  exact 1
+  exact Real.exp (Real.exp 1 / Real.log (env 0))
+  · rfl
+  · convert eval_edl_e _ using 1
+    convert eval_edl_of_log_ne_zero _ _ _ using 1
+    · rfl
+    · rfl
+    · exact fun h => h1 <| Real.eq_one_of_pos_of_log_eq_zero h0 h
+  · norm_num
+    exact ⟨h0.ne', h1, by linarith⟩
+  · norm_num [Real.exp_ne_zero, Real.log_exp]
+
+/-- The D11 witness `log(log x)` substitutes `d8` (which computes
+`log x`) for `var 0` inside another copy of `d8`. -/
+private noncomputable def d8d8 : EDLTerm :=
+  .edl .one (.edl (.edl .one d8) .e_const)
+
+set_option linter.unusedSimpArgs false in
+private lemma d8d8_eval (env : Nat → ℝ)
+    (h0 : 0 < env 0) (h1 : env 0 ≠ 1)
+    (h2 : 0 < Real.log (env 0)) (h3 : Real.log (env 0) ≠ 1) :
+    d8d8.eval? env = some (Real.log (Real.log (env 0))) := by
+  have h_eval : (EDLTerm.edl (.edl .one d8) .e_const).eval? env =
+      some (Real.exp (Real.exp 1 / Real.log (Real.log (env 0)))) := by
+    rw [eval_edl_e]
+    apply eval_edl_of_log_ne_zero
+    · rfl
+    · exact d8_eval env h0 h1
+    · exact fun h => h3 <| Real.eq_one_of_pos_of_log_eq_zero h2 h
+  have h_final : (EDLTerm.edl .one (.edl (.edl .one d8) .e_const)).eval? env =
+      some (Real.exp 1 / Real.log
+        (Real.exp (Real.exp 1 / Real.log (Real.log (env 0))))) := by
+    rw [eval_edl_of_log_ne_zero] <;> norm_num [h_eval]
+    · rfl
+    · exact ⟨⟨h0.ne', h1, by linarith⟩, h3, by linarith⟩
+  convert h_final using 2
+  norm_num [Real.exp_ne_zero]
+
+/-- **D11 / EDL `log(log x)`** — Witness: nested D8 composition.
+Domain: `0 < x`, `x ≠ 1`, `0 < log x`, `log x ≠ 1` (so `log(log x)`
+is well-defined). (Aristotle chunk 087.) -/
+theorem edl_paper_claim_log_log :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      0 < env 0 → env 0 ≠ 1 →
+      0 < Real.log (env 0) → Real.log (env 0) ≠ 1 →
+      t.eval? env = some (Real.log (Real.log (env 0))) :=
+  ⟨d8d8, fun env h0 h1 h2 h3 => d8d8_eval env h0 h1 h2 h3⟩
+
+set_option linter.unusedSimpArgs false in
+/-- **D9 / EDL `x / y`** — Division witness via composition of D8 (log)
+and D4 (exp): `edl(D8(x), D4(y)) = exp(log x) / log(exp y) = x / y`.
+Domain: `0 < x ≠ 1`, `y ≠ 0`. (Aristotle chunk 086.) -/
+theorem edl_paper_claim_div :
+    ∃ t : EDLTerm, ∀ env : Nat → ℝ,
+      0 < env 0 → env 0 ≠ 1 → env 1 ≠ 0 →
+      t.eval? env = some (env 0 / env 1) := by
+  refine ⟨.edl (.edl .one (.edl (.edl .one (.var 0)) .e_const))
+              (.edl (.var 1) .e_const), fun env h₀ h₁ h₂ => ?_⟩
+  simp [EDLTerm.eval?]
+  split_ifs <;> simp_all +decide [Real.exp_ne_zero]
+  · linarith [Real.exp_pos 1]
+  · grind
+  · linarith [Real.exp_pos 1]
+  · split_ifs <;> simp_all +decide [ne_of_gt]
+    · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
+    · linarith [Real.exp_pos (Real.exp 1 / Real.log (env 0))]
+    · linarith [Real.exp_pos (env 1)]
+    · rw [Real.exp_log h₀]
+
+/-! ## §3.1d — −EML paper-claim witnesses (Plan E pilot)
+
+Per Aristotle chunk 088 (project 66bbfbf3), the two trivial atoms that
+don't require the `−∞` constant are sealable in our `ℝ`-based
+`NegEMLTerm` grammar. The paper's `−EML` is paired with `−∞`, so
+**E3 (witness for `−∞`)** would require switching `NegEMLTerm` to
+`EReal` (with a `minusInf` constructor) — Aristotle's chunk 088 does
+this in its self-contained file. Lifting that to our framework is
+deferred (Plan E proper, ~1–2 wk per OPEN_QUESTIONS.md). -/
+
+/-- **E1 / −EML `1`** — Trivial: `.one` constructor. -/
+theorem negEml_paper_claim_one :
+    ∃ t : NegEMLTerm, ∀ env : Nat → ℝ, t.eval? env = some 1 :=
+  ⟨.one, fun _ => rfl⟩
+
+/-- **E2 / −EML `x`** — Trivial: `.var 0`. -/
+theorem negEml_paper_claim_var :
+    ∃ t : NegEMLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
+  ⟨.var 0, fun _ => rfl⟩
+
 /-! ## Public summary
 
 This file scaffolds the **two paper-named Sheffer companions** of EML
@@ -190,15 +386,12 @@ as proper inductive term grammars with partial-evaluation semantics.
 The collapse identities above demonstrate that each grammar can recover
 a standard `exp` / `log` family member via a one-step composition.
 
-**What's not done (Sheffer-completeness, paper-open):**
-
-For each companion `C ∈ {EDL, −EML}`, one would seal a parallel analog
-of `EML.Framework.PaperClaims` — i.e. for each F36 primitive, construct
-a literal `CTerm` witness and prove the closure lemma. The paper
-sketches this strategy (paper §3.1) but defers the per-primitive
-witnesses to future work; the cousins are confirmed empirically via
-the Mathematica / Rust `VerifyBaseSet` procedure. See **Plan D** (EDL,
-~1–2 wk) and **Plan E** (−EML, ~1–2 wk; needs `EReal` for the `−∞`
-constant) in `OPEN_QUESTIONS.md`. -/
+**Plan D progress:** 5 of 36 EDL paper claims sealed (`one`, `var`,
+`e_const`, `exp x`, `log x`). The remaining 31 primitives remain
+paper-open; some (e.g. `−1`, `2`, `1/2`) are conjecturally unreachable
+from closed EDL terms (Schanuel-conjecture obstruction per Aristotle's
+analytical note in `chunks/085_edl_atoms_constants/result.lean`).
+Plan E (−EML) per-primitive completeness is also paper-open and not
+yet started. -/
 
 end EML
