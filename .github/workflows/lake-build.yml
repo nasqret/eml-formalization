@@ -1,0 +1,70 @@
+name: Lake build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel in-flight runs of the same workflow on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | bash -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Read pinned toolchain
+        id: toolchain
+        run: |
+          tc=$(cat lambda_lab/proofs/eml/2603_21852/lean_workspace/lean-toolchain)
+          echo "toolchain=$tc" >> $GITHUB_OUTPUT
+          echo "Lean toolchain: $tc"
+
+      - name: Cache Mathlib oleans
+        uses: actions/cache@v4
+        with:
+          path: |
+            lambda_lab/proofs/eml/2603_21852/lean_workspace/.lake/packages/mathlib/.lake/build
+            lambda_lab/proofs/eml/2603_21852/lean_workspace/.lake/build
+          key: lake-${{ runner.os }}-${{ steps.toolchain.outputs.toolchain }}-${{ hashFiles('lambda_lab/proofs/eml/2603_21852/lean_workspace/lake-manifest.json') }}
+          restore-keys: |
+            lake-${{ runner.os }}-${{ steps.toolchain.outputs.toolchain }}-
+
+      - name: Fetch Mathlib cache
+        working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace
+        run: |
+          lake exe cache get || true
+
+      - name: Lake build
+        working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace
+        run: lake build EML
+
+      - name: No-sorry check
+        working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace
+        run: |
+          # Public API: PaperClaims and Sheffer must have no `sorry`.
+          if grep -nE '\bsorry\b' EML/Framework/PaperClaims.lean EML/Framework/Sheffer.lean; then
+            echo "::error::stray sorry found in public API"
+            exit 1
+          fi
+          echo "Public API is sorry-free."
+
+      - name: Scoreboard
+        working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace
+        run: |
+          echo "==== Public paper claims (theorems exported) ===="
+          grep -hE '^theorem (paper_claim_|edl_paper_claim_|negEml_paper_claim_)' \
+            EML/Framework/PaperClaims.lean EML/Framework/Sheffer.lean | wc -l | xargs -I{} echo "Total: {} theorems"
