@@ -124,6 +124,16 @@ main {
   font-size: 13px;
 }
 
+.projection {
+  background: #eef7ff;
+  border: 1px solid #a3cfff;
+  color: #1a3a6e;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -204,6 +214,7 @@ main {
 .legend-box.eml { background: var(--eml-color); }
 .legend-box.one { background: var(--one-color); }
 .legend-box.var { background: var(--var-color); }
+.legend-box.realize { background: #b8860b; }
 
 #tree-container {
   background: white;
@@ -230,6 +241,11 @@ main {
 
 .node-var {
   fill: var(--var-color);
+}
+
+.node-realize {
+  fill: #b8860b;
+  cursor: help;
 }
 
 .node-label {

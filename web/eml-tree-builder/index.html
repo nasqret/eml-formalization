@@ -39,9 +39,16 @@
     <button class="ex" data-expr="hypot(x, y)">hypot(x,y)</button>
     <button class="ex" data-expr="sinh(x)">sinh(x)</button>
     <button class="ex" data-expr="exp(x) - log(y)">exp(x) − log(y)</button>
+    <button class="ex" data-expr="cos(x)">cos(x)</button>
+    <button class="ex" data-expr="sin(x)">sin(x)</button>
+    <button class="ex" data-expr="tan(x)">tan(x)</button>
+    <button class="ex" data-expr="arctan(x)">arctan(x)</button>
+    <button class="ex" data-expr="arcsin(x)">arcsin(x)</button>
+    <button class="ex" data-expr="arccos(x)">arccos(x)</button>
   </section>
 
   <section id="error" class="error" hidden></section>
+  <section id="projection" class="projection" hidden></section>
 
   <section class="metrics">
     <div class="metric"><span class="label">K (RPN length)</span><span id="k-count" class="value">—</span></div>
@@ -88,13 +95,25 @@ x · y   ↦  exp(ln(x) + ln(y))</pre>
       <code>sinh</code>, <code>cosh</code>, <code>tanh</code>,
       <code>arsinh</code>, <code>arcosh</code>, <code>artanh</code>.
     </p>
+    <p>
+      <strong>Trigonometric primitives</strong> are built from the
+      <em>complex</em> EML grammar (<code>EMLTermℂ</code>). The closed
+      constants <code>i</code> and <code>π</code> are shown as
+      <span class="legend-box realize"></span> labelled leaves with
+      their actual K-counts (their internal structure — the
+      <code>EMLRealizationℂ</code> closure machinery — is hidden so
+      the canvas stays legible). The result of a trig compile is read
+      via <code>.re</code> or <code>.im</code> projection, shown above
+      the metric tiles.
+    </p>
     <p class="caveat">
-      <strong>Caveat.</strong> Trigonometric primitives (<code>sin</code>,
-      <code>cos</code>, <code>tan</code>, <code>arctan</code>,
-      <code>arcsin</code>, <code>arccos</code>) require the
-      <em>complex</em> EML grammar (<code>EMLTermℂ</code>). They are
-      sealed in the formal artefact via Euler-bridge witnesses, but this
-      browser tool currently shows only the real-fragment compile.
+      Trig witnesses are <em>top-level</em> constructions in the formal
+      artefact — they don't compose with the real-fragment compiler in
+      the browser tool. Path C′'s subst<sub>0</sub>-based widening
+      (full-real-domain trig) is sealed in
+      <code>EML.Framework.Complex.Periodicity</code> but isn't reproduced
+      live here; the witnesses below are the local positive-side
+      versions.
     </p>
     <p>
       Tree sizes match the

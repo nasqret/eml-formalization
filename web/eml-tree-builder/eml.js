@@ -21,29 +21,33 @@ const EML = {
 };
 
 // Tree-size measure (matches RPN_length in KCounting.lean).
+// `realize` nodes are opaque closed-constant sub-trees (π, i, etc.) —
+// rendered as single leaves but contributing their real K-count.
 function rpnLength(t) {
   if (t.kind === 'one' || t.kind === 'var') return 1;
+  if (t.kind === 'realize') return t.k;
   return 1 + rpnLength(t.a) + rpnLength(t.b);
 }
 
 function depth(t) {
-  if (t.kind === 'one' || t.kind === 'var') return 0;
+  if (t.kind === 'one' || t.kind === 'var' || t.kind === 'realize') return 0;
   return 1 + Math.max(depth(t.a), depth(t.b));
 }
 
 function leafCount(t) {
-  if (t.kind === 'one' || t.kind === 'var') return 1;
+  if (t.kind === 'one' || t.kind === 'var' || t.kind === 'realize') return 1;
   return leafCount(t.a) + leafCount(t.b);
 }
 
 function emlCount(t) {
-  if (t.kind === 'one' || t.kind === 'var') return 0;
+  if (t.kind === 'one' || t.kind === 'var' || t.kind === 'realize') return 0;
   return 1 + emlCount(t.a) + emlCount(t.b);
 }
 
 function rpnString(t) {
   if (t.kind === 'one') return '1';
   if (t.kind === 'var') return t.name;
+  if (t.kind === 'realize') return `⟨${t.name}⟩`;
   return rpnString(t.a) + ' ' + rpnString(t.b) + ' E';
 }
 
@@ -145,10 +149,188 @@ const mkArtanh = (x) => mkMul(mkHalf(), mkLog(mkDiv(mkAdd(EML.one(), x),
                                                      mkSub(EML.one(), x))));
 
 // ---------------------------------------------------------------------
-// Trig family — flagged as "needs complex grammar"
+// Complex-grammar (EMLTermℂ) macros — same syntactic shape as the real
+// grammar (`one`, `var`, `eml`) but interpreted with `Complex.exp` /
+// `Complex.log`. The macros mostly mirror the real ones; the
+// principal difference is `mkAddℂ`, which uses the explicit 9-node
+// "ADDsafe" pattern from `EML/Framework/Complex/Builders/Trig.lean`
+// so principal-branch behaviour is tracked correctly.
 // ---------------------------------------------------------------------
 
-const TRIG_NAMES = ['sin', 'cos', 'tan', 'arcsin', 'arccos', 'arctan'];
+const mkLogC = (T) =>
+  EML.eml(EML.one(), EML.eml(EML.eml(EML.one(), T), EML.one()));
+const mkExpC = (T) => EML.eml(T, EML.one());
+
+// 9-node ADDsafe pattern. Verbatim from Builders/Trig.lean line 58–65.
+const mkAddC = (A, B) =>
+  EML.eml(
+    EML.eml(EML.one(),
+      EML.eml(EML.eml(EML.one(), EML.eml(A, EML.one())), EML.one())),
+    EML.eml(
+      EML.eml(
+        EML.eml(EML.one(),
+          EML.eml(EML.eml(EML.one(), EML.eml(A, EML.eml(A, EML.one()))),
+                  EML.one())),
+        EML.eml(B, EML.one())
+      ),
+      EML.one()
+    )
+  );
+
+const mkSubC = (A, B) => EML.eml(mkLogC(A), mkExpC(B));
+const mkMulC = (A, B) => mkExpC(mkAddC(mkLogC(A), mkLogC(B)));
+const mkDivC = (A, B) => mkExpC(mkSubC(mkLogC(A), mkLogC(B)));
+
+// ---------------------------------------------------------------------
+// Closed-constant atoms. K-counts taken verbatim from
+// `EML.Framework.KCounting`. Rendered as single labelled leaves;
+// their internal structure (the EMLRealizationℂ packages in the Lean
+// repo) is hidden because they would otherwise dominate the canvas.
+// ---------------------------------------------------------------------
+
+const iTermC    = { kind: 'realize', name: 'iℂ',  k: 407, projection: '.im' };
+const piTermC   = { kind: 'realize', name: 'πℂ',  k: 233, projection: '.re' };
+const negITermC = { kind: 'realize', name: '−iℂ', k: 127, projection: '.im' };
+const zeroTermC = { kind: 'realize', name: '0ℂ',  k: 7,   projection: '.re' };
+const twoTermC  = { kind: 'realize', name: '2ℂ',  k: 19,  projection: '.re' };
+
+// ---------------------------------------------------------------------
+// Trig witnesses — verbatim ports from
+// `EML.Framework.Complex.{Closures,Builders}.Trig`.
+// ---------------------------------------------------------------------
+
+// arctanTermℂ = mkLogℂ (mkAddℂ 1 (mkMulℂ i (var 0)))
+// (eval).im = Real.arctan x   for x ∈ (0, π)  [ x ≠ 0 by widening ]
+function arctanTermC(varName) {
+  return mkLogC(mkAddC(EML.one(), mkMulC(iTermC, EML.var(varName))));
+}
+
+// tanCoreTermℂ = mkDivℂ (mkSubℂ E2 1) (mkAddℂ 1 E2)
+//   E2 := mkExpℂ (mkMulℂ i (mkMulℂ 2 (var 0)))
+// (eval).im = Real.tan x   for x ∈ (0, π/2)
+function tanCoreTermC(varName) {
+  const twoX = mkMulC(twoTermC, EML.var(varName));
+  const I2x  = mkMulC(iTermC, twoX);
+  const E2   = mkExpC(I2x);
+  return mkDivC(mkSubC(E2, EML.one()), mkAddC(EML.one(), E2));
+}
+
+// cosTermℂ = mkExpℂ (mkExpℂ (eml cosLhs cosRhs))
+//   cosLhs := eml 1 (eml (eml 1 (eml (mkLogℂ i) 1)) 1)
+//   cosRhs := eml (eml (eml 1 (eml (eml 1 (eml (mkLogℂ i) (eml (mkLogℂ i) 1))) 1)) (eml (mkLogℂ x) 1)) 1
+// Evaluates to exp(exp(log i + log x)) = exp(i·x); .re = cos x for x > 0.
+function cosTermC(varName) {
+  const x = EML.var(varName);
+  const logI = mkLogC(iTermC);
+  const cosLhs = EML.eml(EML.one(),
+    EML.eml(EML.eml(EML.one(), EML.eml(logI, EML.one())), EML.one()));
+  const cosRhs = EML.eml(
+    EML.eml(
+      EML.eml(EML.one(),
+        EML.eml(EML.eml(EML.one(),
+          EML.eml(logI, EML.eml(logI, EML.one()))), EML.one())),
+      EML.eml(mkLogC(x), EML.one())),
+    EML.one());
+  return mkExpC(mkExpC(EML.eml(cosLhs, cosRhs)));
+}
+
+// sinTermℂ via the identity sin x = cos(π/2 − x). We substitute
+// (π/2 − var 0) for var 0 inside cosTermC, which mirrors Path C′'s
+// `cosTermℂ.subst0 halfPiMinusXℂ`. The displayed tree shows the
+// substituted construction.
+function halfPiC() {
+  // π/2 = mkDivℂ π 2
+  return mkDivC(piTermC, twoTermC);
+}
+function sinTermC(varName) {
+  // shifted = π/2 − x
+  const shifted = mkSubC(halfPiC(), EML.var(varName));
+  // Inline a fresh cosTermC with shifted as the variable:
+  // we cannot reuse cosTermC(varName) verbatim — we must replace
+  // every occurrence of `var varName` with `shifted`. Easier:
+  // re-emit the cosTermC body with `shifted` in place of `var x`.
+  const logI = mkLogC(iTermC);
+  const cosLhs = EML.eml(EML.one(),
+    EML.eml(EML.eml(EML.one(), EML.eml(logI, EML.one())), EML.one()));
+  const cosRhs = EML.eml(
+    EML.eml(
+      EML.eml(EML.one(),
+        EML.eml(EML.eml(EML.one(),
+          EML.eml(logI, EML.eml(logI, EML.one()))), EML.one())),
+      EML.eml(mkLogC(shifted), EML.one())),
+    EML.one());
+  return mkExpC(mkExpC(EML.eml(cosLhs, cosRhs)));
+}
+
+// arccosTermℂ uses √(1 − x²) — we build that in the real fragment
+// then lift, but in the browser tool we approximate with the complex
+// macros directly: arccos x = (Complex.log (x + i·√(1 − x²))) / i,
+// projected to .im. We use the formula
+//   arccos x = π/2 − arcsin x
+//          = π/2 − (1/i) · log(i·x + √(1 − x²))
+// For the tree shape we mirror the Lean witness `arccosTermℂ` which
+// uses `mkLogℂ (mkAddℂ (var 0) (mkMulℂ i (sqrtOneSubSqTerm var)))`.
+// We approximate sqrt via the structural compiler:
+function sqrtOneSubSqC(varName) {
+  // sqrt(1 - x²) via mkExpℂ((1/2) · log(1 - x²))
+  // and 1 - x² via mkSubℂ 1 (mkMulℂ x x).
+  const x = EML.var(varName);
+  const xSq = mkMulC(x, x);
+  const oneMinusXSq = mkSubC(EML.one(), xSq);
+  return mkExpC(mkMulC(halfC(), mkLogC(oneMinusXSq)));
+}
+function halfC() {
+  // 1/2 = mkDivℂ 1 2
+  return mkDivC(EML.one(), twoTermC);
+}
+
+// arcsinTermℂ = mkLogℂ (mkAddℂ (mkMulℂ i x) (sqrt(1 − x²)))
+// (eval).im = Real.arcsin x for x ∈ (0, 1)
+function arcsinTermC(varName) {
+  const x = EML.var(varName);
+  const ix = mkMulC(iTermC, x);
+  const root = sqrtOneSubSqC(varName);
+  return mkLogC(mkAddC(ix, root));
+}
+
+// arccosTermℂ = mkLogℂ (mkAddℂ x (mkMulℂ i (sqrt(1 − x²))))
+// (eval).im = Real.arccos x for x ∈ (−1, 1)
+function arccosTermC(varName) {
+  const x = EML.var(varName);
+  const root = sqrtOneSubSqC(varName);
+  return mkLogC(mkAddC(x, mkMulC(iTermC, root)));
+}
+
+// Trig witness table. Each entry: (term_builder, projection, domain note).
+const TRIG_WITNESSES = {
+  cos: {
+    build: cosTermC, proj: '.re',
+    note: 'sealed on ℝ ∖ {0}; full natural domain (paper-compatible)'
+  },
+  sin: {
+    build: sinTermC, proj: '.re',
+    note: 'sealed on ℝ ∖ {π/2}; via Path C′ identity sin x = cos(π/2 − x)'
+  },
+  tan: {
+    build: tanCoreTermC, proj: '.im',
+    note: 'sealed on (-π/2, π/2) ∖ {0}; period-π reduction extends to ' +
+          '{x : cos x ≠ 0} (Path C′)'
+  },
+  arctan: {
+    build: arctanTermC, proj: '.im',
+    note: 'sealed on (-π, π) ∖ {0}; full real domain via arctan = arcsin(x/√(1+x²)) (Path C′)'
+  },
+  arcsin: {
+    build: arcsinTermC, proj: '.im',
+    note: 'sealed on full open (−1, 1)'
+  },
+  arccos: {
+    build: arccosTermC, proj: '.im',
+    note: 'sealed on full open (−1, 1)'
+  },
+};
+
+const TRIG_NAMES = Object.keys(TRIG_WITNESSES);
 
 // ---------------------------------------------------------------------
 // Parser — recursive descent for a small math expression grammar
@@ -344,8 +526,28 @@ function compile(ast) {
     }
     case 'call': {
       const name = ast.name.toLowerCase();
-      if (TRIG_NAMES.includes(name)) {
-        throw new TrigError(name);
+      if (TRIG_WITNESSES[name]) {
+        if (ast.args.length !== 1)
+          throw new Error(`${name} expects 1 argument, got ${ast.args.length}`);
+        // Trig witnesses are top-level only (the substitution into a
+        // surrounding compile would mix complex-grammar witnesses with
+        // structural-compiler output in a way the tool doesn't model).
+        const arg = ast.args[0];
+        if (arg.type !== 'name') {
+          throw new Error(
+            `${name} witness requires a single variable as argument ` +
+            `(e.g. ${name}(x)); got a compound expression. The complex ` +
+            `EMLTermℂ witnesses are top-level constructions in the formal ` +
+            `artefact too — composition with the real-fragment compiler ` +
+            `would happen via Path C′ subst0, which this tool doesn't yet model.`);
+        }
+        const w = TRIG_WITNESSES[name];
+        const tree = w.build(arg.name);
+        tree.__trigProjection = w.proj;
+        tree.__trigName = name;
+        tree.__trigNote = w.note;
+        tree.__trigVar = arg.name;
+        return tree;
       }
       if (UNARY[name]) {
         if (ast.args.length !== 1)
@@ -400,6 +602,7 @@ class TrigError extends Error {
 function describe(t) {
   if (t.kind === 'one') return '1';
   if (t.kind === 'var') return t.name;
+  if (t.kind === 'realize') return `⟨${t.name} : K=${t.k}⟩`;
   // eml(a, 1) = exp(a)
   if (t.b.kind === 'one') return `exp(${describe(t.a)})`;
   // eml(1, eml(eml(1, z), 1)) = log(z)
@@ -429,6 +632,10 @@ function layout(t) {
     if (node.kind === 'one' || node.kind === 'var') {
       return { ...node, x: 0, width: NODE_R * 2 + H_GAP, depth };
     }
+    if (node.kind === 'realize') {
+      // realize nodes render as wider leaves (label like "iℂ K=407")
+      return { ...node, x: 0, width: NODE_R * 4 + H_GAP, depth };
+    }
     const aL = go(node.a, depth + 1);
     const bL = go(node.b, depth + 1);
     // shift bL to the right by aL.width
@@ -455,7 +662,8 @@ function layout(t) {
   setY(positioned);
   // Translate so leftmost x is at PADDING
   function minX(n) {
-    if (n.kind === 'one' || n.kind === 'var') return n.x;
+    if (n.kind === 'one' || n.kind === 'var' || n.kind === 'realize')
+      return n.x;
     return Math.min(n.x, minX(n.a), minX(n.b));
   }
   const dx = PADDING + NODE_R - minX(positioned);
@@ -465,7 +673,8 @@ function layout(t) {
   }
   shift(positioned, dx);
   function maxX(n) {
-    if (n.kind === 'one' || n.kind === 'var') return n.x;
+    if (n.kind === 'one' || n.kind === 'var' || n.kind === 'realize')
+      return n.x;
     return Math.max(n.x, maxX(n.a), maxX(n.b));
   }
   const width = maxX(positioned) + PADDING + NODE_R;
@@ -506,7 +715,7 @@ function renderTree(t, container) {
     circle.setAttribute('r', NODE_R);
     if (n.kind === 'eml') {
       circle.setAttribute('class', 'node-eml');
-      circle.addEventListener('mouseenter', (e) => {
+      circle.addEventListener('mouseenter', () => {
         tooltip.textContent = describe(n);
         tooltip.style.display = 'block';
       });
@@ -519,6 +728,21 @@ function renderTree(t, container) {
       });
     } else if (n.kind === 'one') {
       circle.setAttribute('class', 'node-one');
+    } else if (n.kind === 'realize') {
+      circle.setAttribute('class', 'node-realize');
+      circle.setAttribute('r', NODE_R + 4);
+      circle.addEventListener('mouseenter', () => {
+        tooltip.textContent = `Closed-constant witness ⟨${n.name}⟩ (K=${n.k}); ` +
+                              `internal structure hidden — see EMLRealizationℂ in the Lean repo.`;
+        tooltip.style.display = 'block';
+      });
+      circle.addEventListener('mousemove', (e) => {
+        tooltip.style.left = (e.pageX + 10) + 'px';
+        tooltip.style.top = (e.pageY + 10) + 'px';
+      });
+      circle.addEventListener('mouseleave', () => {
+        tooltip.style.display = 'none';
+      });
     } else {
       circle.setAttribute('class', 'node-var');
     }
@@ -530,6 +754,7 @@ function renderTree(t, container) {
     label.setAttribute('class', 'node-label');
     if (n.kind === 'eml') label.textContent = 'E';
     else if (n.kind === 'one') label.textContent = '1';
+    else if (n.kind === 'realize') label.textContent = n.name;
     else label.textContent = n.name;
     svg.appendChild(label);
 
@@ -557,8 +782,10 @@ function makeTooltip() {
 
 function compileAndRender(input) {
   const errEl = document.getElementById('error');
+  const projEl = document.getElementById('projection');
   errEl.hidden = true;
   errEl.textContent = '';
+  if (projEl) projEl.hidden = true;
   try {
     const ast = new Parser(input).parse();
     const tree = compile(ast);
@@ -567,6 +794,13 @@ function compileAndRender(input) {
     document.getElementById('leaves').textContent = leafCount(tree);
     document.getElementById('eml-count').textContent = emlCount(tree);
     document.getElementById('rpn-output').textContent = rpnString(tree);
+    if (tree.__trigProjection && projEl) {
+      projEl.hidden = false;
+      projEl.innerHTML =
+        `<strong>${tree.__trigName}(${tree.__trigVar}) = ` +
+        `(witness.eval ${tree.__trigProjection})</strong>` +
+        ` &mdash; ${tree.__trigNote}`;
+    }
     renderTree(tree, document.getElementById('tree-container'));
   } catch (err) {
     errEl.hidden = false;
