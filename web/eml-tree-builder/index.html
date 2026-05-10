@@ -19,6 +19,38 @@
 </header>
 
 <main>
+  <aside class="references">
+    <strong>References.</strong>
+    <ul>
+      <li>
+        <span class="ref-tag">Paper</span>
+        A. Odrzywołek,
+        <em>All elementary functions from a single binary operator</em>,
+        arXiv:<a href="https://arxiv.org/abs/2603.21852" target="_blank" rel="noopener">2603.21852</a>
+        (<a href="https://arxiv.org/pdf/2603.21852" target="_blank" rel="noopener">PDF</a>).
+        Cited in tooltips as <em>Paper §X</em> or <em>Eq. (n)</em>.
+      </li>
+      <li>
+        <span class="ref-tag">SI</span>
+        <em>Supplementary Information</em> — ancillary file in the same
+        arXiv submission
+        (<a href="https://arxiv.org/abs/2603.21852" target="_blank" rel="noopener">abstract page</a>,
+        scroll to <em>Ancillary files</em>, then
+        <code>SupplementaryInformation.pdf</code>).
+        Local copy:
+        <a href="../../lambda_lab/proofs/eml/2603_21852/source/SupplementaryInformation.pdf"
+           target="_blank" rel="noopener">repo&nbsp;PDF</a>.
+        Cited in tooltips as <em>SI §X.Y</em>.
+      </li>
+      <li>
+        <span class="ref-tag">Lean</span>
+        Formalization repository:
+        <a href="https://github.com/nasqret/eml-formalization" target="_blank" rel="noopener">github.com/nasqret/eml-formalization</a>.
+        Cited in tooltips as <em>Plan D / E</em> chunks or framework module names.
+      </li>
+    </ul>
+  </aside>
+
   <section class="input-row">
     <label for="expr">f(x) =</label>
     <input id="expr" type="text" value="log(x)" autocomplete="off" spellcheck="false">
@@ -77,14 +109,14 @@
       <button class="ex" data-expr="arctan(x)">arctan(x)</button>
     </div>
     <div class="example-group">
-      <span class="example-label">SI expressions:</span>
-      <button class="ex" data-expr="exp(x) - log(y)" title="Paper Eq. (1) — the eml operator unfolded">eml(x, y)</button>
-      <button class="ex" data-expr="log(x)" title="SI §2.4 — ln(z) compiled to eml(1, eml(eml(1, z), 1)), K=7">ln(z) (SI §2.4)</button>
-      <button class="ex" data-expr="exp(x) / log(y)" title="Paper §3 — the EDL Sheffer cousin (preview, not a sealed witness here)">edl(x, y)</button>
-      <button class="ex" data-expr="log(x) - exp(y)" title="Paper §3 — the −EML Sheffer cousin (preview)">−eml(y, x)</button>
-      <button class="ex" data-expr="sqrt((1 + sqrt(5))/2)" title="SI §2.4 — golden ratio φ; full structural compile is K=359">φ partial</button>
-      <button class="ex" data-expr="exp(exp(x))" title="Plan D D10 — Aristotle-discovered EDL composition; here as EML">exp(exp x)</button>
-      <button class="ex" data-expr="log(log(x))" title="Plan D D11 — nested log composition">log(log x)</button>
+      <span class="example-label">From the paper / SI:</span>
+      <button class="ex" data-expr="exp(x) - log(y)" title="Paper Eq. (1) — the eml operator unfolded">eml(x, y) <span class="cite">[Paper Eq. (1)]</span></button>
+      <button class="ex" data-expr="log(x)" title="SI §2.4 'Compiled EML expressions: examples' — ln(z) compiled to eml(1, eml(eml(1, z), 1)), K=7">ln(z) <span class="cite">[SI §2.4]</span></button>
+      <button class="ex" data-expr="exp(x) / log(y)" title="Paper §3 — the EDL Sheffer cousin (preview, not a sealed witness here)">edl(x, y) <span class="cite">[Paper §3]</span></button>
+      <button class="ex" data-expr="log(x) - exp(y)" title="Paper §3 — the −EML Sheffer cousin (preview)">−eml(y, x) <span class="cite">[Paper §3]</span></button>
+      <button class="ex" data-expr="sqrt((1 + sqrt(5))/2)" title="SI §2.4 'Compiled EML expressions: examples' — golden ratio φ; SI reports LeafCount=359">φ partial <span class="cite">[SI §2.4]</span></button>
+      <button class="ex" data-expr="exp(exp(x))" title="Plan D D10 (Lean repo, chunk 087) — Aristotle-discovered EDL composition; here in EML">exp(exp x) <span class="cite">[Plan D D10]</span></button>
+      <button class="ex" data-expr="log(log(x))" title="Plan D D11 (Lean repo, chunk 087) — nested log composition">log(log x) <span class="cite">[Plan D D11]</span></button>
     </div>
   </section>
 
@@ -168,11 +200,8 @@ x · y   ↦  exp(ln(x) + ln(y))</pre>
       uniform-shape inflation vs. hand-tuned paper Table 4).
     </p>
     <p>
-      Source paper: A. Odrzywołek,
-      <em>All elementary functions from a single binary operator</em>,
-      arXiv:<a href="https://arxiv.org/abs/2603.21852" target="_blank">2603.21852</a>.
-      Lean formalization:
-      <a href="https://github.com/nasqret/eml-formalization" target="_blank">github.com/nasqret/eml-formalization</a>.
+      All paper / SI / repository links are listed in the
+      <strong>References</strong> panel at the top of the page.
     </p>
   </section>
 </main>

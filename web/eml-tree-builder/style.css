@@ -169,6 +169,49 @@ main {
 .grammar-tag.real    { background: #d8efe0; color: #15532b; }
 .grammar-tag.complex { background: #ead8ef; color: #4a1559; }
 
+.references {
+  background: #fbfbfd;
+  border: 1px solid #e2e2ec;
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+  line-height: 1.55;
+}
+.references > strong { color: var(--accent); }
+.references ul {
+  margin: 6px 0 0 0;
+  padding-left: 0;
+  list-style: none;
+}
+.references li {
+  padding: 3px 0;
+}
+.references a { color: var(--accent); text-decoration: underline; }
+
+.ref-tag {
+  display: inline-block;
+  width: 44px;
+  font-size: 11px;
+  text-align: center;
+  padding: 1px 6px;
+  margin-right: 6px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: "SF Mono", Menlo, monospace;
+  font-weight: 600;
+}
+
+.cite {
+  font-size: 10.5px;
+  color: #777;
+  font-weight: normal;
+  margin-left: 4px;
+}
+button.ex .cite { font-family: "SF Mono", Menlo, monospace; }
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
