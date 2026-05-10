@@ -408,7 +408,28 @@ theorem no_identity_at_depth_two :
         have h_eq : Real.exp (Real.exp 1) - 1 = 1 := Option.some.inj h_id
         linarith
 
-/-! ## Open conjectures
+/-! ## Depth-3 status
+
+The depth-3 case (no `EMLTerm` of depth exactly 3 evaluates to the
+identity on every real environment) was proved by Aristotle on
+2026-05-10 — see `chunks/090_no_identity_depth_3/result.lean` plus
+`ARISTOTLE_SUMMARY.md` for the full ~120-line solution. Aristotle
+worked in a simplified `EMLTerm` grammar (single `.atom` constructor)
+rather than this artefact's `.one` + `.var n` two-atom grammar; the
+mathematical argument carries over but the proof requires manual
+porting (case-split on which atom variant each leaf is, ~25
+numerical sub-inequalities). That port is a focused follow-up
+session, not done here.
+
+The mathematical content closed at depth 3 includes:
+- depth-1 children evaluate to `e` on env=ones;
+- depth-2 children evaluate to one of `{e-1, exp e, exp e - 1}`;
+- the resulting depth-3 values `exp(α) - log(β)` for `α ∈ {1, e, e-1, exp e, exp e - 1}`
+  and `β` similarly are all bounded away from 1 via Mathlib's
+  `Real.add_one_le_exp`, `Real.log_le_sub_one_of_pos`, and
+  `Real.exp_one_gt_d9`.
+
+## Open conjectures
 
 The work above gives:
 - An affirmative existence result for every depth that is a multiple
