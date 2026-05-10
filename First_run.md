@@ -158,7 +158,10 @@ Plans status (from OPEN_QUESTIONS.md):
   - Plan C′: full-real-domain trig via range-reduction         ✅ DONE
             (GPT Pro recommendation; sin/arctan/tan covered)
   - Plan D: EDL per-primitive completeness                     🔄 8/36 sealed; 28 conjecturally unreachable
-  - Plan E: −EML per-primitive completeness                    🔄 2/36 sealed (atoms); needs EReal grammar
+            (structural ceiling — EDL grammar lacks an addition
+             mechanism; further progress is paper-frontier work)
+  - Plan E: −EML per-primitive completeness                    🔄 5/36 sealed (2 ℝ + 3 EReal pilot);
+            same structural ceiling as Plan D
 
 Ready to work. What would you like to tackle?
 ```
@@ -186,8 +189,8 @@ Ready to work. What would you like to tackle?
 - `lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean`
   — machine-checked tree sizes for all 36 primitives.
 - `lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean`
-  — the EDL / −EML / T₁ / T₂ scaffolding (currently misnamed; see
-  Plan A in `OPEN_QUESTIONS.md`).
+  — the EDL and −EML cousin scaffolding (post-Plan-A naming);
+  hosts the 8 EDL + 5 −EML paper claims (Plans D and E).
 - `lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf` —
   11-page expository paper on the architecture. Branch-cut analysis
   in §10, open questions in §11.

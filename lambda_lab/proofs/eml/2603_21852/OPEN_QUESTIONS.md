@@ -7,6 +7,38 @@ action plans** for each feasible direction. The headline
 everything below is either a paper-open conjecture, an out-of-scope
 direction, or a future-work extension.
 
+> **Plan tracking has been consolidated here.** The earlier separate
+> planning files (`PLAN.md`, `PATH_C_PRIME_TASKS.md`) are now archived
+> under `notes/legacy_planning/` for traceability. Live status of every
+> Plan A–E lives below in this file; the scoreboard summary is in
+> `First_run.md`.
+
+## Within-reach engineering items (no research required)
+
+These are concrete pieces of work that can be done with current
+machinery, without crossing into paper-frontier territory. Listed in
+roughly increasing effort.
+
+| Item | Effort | Why it matters |
+|---|---|---|
+| **K-count consolidation** for 12 primitives (`logb`, `div`, `mul`, `pow`, `hypot`, `arccos`, `arcsin` (narrow), `arsinh`, `arcosh`, `σ`, `inv`, `sq`, `√`, `halve`) — replace structural-compile witnesses with direct compositional macros + custom closure proofs | ~500 Lean lines | Drops the dashboard's biggest figure from K=9 929 087 (`logb`) to K~10³, makes the per-primitive table apples-to-apples comparable with the source paper's Table 4 |
+| **Plan E broadening** — extend the EReal-grammar pilot to cover whichever primitives translate cleanly under the −EML operator (likely a subset of arithmetic) | ~200 Lean lines | Bumps Plan E from 5/36 toward whatever its true structural ceiling is (currently estimated by analogy with Plan D, but not formally pinned) |
+| **Physics-motivation companion essay** — flesh out the four stub chapters in `notes/physics_motivation/` (Hamiltonian normal forms, Wess–Zumino, CFT bootstrap, single-instruction analog computing) | ~10–15 pages of prose | Pre-existing scaffold; each chapter is independently draftable |
+| **`First_run.md` pruning** — trim sections that have become redundant with `OPEN_QUESTIONS.md` and `DASHBOARD.md` | small | Keeps the bootstrap recipe focused |
+
+## Frontier (research-grade, not within-reach engineering)
+
+These are the candidates for an external consult (e.g. a GPT Pro audit
+in the same style as the Path C′ trig-widening consult; bundle pattern
+in `gpt_pro_bundle/`):
+
+| Frontier item | What we'd ask |
+|---|---|
+| **Schanuel-style structural ceiling for Plan D / E** — make the informal Aristotle analysis (chunk 085) rigorous: prove that exact constants $-1$, $2$, $\tfrac12$ are unreachable from closed terms in the EDL grammar paired with $\{1, e\}$, conditional on Schanuel's conjecture | Independent assessment of whether this is feasible in Lean given current Mathlib; identify the right intermediate lemma to target |
+| **Three §G structural boundary points** ($\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0,0)$) — can these be closed by switching to an EReal grammar, or is the obstruction deeper? | Architectural review: does extending the EML grammar with EReal semantics let the natural witnesses evaluate correctly at boundary points, or does the same junk-value collision return? |
+| **Universal minimality of EML** (paper §5) — currently paper-open; requires a constant-free Sheffer impossibility result | Is this approachable with current methods, or fundamentally an open mathematical problem? |
+| **The seven SI §1.5 open questions** — taxonomy of Sheffer operators, canonical-form (Stern–Brocot-like) enumeration, leaf-only evaluation, variable-transplant depths, real-only Sheffer, $-\infty$ elimination, constant-free binary Sheffer | Which (if any) admit partial progress in the current artefact's framework? |
+
 ## Quick triage
 
 | Direction | Feasibility | Effort | Action plan |
@@ -15,7 +47,7 @@ direction, or a future-work extension.
 | **Full-real-domain trig** | ✅ **DONE** (Plan C′) | — | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
 | **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding |
 | **EDL per-primitive completeness** | 🔄 **8/36 in framework** + analysis | — | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — `one`, `var`, `e_const`, `exp`, `log`, `div`, `exp(exp)`, `log(log)` sealed; arithmetic (`+`, `−`, `·`, `−1`, `2`, `½`, `sqr`, `sqrt`) conjecturally unreachable from closed EDL terms (Aristotle analysis: addition of sub-expression values is structurally impossible in the `edl(a,b) = exp(a)/log(b)` combinator, ruling out trigonometric/hyperbolic primitives too) |
-| **−EML per-primitive completeness** | 🔄 **2/36** | 1–2 wk | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — atoms `one`, `var` sealed; `minusInf` requires switch to `EReal` grammar |
+| **−EML per-primitive completeness** | 🔄 **5/36** (structural ceiling) | — | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — 2 ℝ-grammar atoms (`one`, `var`) + 3 EReal-grammar pilot atoms (`one_E`, `var_E`, `minusInf`) sealed; same structural obstruction as Plan D for the rest |
 | **§3.2 universal minimality** | Paper-open | — | research result, not a formalization task |
 | **§4.3 gradient training** | Out of scope | — | needs Mathlib infrastructure that doesn't exist |
 | **Three §G boundary points** | Architectural | — | not closeable in the current grammar |
