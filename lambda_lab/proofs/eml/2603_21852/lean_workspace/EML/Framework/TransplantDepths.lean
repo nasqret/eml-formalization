@@ -408,5 +408,40 @@ theorem no_identity_at_depth_two :
         have h_eq : Real.exp (Real.exp 1) - 1 = 1 := Option.some.inj h_id
         linarith
 
+/-! ## Open conjectures
+
+The work above gives:
+- An affirmative existence result for every depth that is a multiple
+  of 4 (`identity_terms_at_depth_multiples_of_four`).
+- Negative non-existence results for depths 1 and 2
+  (`no_identity_at_depth_one`, `no_identity_at_depth_two`).
+
+What remains is the question that closes SI §1.5 #5 in full strength:
+*are these the only depths that admit identity terms?* Stated
+formally:
+-/
+
+/-- **Conjecture (SI §1.5 #5, paper-open).** Identity terms exist in
+the EML grammar at depth `d` if and only if `d` is a multiple of 4.
+
+**Status.** The forward direction (4 ∣ d ⇒ exists) is proved
+constructively above by `identity_terms_at_depth_multiples_of_four`.
+The reverse direction (exists ⇒ 4 ∣ d) is partially proved: closed
+for `d ∈ {1, 2}` by the `no_identity_at_depth_*` theorems above. The
+remaining cases (`d ∈ {3, 5, 6, 7, 9, 10, 11, …}`, i.e. all naturals
+that are neither 0 nor a positive multiple of 4) are open.
+
+A finite-search certificate would close any individual `d`; the
+case analysis at depth `d` involves at most `O(c^d)` shape variants
+for some small `c`. The structural reason this is hard for general
+`d` is that one would have to argue every depth-`d` term's evaluation
+on every test environment is bounded away from `env 0`, which seems
+to require an inductive invariant about the value lattice generated
+by `{1, exp, log, −}` that is itself non-trivial. -/
+def OnlyMultiplesOfFourHaveIdentities : Prop :=
+  ∀ d : Nat,
+    (∃ t : EMLTerm, t.depth = d ∧ ∀ env : Nat → ℝ, t.eval? env = some (env 0))
+    ↔ 4 ∣ d
+
 end EMLTerm
 end EML
