@@ -232,7 +232,7 @@ This repository was extracted from the larger `falenty-2026` workspace on 2026-0
 
 ## Authors and acknowledgements
 
-* **Bartosz Naskręcki** (UAM Poznań / Politechnika Warszawska) — formalization lead.
+* **Bartosz Naskręcki** (UAM Poznań / CCAI Warsaw University of Technology) — formalization lead.
 * **Andrzej Odrzywołek** (Jagiellonian University) — the source paper. Both for the discovery of the EML operator and for the careful description of the §G boundary issue (paper line 342) which spared us a great deal of confusion when we first hit it in Lean.
 * **Aristotle** (Harmonic) — proof search for many individual chunks.
 * **GPT Pro** (independent code review, no shared context) — recommended the structural-compiler architecture, the Cayley-quotient route for `tan`, and the public closed-constants packaging.

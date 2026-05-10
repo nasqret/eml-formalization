@@ -1,10 +1,14 @@
 \documentclass[11pt,a4paper]{article}
 \usepackage[margin=2.4cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
 \usepackage{amsmath, amssymb, amsthm, mathtools}
 \usepackage{xcolor}
 \usepackage{microtype}
 \usepackage{tikz, tikz-cd}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -39,7 +43,7 @@
        multi-agent workflow that produced it}
 
 \author{Bartosz Naskręcki\\[2pt]
-  \small Adam Mickiewicz University, Poznań / Politechnika Warszawska\\
+  \small Adam Mickiewicz University, Poznań / CCAI Warsaw University of Technology\\
   \small \texttt{bartosz.naskrecki@amu.edu.pl}}
 
 \date{}
@@ -48,33 +52,35 @@
 \maketitle
 
 \begin{abstract}
-This is an extended companion to A.~Odrzywołek's paper
-\emph{All elementary functions from a single binary operator}
-(arXiv:2603.21852), documenting (a)~a complete formalization of the
-paper's headline completeness theorem in Lean 4 with Mathlib v4.28,
-and (b)~the multi-agent engineering workflow (Aristotle proof search,
-GPT Pro architectural review, PCSS Eagle HPC re-verification, Claude
-orchestration) that produced it. We place special emphasis on how the
-\emph{form} of the proof---grammars, structural compilers, witness
-families---suggests a research programme well beyond the original
-36-primitive theorem: per-primitive completeness for the
-$\mathrm{EDL}$ and $-\!\mathrm{EML}$ Sheffer cousins (we seal a partial
-artefact, $13$ of $72$ paper claims, and prove a structural-ceiling
-theorem ruling out the rest from closed terms), and a Path~$C'$
-technique for full-real-domain trig that generalises from the paper's
-``manual $i$-sign correction'' prose into an explicit
-range-reduction-by-substitution recipe. A separate companion essay
-(\texttt{notes/physics\_motivation/}) discusses speculative analogues
-in physics --- Hamiltonian normal forms, Wess--Zumino covering
-identities, conformal-bootstrap reductions, single-instruction analog
-computing --- and is intentionally excluded from the present paper to
-keep the technical scope self-contained.
+A.~Odrzywołek (arXiv:2603.21852) recently established that one
+binary operator, $\mathrm{eml}(x, y) = \exp(x) - \log(y)$, paired
+with the constant $1$, suffices to express the $36$ elementary
+functions of a typical scientific calculator. The result is a
+continuous analogue of Sheffer's 1913 NAND theorem for propositional
+logic, and is supported in the source paper by exhaustive numerical
+search, symbolic simplification, and a three-lemma proof sketch.
 
-The artefact described here is hosted at
-\url{https://github.com/nasqret/eml-formalization} (MIT licence).
-At submission time: $61$ \texttt{paper\_claim\_*} theorems exposed
-in the public Lean API, $8056$ \texttt{lake} jobs sorry-free,
-independently re-verified on PCSS Eagle HPC.
+This paper describes a complete formalization of that headline
+completeness theorem in Lean 4. Two contributions are reported.
+Mathematically, we describe the architecture --- a layered language
+of grammars and structural compilers, plus a partial-evaluation
+semantics --- that allowed the proof to clear the obstacle the source
+paper had explicitly flagged: the standard convention $\log 0 = 0$
+required in a totalising prover collides with the shortest constant
+witnesses the paper's compiler produces. We also report a
+post-submission widening that extends the trigonometric witnesses
+from narrow open subdomains around zero to the full natural domain,
+generalising the source paper's prose remark about ``manual $i$-sign
+correction'' into an explicit range-reduction recipe.
+
+Methodologically, the paper documents the multi-agent workflow that
+produced the artefact: an automated proof-search service for atomic
+theorems, a single architectural-review consultation with a
+state-of-the-art language model, an HPC cluster for independent
+re-verification, and a local orchestrator for end-to-end coordination.
+The split of effort was strikingly asymmetric: roughly two-and-a-half
+hours of automated proof labour, one architectural consultation, and
+about a month of human-in-the-loop architectural decisions.
 \end{abstract}
 
 \tableofcontents
@@ -139,34 +145,115 @@ $\ln(0)$.
 \end{quote}
 
 The \emph{purpose of this paper} is twofold. Mathematically, we
-describe the architecture that allowed the formalization to clear the
-SI's flagged obstacle: a three-grammar, two-compiler pipeline
-($\F \to \EL \to \EML$, with a complex extension $\EMLC$ for the trig
-family) plus a partial-evaluation semantics that sidesteps the
-junk-value collision. We also document a post-submission widening
-(``Path~$C'$'') that closes the trig narrowing gap inherited from the
-strict $\arg < \pi$ requirement of Mathlib's principal-branch
-$\mathrm{Complex.log}$, and partial progress on per-primitive
-completeness for the $\EDL$ and $-\EML$ cousins.
+describe the architecture that allowed the formalization to clear
+the obstacle the SI flagged: a small layered pipeline of intermediate
+languages, plus a partial-evaluation semantics that simply refuses to
+commit to a value at the junk points and so sidesteps the collision.
+We also document a post-submission widening of the trigonometric
+witnesses to the full real domain, and partial progress on
+per-primitive completeness for the source paper's two ``cousin''
+operators. The organisation of this work into named ``Plans''
+(A through E, summarised in \cref{sec:plans}) is preserved from the
+project's repository for reference; the substantive content of each
+Plan is described in its own section below.
 
-Methodologically, we describe the multi-agent workflow: Aristotle
-\cite{harmonic2025aristotle} for proof search on individual chunks,
-GPT~Pro for an independent architectural audit, PCSS~Eagle HPC for
-cluster re-verification, and Claude~Code for orchestration. The
-artefact's $\sim\!\!1$~month construction time was dominated by the
-human-in-the-loop architectural decisions; mechanical proof labour
-contributed $\sim\!\!9$~hours of Aristotle wall-clock total across $10$
-chunks.
+Methodologically, we describe the multi-agent workflow that produced
+the artefact: an automated proof-search service for atomic theorems,
+a single architectural-review consultation with a state-of-the-art
+language model, an HPC cluster for independent re-verification, and a
+local orchestrator coordinating the construction. The artefact's
+$\sim\!\!1$~month construction time was dominated by human
+architectural decisions; mechanical proof labour contributed
+$\sim\!\!2.5$~hours of automated wall-clock across roughly a dozen
+``chunks'' (atomic theorems submitted to the proof-search service).
 
-A separate companion essay
-(\texttt{notes/physics\_motivation/} in the same repository) collects
-speculative analogues in physics where a Sheffer-style generative
-basis already arises or would clarify the underlying structure
----Hamiltonian normal forms, Wess--Zumino covering identities,
-conformal-bootstrap reductions, single-instruction analog computing.
-We deliberately keep the present paper restricted to the formalization
-and the workflow, so that the formal-methods reader has a
-self-contained technical document.
+For readers who would like to play with the construction before
+diving into the Lean code, we have also built an interactive web
+companion --- the \emph{EML Tree Builder} --- where any function
+typed in standard mathematical notation is compiled to its EML term
+in the browser, with the resulting tree, RPN string, $K$-count, and
+domain shown live. It is hosted in the project repository at
+\url{https://github.com/nasqret/eml-formalization} under
+\texttt{web/eml-tree-builder/}; opening \texttt{index.html} runs
+the same compiler pipeline described in this paper, with no backend
+or installation. Worked examples from the source paper's
+Supplementary Information are provided as one-click buttons.
+
+% =====================================================================
+\section{Roadmap and the ``Plans'' terminology}
+\label{sec:plans}
+% =====================================================================
+
+We refer throughout this paper to a sequence of named ``Plans''
+(A, B, C, $C'$, D, E). The labels were introduced in the project's
+repository to track the post-submission engineering roadmap; they
+survive here as section anchors. The table below summarises the
+six Plans for readers who come to this paper without prior repository
+access.
+
+\begin{center}
+\scriptsize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{}c X l X@{}}
+\toprule
+\textbf{Plan} & \textbf{Intent} & \textbf{Outcome} & \textbf{Produced} \\
+\midrule
+A
+  & Align the scaffolding of the source paper's two ``Sheffer cousin''
+    operators with the paper's actual definitions (an early draft had
+    one cousin misimplemented).
+  & complete
+  & Renamed module with the two paper-named cousins and the correct
+    operators. \\
+B
+  & Widen the trigonometric witnesses to the full real domain via a
+    custom complex-log branch (mimicking the paper's ``manual $i$-sign
+    correction'').
+  & infeasible
+  & Finding: the grammar's evaluator is hard-wired to Mathlib's
+    principal log, so a custom branch cannot be threaded through. \\
+C
+  & Cover the full real domain by case analysis on $x$, one witness
+    per region. Subsumed by Plan~$C'$.
+  & superseded
+  & --- \\
+$C'$
+  & Range-reduction by substitution: prove that real-valued addition
+    is always safe, then realise each trig identity by substitution
+    into a natural-domain witness.
+  & complete
+  & Three new public witnesses ($\sin$, $\arctan$, $\tan$ on full
+    natural domains); $\sim\!\!650$ Lean lines. \\
+D
+  & Per-primitive completeness for the first Sheffer cousin (division
+    of $\exp$ by $\log$).
+  & partial; ceiling
+  & 8 of $36$ primitives sealed; the rest conjecturally unreachable,
+    as the cousin's grammar offers no addition. \\
+E
+  & Per-primitive completeness for the second Sheffer cousin
+    (subtraction of $\log$ from $\exp$).
+  & partial; ceiling
+  & 5 of $36$ sealed, plus an extended-real grammar pilot for the
+    cousin's required constant $-\infty$. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\paragraph{Timeline.} Plans~A and~B were executed first ($\sim\!\!4$
+days). Plan~B's failure prompted a single architectural consultation
+with a state-of-the-art language model; the consultant's
+recommendation became Plan~$C'$, which was executed over the next
+$\sim\!\!10$ days. Plans~D and~E ran in parallel afterwards, taking
+$\sim\!\!5$ further days before hitting the structural ceiling
+described above. The full elapsed time, from the original artefact
+to the state described in this paper, was approximately one month.
+
+\paragraph{Why the alphabet skips letters.} Plan~C was a real plan
+that was never implemented; we keep its name only because the
+ultimately-successful Plan~$C'$ was its lineal descendant. We
+preserve the original lettering throughout this paper for fidelity to
+the repository's audit trail.
 
 % =====================================================================
 \section{The F36 source language}
@@ -226,23 +313,38 @@ These two regimes are the substance of the headline theorem
 \label{sec:headline-theorem}
 % =====================================================================
 
+Informally: each of the $36$ elementary primitives can be written
+as a finite tree built only from the constant $1$, variable
+references, and the two-argument operator
+$\mathrm{eml}(a, b) = \exp(a) - \log(b)$, in such a way that
+evaluating the tree --- in real arithmetic where possible, complex
+arithmetic for the trigonometric family --- reproduces the primitive
+on a non-empty open subset of its mathematical domain. Stated
+formally:
+
 \begin{theorem}[Completeness for the F36 class]
 \label{thm:headline}
 Let $\F = \F_{36}$ denote the catalogue of $36$ paper primitives.
-Let $\Eset$ be the single-binary-operator grammar
-\begin{equation}
-    \Eset \;\ni\; T \;::=\; \mathbf{1} \;\big|\; \mathbf{x}_n \;\big|\;
-    \eml(T, T), \qquad \eml(a, b) := \exp(a) - \log(b).
-\end{equation}
-Then for each $f \in \F$ there is a finite expression $\mathsf{T}_f
-\in \Eset$ (or its complex variant $\Eset_{\mathbb{C}}$) such that on
-a non-empty open subset of $f$'s natural domain, the partial evaluation
-of $\mathsf{T}_f$ yields a value whose appropriate projection
-$\Re$ or $\Im$ equals $f(x)$.
+Let $\Eset$ be the single-binary-operator grammar generated by
+$\mathbf{1}$, $\mathbf{x}_n$, and $\mathrm{eml}(T, T)$, with
+$\mathrm{eml}(a, b) := \exp(a) - \log(b)$. Then for each $f \in \F$
+there is a finite term $\mathsf{T}_f \in \Eset$ (or, in the complex
+case, in the obvious complex-valued variant $\Eset_{\mathbb{C}}$) such
+that on a non-empty open subset of $f$'s natural domain, the partial
+evaluation of $\mathsf{T}_f$ produces a value whose real (resp.
+imaginary) part equals $f(x)$.
 \end{theorem}
 
-The proof reduces to a three-language pipeline, depicted as the
-commutative diagram
+The qualifier ``partial evaluation'' is the key sidestep mentioned in
+the introduction: a term that contains $\log(0)$ as a subexpression
+is treated as undefined rather than collapsing to a junk value, and
+the existential ``$\exists\, \mathsf{T}_f$'' is only required to hold
+on an open subset, so points where the natural mathematical domain
+ends never need to be addressed by the term.
+
+\medskip
+
+The proof of the theorem follows a three-language pipeline:
 
 \begin{center}
 \begin{tikzcd}[column sep=large, row sep=large]
@@ -271,27 +373,32 @@ partial form sidesteps the junk-value boundary precisely because we
 existential quantifier is over a non-empty \emph{open} subset only.
 
 \paragraph{The combinator algebra.}
-A small zoo of \emph{derived combinators} lifts the basic
-\textsf{exp}/\textsf{log} machinery to a usable repertoire:
+Most useful operations on EML terms are not implemented directly; they
+are assembled from a small set of \emph{derived combinators} that wrap
+the basic exp/log primitives. The combinators carry the names
+$\mathrm{mkExp}$, $\mathrm{mkLog}$, $\mathrm{mkAdd}$, $\mathrm{mkSub}$,
+$\mathrm{mkMul}$, $\mathrm{mkDiv}$ and so on, with subscript $\mathbb{C}$
+when used in the complex variant of the grammar. Each combinator has a
+\emph{closure lemma} stating the conditions on its inputs under which
+the formal evaluation matches the intended mathematical operation. The
+two important closure conditions for the body of this paper are:
 
-\begin{center}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Combinator} & \textbf{Definition} & \textbf{Closure condition} \\
-\midrule
-$\mathrm{mkExp}_{\mathbb{C}}\ T$ & $\eml(T, \mathbf{1})$ & always \\
-$\mathrm{mkLog}_{\mathbb{C}}\ T$ & $\eml(\mathbf{1}, \mathrm{mkExp}_{\mathbb{C}}\ \eml(\mathbf{1}, T))$ & $\arg(T) < \pi$ \\
-$\mathrm{mkAdd}_{\mathbb{C}}\ A\ B$ & 9-node ADDsafe pattern & $\mathrm{ADDsafe}_{\mathbb{C}}(A, B)$ \\
-$\mathrm{mkSub}_{\mathbb{C}}\ A\ B$ & $\eml(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkExp}_{\mathbb{C}}\ B)$ & $\arg(A) < \pi$, $B \in \mathrm{strip}$ \\
-$\mathrm{mkMul}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkAdd}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
-$\mathrm{mkDiv}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkSub}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item $\mathrm{mkLog}_{\mathbb{C}}\ T$ requires $\arg(T) < \pi$:
+    Mathlib's complex log has its branch cut on the negative real
+    axis, so the macro fails for inputs that land on that axis.
+  \item $\mathrm{mkAdd}_{\mathbb{C}}\ A\ B$ requires a packaged
+    eleven-clause predicate (called $\mathrm{ADDsafe}_{\mathbb{C}}$
+    in the artefact) that ensures every intermediate log call is
+    away from its branch cut. The macro is implemented by an
+    explicit nine-node pattern that arranges the bookkeeping so
+    that this predicate can usually be discharged automatically.
+\end{itemize}
 
-Each combinator has a closure lemma stating the conditions under which
-the formal evaluation matches the intended mathematical operation.
-The combinators are reused across all $36$ primitive witnesses.
+The remaining combinators (subtraction, multiplication, division) are
+short compositions of the above and inherit their conditions. The same
+six combinators are reused across all $36$ primitive witnesses; full
+definitions are in the source repository.
 
 \paragraph{The structural compiler.} The compiler
 $\EL \to \EML$ is a single inductively-defined function whose
@@ -318,13 +425,13 @@ $\mathsf{C}_f \downarrow v$ holds together with $\Re(v) = f(x)$
 or $\Im(v) = f(x)$.
 
 The full architecture is laid out in the companion 14-page expository
-paper \cite{naskrecki2026notes} (\texttt{notes/proof\_structure.pdf}
+paper \cite{naskrecki2026notes} (\path{notes/proof_structure.pdf}
 in the repository); we treat that as a more elementary tour and focus
 here on the harder cases (\cref{sec:path-c-prime}, \cref{sec:plan-d-e}).
 
 % =====================================================================
-\section{Path~$C'$: full-real-domain trig via range-reduction
-by substitution}
+\section{\texorpdfstring{Path~$C'$}{Path C'}: full-real-domain trig
+via range-reduction by substitution}
 \label{sec:path-c-prime}
 % =====================================================================
 
@@ -396,11 +503,11 @@ a meta-level operation choosing a different witness shape per region
 of $x$, mathematically equivalent to the witness-family construction
 of Path~$C'$.
 
-\subsection{Plan~$C'$: range-reduction by substitution}
+\subsection{\texorpdfstring{Plan~$C'$}{Plan C'}: range-reduction by substitution}
 
-GPT~Pro's recommendation (consultation transcript:
-\texttt{gpt\_pro\_bundle/trig\_widening/RESPONSE.md}) refines the
-original Plan~C (multi-witness periodicity) with three engineering
+GPT~Pro's recommendation (the consultation transcript is preserved
+under \path{gpt_pro_bundle/trig_widening/} in the repository) refines
+the original Plan~C (multi-witness periodicity) with three engineering
 moves:
 
 \begin{enumerate}[topsep=2pt, itemsep=4pt]
@@ -445,9 +552,9 @@ an algebraic identity that reduces it to a primitive whose witness is
 
 \subsection{Result}
 
-Three new public theorems---\texttt{paper\_claim\_sin\_full},
-\texttt{paper\_claim\_arctan\_full}, \texttt{paper\_claim\_tan\_full}
----replace the old narrow versions and cover the full natural domains
+Three new public theorems --- \path{paper_claim_sin_full},
+\path{paper_claim_arctan_full}, and \path{paper_claim_tan_full} ---
+replace the old narrow versions and cover the full natural domains
 $\mathbb{R}\setminus\{\pi/2\}$, $\mathbb{R}$, and
 $\{x : \cos x \neq 0\}$ respectively.
 
@@ -467,11 +574,10 @@ structural ceiling}
 \label{sec:plan-d-e}
 % =====================================================================
 
-The paper presents EML, EDL, and $-\!$EML as a ``family'' (paper
-\S3.1, equation block \verb|\label{Sheffers}|) but proves
-per-primitive completeness only for EML. The cousins are confirmed
-empirically via the Mathematica/Rust \texttt{VerifyBaseSet}
-procedure, not formally.
+The paper presents EML, EDL, and $-\!$EML as a ``family''
+(paper~\S3.1) but proves per-primitive completeness only for EML.
+The cousins are confirmed empirically via the Mathematica/Rust
+\texttt{VerifyBaseSet} procedure, not formally.
 
 \subsection{Plan~D: 8 of 36 EDL primitives sealed}
 
@@ -525,7 +631,7 @@ $\exp(b)$. As a result:
 This validates the paper's own framing of EDL completeness as
 \emph{conjectured}, not proven.
 
-\subsection{Plan~E: 5 of 36 $-\!$EML primitives sealed}
+\subsection{\texorpdfstring{Plan~E: 5 of 36 $-\!$EML}{Plan E: 5 of 36 −EML} primitives sealed}
 
 $-\!$EML is paired with the constant $-\infty$, which forces the
 grammar to switch from $\mathbb{R}$-valued to extended-real-valued
@@ -558,39 +664,43 @@ the role of each and the protocol that connected them.
 \subsection*{The four agents and their division of labour}
 
 \begin{center}
-\begin{tabular}{l p{0.32\linewidth} p{0.42\linewidth}}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
 \textbf{Agent} & \textbf{Role} & \textbf{Worked on} \\
 \midrule
 Claude Code (local) & Orchestrator: framework architecture,
-combinator algebra, lifting Aristotle results into the framework,
-documentation. & Everything that touched the framework layer
-(\texttt{Framework/Complex/}, \texttt{Framework/Sheffer/}). \\
+combinator algebra, lifting prover results into the framework,
+documentation.
+& Everything in the framework layer (the complex-grammar
+combinators and the Sheffer-cousin scaffolding). \\
 
-Aristotle (cloud) & Atomic theorem prover: given a
-\texttt{target.lean} file with a \texttt{sorry} placeholder, returns
-a sealed proof. Submitted via the project's chunk schema (see
-\cref{ssec:chunks-protocol}). & 10 chunks across Path~$C'$ and
-Plan~D/E (see \cref{tab:aristotle-chunks}). Average wall-clock
-$\sim$15~min/chunk; total $\sim$2.5~hours of human-attended time. \\
+Aristotle (cloud) & Atomic theorem prover: given a Lean target with
+a \texttt{sorry} placeholder, returns a sealed proof. Submitted via
+the project's chunk schema (see \cref{ssec:chunks-protocol}).
+& 10 chunks across Plan~$C'$ and Plans~D/E (see
+\cref{tab:aristotle-chunks}). Average wall-clock $\sim$15~min per
+chunk; total $\sim$2.5~hours of human-attended time. \\
 
-GPT Pro (cloud) & Architectural reviewer: a single audit consult on
-the trig-narrowing bottleneck. & Authored Path~$C'$ recommendation;
-identified the \texttt{ADDsafe}$_{\mathbb{C}}$\texttt{\_ofReal\_ofReal}
-foundation lemma. \\
+GPT Pro (cloud) & Architectural reviewer: a single audit
+consultation on the trigonometric-widening bottleneck.
+& Authored the Plan~$C'$ recommendation; identified the
+real-valued-addition foundation lemma that made the recipe
+mechanisable. \\
 
-PCSS Eagle (HPC) & Independent re-verifier: parallel
-\texttt{lean} typecheck across 24--32 cores in a fresh environment.
-& Sequence of Mathlib + project rebuilds; final
-\texttt{verify\_all.sbatch} run reports 8056/8056 jobs successful. \\
+PCSS Eagle (HPC) & Independent re-verifier: parallel Lean typecheck
+across 24--32 cores in a fresh environment.
+& Sequence of Mathlib + project rebuilds; the final batch run
+reports 8056/8056 jobs successful. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \subsection*{The chunk protocol}\label{ssec:chunks-protocol}
 
 The atomic unit of work is a \emph{chunk}, a numbered subdirectory
-under \texttt{lambda\_lab/proofs/eml/2603\_21852/chunks/} containing:
+under \path{lambda_lab/proofs/eml/2603_21852/chunks/} containing:
 
 \begin{itemize}[topsep=2pt, itemsep=2pt]
 \item \texttt{chunk.md} --- human-readable target, motivation,
@@ -614,28 +724,30 @@ that lifted cleanly are listed in \cref{tab:aristotle-chunks}.
 
 \begin{table}[ht]
 \centering
-\small
-\begin{tabular}{l l c r p{0.36\linewidth}}
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}l X c r X@{}}
 \toprule
 \textbf{Chunk} & \textbf{Target (informal)} & \textbf{Diff.} & \textbf{Time} & \textbf{Outcome} \\
 \midrule
-\texttt{077\_atan\_arg\_in\_ioo} & $x/\sqrt{1+x^2} \in (-1, 1)$ & 2 & 6 min & Sealed; $\sim$3-line proof using \texttt{nlinarith}. \\
-\texttt{079\_tan\_period\_reduction} & $\exists k \in \mathbb{Z}$, $x - k\pi \in (-\pi/2, \pi/2)$ & 3 & 13 min & Sealed; \texttt{Real.tan\_sub\_int\_mul\_pi} closes the equality. \\
-\texttt{075\_sin\_via\_cos} & $\mathrm{sin\_via\_cos\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.cos\_pi\_div\_two\_sub} bridge. \\
-\texttt{078\_arctan\_via\_arcsin} & $\mathrm{arctan\_via\_arcsin\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.arctan\_eq\_arcsin} bridge. \\
-\texttt{080\_tan\_full} & $\mathrm{tan\_full}$ assembly & 4 & 17 min & Sealed; \texttt{lt\_trichotomy} on $y = x - k\pi$. \\
-\texttt{084\_edl\_atoms\_pilot} & 4 trivial EDL atom witnesses & 1 & 28 min & Sealed; \texttt{rfl}/\texttt{simp}/\texttt{linarith}. \\
-\texttt{085\_edl\_atoms\_constants} & D5/D6/D7 + D8 & 5 & $\sim$3 hr & D8 sealed; D5--D7 returned with Schanuel-style obstruction analysis (see \cref{sec:aristotle-lessons}). \\
-\texttt{086\_edl\_div} & $x/y$ via EDL & 4 & --- & Sealed (Aristotle even corrected the statement). \\
-\texttt{087\_edl\_compositions} & $\exp(\exp x)$, $\log(\log x)$ & 3 & --- & Both sealed. \\
-\texttt{088\_neg\_eml\_pilot} & 3 $-\!$EML pilot atoms (EReal grammar) & 2 & --- & All three sealed. \\
-\texttt{089\_edl\_wide\_search} & D14--D17 search & 4 & --- & D14, D15 trivial; D16, D17 unreachable + analysed. \\
+077 & $x/\sqrt{1+x^2} \in (-1, 1)$ & 2 & 6 min & Sealed; $\sim$3-line proof using \texttt{nlinarith}. \\
+079 & $\exists k \in \mathbb{Z},\ x - k\pi \in (-\pi/2, \pi/2)$ & 3 & 13 min & Sealed; \texttt{Real.tan\_sub\_int\_mul\_pi} closes the equality. \\
+075 & $\sin$ via $\cos$, by \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.cos\_pi\_div\_two\_sub} bridge. \\
+078 & $\arctan$ via $\arcsin$, by \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.arctan\_eq\_arcsin} bridge. \\
+080 & $\tan$ full real domain (assembly) & 4 & 17 min & Sealed; \texttt{lt\_trichotomy} on $y = x - k\pi$. \\
+084 & 4 trivial EDL atom witnesses & 1 & 28 min & Sealed; \texttt{rfl}/\texttt{simp}/\texttt{linarith}. \\
+085 & EDL constants D5/D6/D7 plus $\log x$ (D8) & 5 & $\sim$3 hr & D8 sealed; D5--D7 returned with Schanuel-style obstruction analysis. \\
+086 & $x/y$ via EDL & 4 & --- & Sealed (the prover even corrected the statement). \\
+087 & $\exp(\exp x)$ and $\log(\log x)$ via EDL & 3 & --- & Both sealed. \\
+088 & 3 $-\!$EML pilot atoms (extended-real grammar) & 2 & --- & All three sealed. \\
+089 & EDL wide search (D14--D17) & 4 & --- & D14, D15 trivial; D16, D17 unreachable and analysed. \\
 \bottomrule
-\end{tabular}
-\caption{Aristotle chunks completed during the post-submission work.
-``Diff.''~is a 1--5 subjective difficulty estimate recorded in
-\texttt{meta.json}. Times are wall-clock from submit to result
-return.}
+\end{tabularx}
+\caption{Atomic theorems delegated to the automated proof-search
+service during the post-submission work. Chunk numbers are the
+identifiers used in the project repository. ``Diff.''\ is a 1--5
+subjective difficulty estimate recorded with each chunk. Times are
+wall-clock from submit to result return; entries marked ``---'' were
+batched and not individually timed.}
 \label{tab:aristotle-chunks}
 \end{table}
 
@@ -672,7 +784,7 @@ fresh build caught it. After \texttt{rm}-ing the corrupt oleans and
 rebuilding, both passed and the project re-verified to 8056/8056.
 
 % =====================================================================
-\section{Lessons from $10$ Aristotle chunks}
+\section{\texorpdfstring{Lessons from $10$}{Lessons from 10} Aristotle chunks}
 \label{sec:aristotle-lessons}
 % =====================================================================
 
@@ -823,13 +935,13 @@ response is preserved verbatim in
 observations from that document drove the implementation:
 
 \begin{enumerate}[topsep=2pt, itemsep=4pt]
-\item \emph{Path~A is the wrong centre of gravity.} Mathlib has the
-  general branch-jump facts (\texttt{Complex.log\_exp\_eq\_sub\_toIocDiv},
-  \texttt{Complex.log\_exp\_exists}), but threading them through
-  every macro proof would turn \texttt{mkAdd}$_{\mathbb{C}}$,
-  \texttt{mkMul}$_{\mathbb{C}}$, \texttt{mkDiv}$_{\mathbb{C}}$, and
-  every trig proof into branch-accounting proofs. ``A lot of proof
-  debt for a phenomenon you can mostly avoid.''
+\item \emph{Path~A is the wrong centre of gravity.} Mathlib has
+  general branch-jump facts available (\path{Complex.log_exp_eq_sub_toIocDiv}
+  and \path{Complex.log_exp_exists}), but threading them through every
+  macro proof would turn the addition, multiplication, and division
+  combinators (and every trig proof on top of them) into
+  branch-accounting proofs. ``A lot of proof debt for a phenomenon
+  you can mostly avoid.''
 
 \item \emph{Path~B is mostly a dead end.} A custom complex-log
   branch is not implementable in our grammar because
@@ -1029,10 +1141,7 @@ The headline result of the source paper --- that one binary operator
 plus one terminal generates the $36$-primitive catalogue of
 elementary functions --- is now machine-checked. The artefact is
 public, the build is reproducible, and the per-claim witness terms
-are exposed in the Lean public API. The companion physics-motivation
-essay explores the broader question of why such reductions deserve
-attention beyond the formal-methods community; we leave that
-discussion to its own document.
+are exposed in the Lean public API.
 
 \bigskip
 
@@ -1041,11 +1150,16 @@ possible without (a) Odrzywołek's source paper and supplementary
 information, which together constitute an unusually detailed seed
 artefact for formalization; (b) the Mathlib community, whose
 $\sim\!8000$-job library underpins every step of the construction;
-(c) Harmonic AI, who provided Aristotle access through the relevant
-period; (d) Anthropic, whose Claude Code orchestrated the
-construction; and (e) the Polish national HPC infrastructure (PCSS
-Eagle, project pl0414-02), which provided independent
-re-verification compute.
+(c) Harmonic AI, who provided automated proof-search access
+through the relevant period;
+(d) OpenAI, whose GPT~Pro model produced the single architectural
+recommendation that broke the trigonometric-widening deadlock and
+shaped the design of Plan~$C'$ --- a critical contribution without
+which the artefact would have stayed at its narrow-domain submission
+state;
+(e) Anthropic, whose Claude Code orchestrated the construction; and
+(f) the Polish national HPC infrastructure (PCSS Eagle, project
+pl0414-02), which provided independent re-verification compute.
 
 \medskip
 
