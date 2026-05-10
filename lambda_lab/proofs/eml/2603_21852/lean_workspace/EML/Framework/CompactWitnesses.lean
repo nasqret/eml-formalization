@@ -11,24 +11,31 @@ binary primitives this gives **compositionally large** trees because
 each layer of macro expansion duplicates structure: `K_count_logb` is
 9 929 087, `K_count_div` is 5 896 223, `K_count_mul` is 839 743.
 
-This module provides **alternative compact witnesses** for the same
-paper claims, built directly from the unconditional macros
+This module provides **alternative direct-macro witnesses** for the
+same paper claims, built directly from the unconditional macros
 (`mkMulAll`, `mkDivNonzeroDenom`, `mkAvgAll`, `mkPowAll`, `mkLogbAll`,
 `mkHypotAll`, `mkInvNonzero`) defined in `Builders/Unconditional.lean`.
-The K-counts of these compact witnesses are typically 3–40× smaller
-than the structural-compile output for the same primitive.
 
-The compact witnesses serve two purposes:
-1. They demonstrate that the headline existential `∃ t, ...` admits
-   a much smaller witness than the structural compiler produces.
-2. They make the dashboard's K-count distribution comparable with the
-   source paper's hand-tuned Table 4 figures, which are also
-   compositional rather than uniform-shape.
+**Honest finding** (verified by `K_count_*_compact` theorems below):
+the K-counts of these direct-macro witnesses are **identical** to
+the structural-compile counterparts in `KCounting.lean`. The
+structural compiler internally uses these same `mk*All` macros, so
+the compile output and the direct-macro construction produce the
+same tree.
 
-The structural-compile witnesses remain the canonical proof artefact
-(they are produced by a single uniform theorem
-`F36Expr.real_complete`); these compact versions are alternatives,
-not replacements.
+This is informative rather than disappointing: it tells us that the
+dashboard's high K-counts are not an artefact of going through the
+F36 → EL → EML pipeline; they reflect the actual cost of a witness
+that works on the **full** real domain (negative inputs included).
+Genuine K-count reduction would require either:
+(a) restricting the paper-claim domains (positive-arg mul via
+    `mkMulPos` is K=29 instead of 839 743 — but only handles
+    positives), or
+(b) introducing new macros with sharper domain hypotheses.
+
+Both are out of scope for this module; the compact witnesses are
+recorded for transparency about which witness shape underlies each
+paper claim.
 -/
 
 namespace EML
@@ -92,55 +99,60 @@ theorem paper_claim_halve_compact :
     ∃ t : EMLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0 / 2) :=
   ⟨mkHalveAll (.var 0), fun env => mkHalveAll_eval? env _ rfl⟩
 
-/-! ## K-counts of the compact witnesses
+/-! ## K-counts of the compact witnesses — structural finding
 
-Each is `rfl`-checked against the explicit tree size. Compare with
-the structural-compile output's K-counts in `KCounting.lean`. -/
+The compact-witness K-counts are **identical** to the structural-
+compile counterparts in `KCounting.lean`. This is not a bug: the
+F36 → EL → EML compiler already uses the `mk*All` family internally,
+so swapping `realize_via_compiler` for direct macro calls produces
+the same tree.
 
-/-- K(compact mul x y). Structural-compile counterpart: `K_count_mul = 839 743`. -/
+The lesson: meaningful K-count reduction would require either
+(a) restricting the paper-claim domains (e.g., positive-arg mul via
+`mkMulPos` instead of `mkMulAll`, which avoids the case-analysis
+pattern at the cost of dropping negative inputs), or (b) inventing
+new macros with sharper domain hypotheses. Neither is in scope for
+this module.
+
+The compact-witness theorems above remain useful as **alternative
+proofs of the same paper claims** that are visibly direct rather
+than threaded through the compiler — but they do not shrink K. -/
+
+/-- K(compact mul x y) = 839 743, same as `K_count_mul`. -/
 theorem K_count_mul_compact :
-    (mkMulAll (.var 0) (.var 1)).RPN_length =
-      (mkMulAll (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkMulAll (.var 0) (.var 1)).RPN_length = 839743 := rfl
 
-/-- K(compact div x y). Counterpart: `K_count_div = 5 896 223`. -/
+/-- K(compact div x y) = 5 896 223, same as `K_count_div`. -/
 theorem K_count_div_compact :
-    (mkDivNonzeroDenom (.var 0) (.var 1)).RPN_length =
-      (mkDivNonzeroDenom (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkDivNonzeroDenom (.var 0) (.var 1)).RPN_length = 5896223 := rfl
 
-/-- K(compact avg x y). Counterpart: `K_count_avg = 403`. -/
+/-- K(compact avg x y) = 403, same as `K_count_avg`. -/
 theorem K_count_avg_compact :
-    (mkAvgAll (.var 0) (.var 1)).RPN_length =
-      (mkAvgAll (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkAvgAll (.var 0) (.var 1)).RPN_length = 403 := rfl
 
-/-- K(compact pow x y). Counterpart: `K_count_pow = 1 069 569`. -/
+/-- K(compact pow x y) = 1 069 569, same as `K_count_pow`. -/
 theorem K_count_pow_compact :
-    (mkPowAll (.var 0) (.var 1)).RPN_length =
-      (mkPowAll (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkPowAll (.var 0) (.var 1)).RPN_length = 1069569 := rfl
 
-/-- K(compact logb x y). Counterpart: `K_count_logb = 9 929 087`. -/
+/-- K(compact logb x y) = 9 929 087, same as `K_count_logb`. -/
 theorem K_count_logb_compact :
-    (mkLogbAll (.var 0) (.var 1)).RPN_length =
-      (mkLogbAll (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkLogbAll (.var 0) (.var 1)).RPN_length = 9929087 := rfl
 
-/-- K(compact hypot x y). Counterpart: `K_count_hypot = 754 641`. -/
+/-- K(compact hypot x y) = 754 641, same as `K_count_hypot`. -/
 theorem K_count_hypot_compact :
-    (mkHypotAll (.var 0) (.var 1)).RPN_length =
-      (mkHypotAll (EMLTerm.var 0) (EMLTerm.var 1)).RPN_length := rfl
+    (mkHypotAll (.var 0) (.var 1)).RPN_length = 754641 := rfl
 
-/-- K(compact inv x). Counterpart: `K_count_inv = 18 029`. -/
+/-- K(compact inv x) = 18 029, same as `K_count_inv`. -/
 theorem K_count_inv_compact :
-    (mkInvNonzero (.var 0)).RPN_length =
-      (mkInvNonzero (EMLTerm.var 0)).RPN_length := rfl
+    (mkInvNonzero (.var 0)).RPN_length = 18029 := rfl
 
-/-- K(compact sq x). Counterpart: `K_count_sqr = 4 471`. -/
+/-- K(compact sq x) = 4 471, same as `K_count_sqr`. -/
 theorem K_count_sq_compact :
-    (mkSqAll (.var 0)).RPN_length =
-      (mkSqAll (EMLTerm.var 0)).RPN_length := rfl
+    (mkSqAll (.var 0)).RPN_length = 4471 := rfl
 
-/-- K(compact halve x). Counterpart: `K_count_half = 221`. -/
+/-- K(compact halve x) = 221, same as `K_count_half`. -/
 theorem K_count_halve_compact :
-    (mkHalveAll (.var 0)).RPN_length =
-      (mkHalveAll (EMLTerm.var 0)).RPN_length := rfl
+    (mkHalveAll (.var 0)).RPN_length = 221 := rfl
 
 end EMLTerm
 end EML
