@@ -158,10 +158,18 @@ Plans status (from OPEN_QUESTIONS.md):
   - Plan C′: full-real-domain trig via range-reduction         ✅ DONE
             (GPT Pro recommendation; sin/arctan/tan covered)
   - Plan D: EDL per-primitive completeness                     🔄 8/36 sealed; 28 conjecturally unreachable
-            (structural ceiling — EDL grammar lacks an addition
-             mechanism; further progress is paper-frontier work)
+            (structural ceiling; closure thm + barrier typeclass
+             in EML.Framework.EDLClosedVal — Pro #3)
   - Plan E: −EML per-primitive completeness                    🔄 5/36 sealed (2 ℝ + 3 EReal pilot);
             same structural ceiling as Plan D
+
+Frontier work (GPT Pro consult 2026-05-10):
+  - SI §1.5 #5 variable-transplant depths                      ✅ multiples-of-4 + d=1, 2 negative
+            (in EML.Framework.TransplantDepths)
+  - §G boundary points in EReal arithmetic                     ✅ all 3 templates sealed
+            (in EML.Framework.StructuralLimitsEReal)
+  - Polynomial-binary impossibility (paper §5)                 ✅ sealed
+            (in EML.Framework.PolynomialBinary)
 
 Ready to work. What would you like to tackle?
 ```

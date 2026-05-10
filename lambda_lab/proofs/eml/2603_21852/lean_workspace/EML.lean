@@ -10,3 +10,4 @@ import EML.Framework.TransplantDepths
 import EML.Framework.StructuralLimitsEReal
 import EML.Framework.EDLClosedVal
 import EML.Framework.PolynomialBinary
+import EML.Framework.CompactWitnesses
