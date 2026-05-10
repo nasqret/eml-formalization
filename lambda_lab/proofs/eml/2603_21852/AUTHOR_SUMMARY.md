@@ -285,7 +285,7 @@ PCSS Eagle HPC re-verify (job 7 041 555, May 7 2026): 88 files, 0 fail,
   Thanks for both the discovery of the EML operator and for the careful
   description of the §G boundary issue (paper line 342) which spared us
   a great deal of confusion when we first hit it in Lean.
-* **Bartosz Naskręcki** (UAM Poznań / Politechnika Warszawska) —
+* **Bartosz Naskręcki** (UAM Poznań / CCAI Warsaw University of Technology) —
   formalisation lead.
 * **Aristotle** (Harmonic) — proof search for many individual chunks.
 * **GPT Pro** — independent code review (separate-context); recommended

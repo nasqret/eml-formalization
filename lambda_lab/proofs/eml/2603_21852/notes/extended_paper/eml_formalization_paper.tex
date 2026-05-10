@@ -5,6 +5,7 @@
 \usepackage{microtype}
 \usepackage{tikz, tikz-cd}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage{graphicx}
 \usepackage{hyperref}
@@ -39,7 +40,7 @@
        multi-agent workflow that produced it}
 
 \author{Bartosz Naskręcki\\[2pt]
-  \small Adam Mickiewicz University, Poznań / Politechnika Warszawska\\
+  \small Adam Mickiewicz University, Poznań / CCAI Warsaw University of Technology\\
   \small \texttt{bartosz.naskrecki@amu.edu.pl}}
 
 \date{}
@@ -181,68 +182,60 @@ Supplementary Information are provided as one-click buttons.
 \label{sec:plans}
 % =====================================================================
 
-Throughout this paper we refer to a sequence of named ``Plans'' --- A,
-B, C, $C'$, D, E. These labels were originally introduced in the
-project's repository to track the post-submission engineering
-roadmap, and they persist as section anchors here because the body
-of the paper reports on the work each Plan attempted. To make the
-paper readable independently of the repository, we summarise the
-six Plans up-front before any technical content is given. The reader
-is invited to skim this section and refer back as needed.
+We refer throughout this paper to a sequence of named ``Plans''
+(A, B, C, $C'$, D, E). The labels were introduced in the project's
+repository to track the post-submission engineering roadmap; they
+survive here as section anchors. The table below summarises the
+six Plans for readers who come to this paper without prior repository
+access.
 
 \begin{center}
-\small
-\begin{tabular}{l p{0.30\linewidth} l p{0.30\linewidth}}
+\scriptsize
+\renewcommand{\arraystretch}{1.1}
+\begin{tabularx}{\linewidth}{@{}c X l X@{}}
 \toprule
-\textbf{Plan} & \textbf{Intent} & \textbf{Outcome} & \textbf{What it produced} \\
+\textbf{Plan} & \textbf{Intent} & \textbf{Outcome} & \textbf{Produced} \\
 \midrule
-A   & Align the formal scaffolding for the source paper's two
-      ``Sheffer cousin'' operators with the paper's actual definitions
-      (an early draft had one cousin misimplemented).
-    & complete
-    & A tidy renamed module with the two paper-named cousins (one
-      based on division, one on subtraction) and their correct
-      operator definitions. \\[2pt]
-
-B   & Widen the trigonometric witnesses to the full real domain by
-      introducing a custom complex-log branch (mimicking the source
-      paper's ``manual $i$-sign correction'').
-    & infeasible
-    & An architectural finding: the formal grammar's evaluation
-      function is hard-wired to use Mathlib's principal-branch
-      complex log, so a custom branch cannot be threaded through
-      without rewriting the kernel. Plan~B was therefore abandoned. \\[2pt]
-
-C   & Original idea: cover the full real domain by case analysis on
-      $x$, with one witness per region. Subsumed by Plan~$C'$.
-    & superseded
-    & --- \\[2pt]
-
-$C'$ & Range-reduction by substitution: prove one foundational lemma
-       (real-valued addition is always safe), then realise each
-       trigonometric identity via variable substitution into a witness
-       that already covers the natural domain.
-    & complete
-    & Three new public witnesses ($\sin$, $\arctan$, $\tan$ on full
-      natural domains), assembled from $\sim\!\!650$ lines of
-      Lean infrastructure. \\[2pt]
-
-D   & Per-primitive completeness for the first Sheffer cousin (the
-      one based on division of exp by log).
-    & partial; structural ceiling
-    & Eight of the source paper's $36$ primitives sealed as
-      formal witnesses; the remaining $28$ are conjecturally
-      unreachable from closed terms because the cousin's grammar
-      provides no addition mechanism. \\[2pt]
-
-E   & Per-primitive completeness for the second Sheffer cousin (the
-      one based on subtraction of log from exp).
-    & partial; structural ceiling
-    & Five of $36$ primitives sealed, with an extended-real
-      grammar pilot to accommodate the cousin's required constant
-      $-\infty$. Same structural obstruction as Plan~D. \\
+A
+  & Align the scaffolding of the source paper's two ``Sheffer cousin''
+    operators with the paper's actual definitions (an early draft had
+    one cousin misimplemented).
+  & complete
+  & Renamed module with the two paper-named cousins and the correct
+    operators. \\
+B
+  & Widen the trigonometric witnesses to the full real domain via a
+    custom complex-log branch (mimicking the paper's ``manual $i$-sign
+    correction'').
+  & infeasible
+  & Finding: the grammar's evaluator is hard-wired to Mathlib's
+    principal log, so a custom branch cannot be threaded through. \\
+C
+  & Cover the full real domain by case analysis on $x$, one witness
+    per region. Subsumed by Plan~$C'$.
+  & superseded
+  & --- \\
+$C'$
+  & Range-reduction by substitution: prove that real-valued addition
+    is always safe, then realise each trig identity by substitution
+    into a natural-domain witness.
+  & complete
+  & Three new public witnesses ($\sin$, $\arctan$, $\tan$ on full
+    natural domains); $\sim\!\!650$ Lean lines. \\
+D
+  & Per-primitive completeness for the first Sheffer cousin (division
+    of $\exp$ by $\log$).
+  & partial; ceiling
+  & 8 of $36$ primitives sealed; the rest conjecturally unreachable,
+    as the cousin's grammar offers no addition. \\
+E
+  & Per-primitive completeness for the second Sheffer cousin
+    (subtraction of $\log$ from $\exp$).
+  & partial; ceiling
+  & 5 of $36$ sealed, plus an extended-real grammar pilot for the
+    cousin's required constant $-\infty$. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \paragraph{Timeline.} Plans~A and~B were executed first ($\sim\!\!4$
@@ -726,28 +719,30 @@ that lifted cleanly are listed in \cref{tab:aristotle-chunks}.
 
 \begin{table}[ht]
 \centering
-\small
-\begin{tabular}{l l c r p{0.36\linewidth}}
+\footnotesize
+\begin{tabularx}{\linewidth}{@{}l X c r X@{}}
 \toprule
 \textbf{Chunk} & \textbf{Target (informal)} & \textbf{Diff.} & \textbf{Time} & \textbf{Outcome} \\
 \midrule
-\texttt{077\_atan\_arg\_in\_ioo} & $x/\sqrt{1+x^2} \in (-1, 1)$ & 2 & 6 min & Sealed; $\sim$3-line proof using \texttt{nlinarith}. \\
-\texttt{079\_tan\_period\_reduction} & $\exists k \in \mathbb{Z}$, $x - k\pi \in (-\pi/2, \pi/2)$ & 3 & 13 min & Sealed; \texttt{Real.tan\_sub\_int\_mul\_pi} closes the equality. \\
-\texttt{075\_sin\_via\_cos} & $\mathrm{sin\_via\_cos\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.cos\_pi\_div\_two\_sub} bridge. \\
-\texttt{078\_arctan\_via\_arcsin} & $\mathrm{arctan\_via\_arcsin\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.arctan\_eq\_arcsin} bridge. \\
-\texttt{080\_tan\_full} & $\mathrm{tan\_full}$ assembly & 4 & 17 min & Sealed; \texttt{lt\_trichotomy} on $y = x - k\pi$. \\
-\texttt{084\_edl\_atoms\_pilot} & 4 trivial EDL atom witnesses & 1 & 28 min & Sealed; \texttt{rfl}/\texttt{simp}/\texttt{linarith}. \\
-\texttt{085\_edl\_atoms\_constants} & D5/D6/D7 + D8 & 5 & $\sim$3 hr & D8 sealed; D5--D7 returned with Schanuel-style obstruction analysis (see \cref{sec:aristotle-lessons}). \\
-\texttt{086\_edl\_div} & $x/y$ via EDL & 4 & --- & Sealed (Aristotle even corrected the statement). \\
-\texttt{087\_edl\_compositions} & $\exp(\exp x)$, $\log(\log x)$ & 3 & --- & Both sealed. \\
-\texttt{088\_neg\_eml\_pilot} & 3 $-\!$EML pilot atoms (EReal grammar) & 2 & --- & All three sealed. \\
-\texttt{089\_edl\_wide\_search} & D14--D17 search & 4 & --- & D14, D15 trivial; D16, D17 unreachable + analysed. \\
+077 & $x/\sqrt{1+x^2} \in (-1, 1)$ & 2 & 6 min & Sealed; $\sim$3-line proof using \texttt{nlinarith}. \\
+079 & $\exists k \in \mathbb{Z},\ x - k\pi \in (-\pi/2, \pi/2)$ & 3 & 13 min & Sealed; \texttt{Real.tan\_sub\_int\_mul\_pi} closes the equality. \\
+075 & $\sin$ via $\cos$, by \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.cos\_pi\_div\_two\_sub} bridge. \\
+078 & $\arctan$ via $\arcsin$, by \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.arctan\_eq\_arcsin} bridge. \\
+080 & $\tan$ full real domain (assembly) & 4 & 17 min & Sealed; \texttt{lt\_trichotomy} on $y = x - k\pi$. \\
+084 & 4 trivial EDL atom witnesses & 1 & 28 min & Sealed; \texttt{rfl}/\texttt{simp}/\texttt{linarith}. \\
+085 & EDL constants D5/D6/D7 plus $\log x$ (D8) & 5 & $\sim$3 hr & D8 sealed; D5--D7 returned with Schanuel-style obstruction analysis. \\
+086 & $x/y$ via EDL & 4 & --- & Sealed (the prover even corrected the statement). \\
+087 & $\exp(\exp x)$ and $\log(\log x)$ via EDL & 3 & --- & Both sealed. \\
+088 & 3 $-\!$EML pilot atoms (extended-real grammar) & 2 & --- & All three sealed. \\
+089 & EDL wide search (D14--D17) & 4 & --- & D14, D15 trivial; D16, D17 unreachable and analysed. \\
 \bottomrule
-\end{tabular}
-\caption{Aristotle chunks completed during the post-submission work.
-``Diff.''~is a 1--5 subjective difficulty estimate recorded in
-\texttt{meta.json}. Times are wall-clock from submit to result
-return.}
+\end{tabularx}
+\caption{Atomic theorems delegated to the automated proof-search
+service during the post-submission work. Chunk numbers are the
+identifiers used in the project repository. ``Diff.''\ is a 1--5
+subjective difficulty estimate recorded with each chunk. Times are
+wall-clock from submit to result return; entries marked ``---'' were
+batched and not individually timed.}
 \label{tab:aristotle-chunks}
 \end{table}
 
