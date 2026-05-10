@@ -200,6 +200,7 @@ A first-time-run recipe is encoded in [`First_run.md`](First_run.md) — reading
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts (`verify_all.sbatch`, `rebuild_cache.sbatch`, …) |
 | [`mathematica/`](mathematica/) | Stub pointing at upstream `VA00/SymbolicRegressionPackage` (`VerifyBaseSet`) |
 | [`slides/`](slides/) | Three EML decks: original, GhostDay 2026 (submitted), post-submission widening update |
+| [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser compiler — type a function, see the EML tree built by the same `F36 → EL → EML` macros as the Lean artefact |
 
 ---
 

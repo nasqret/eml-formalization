@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EML Tree Builder — interactive compiler for arXiv:2603.21852</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>EML Tree Builder</h1>
+  <p class="sub">
+    Type a mathematical function. The compiler translates it through the
+    same <code>F36 → EL → EML</code> pipeline used in the Lean proof, and
+    renders the resulting <code>EMLTerm</code> tree built only from
+    <code>1</code>, <code>x</code>, and <code>eml(a, b) = exp(a) − log(b)</code>.
+  </p>
+</header>
+
+<main>
+  <section class="input-row">
+    <label for="expr">f(x) =</label>
+    <input id="expr" type="text" value="log(x)" autocomplete="off" spellcheck="false">
+    <button id="compile">Compile</button>
+  </section>
+
+  <section class="examples">
+    <span>Examples:</span>
+    <button class="ex" data-expr="log(x)">log(x)</button>
+    <button class="ex" data-expr="exp(x)">exp(x)</button>
+    <button class="ex" data-expr="x + y">x + y</button>
+    <button class="ex" data-expr="x * y">x · y</button>
+    <button class="ex" data-expr="1/x">1/x</button>
+    <button class="ex" data-expr="x^2">x²</button>
+    <button class="ex" data-expr="sqrt(x)">√x</button>
+    <button class="ex" data-expr="sigma(x)">σ(x)</button>
+    <button class="ex" data-expr="(x+y)/2">(x+y)/2</button>
+    <button class="ex" data-expr="hypot(x, y)">hypot(x,y)</button>
+    <button class="ex" data-expr="sinh(x)">sinh(x)</button>
+    <button class="ex" data-expr="exp(x) - log(y)">exp(x) − log(y)</button>
+  </section>
+
+  <section id="error" class="error" hidden></section>
+
+  <section class="metrics">
+    <div class="metric"><span class="label">K (RPN length)</span><span id="k-count" class="value">—</span></div>
+    <div class="metric"><span class="label">tree depth</span><span id="depth" class="value">—</span></div>
+    <div class="metric"><span class="label">leaves</span><span id="leaves" class="value">—</span></div>
+    <div class="metric"><span class="label">eml nodes</span><span id="eml-count" class="value">—</span></div>
+  </section>
+
+  <section class="rpn">
+    <h3>RPN string (post-order)</h3>
+    <pre id="rpn-output">—</pre>
+  </section>
+
+  <section class="tree">
+    <h3>EML tree</h3>
+    <p class="hint">
+      Each <span class="legend-box eml"></span> is an
+      <code>eml(a, b) = exp(a) − log(b)</code> node;
+      <span class="legend-box one"></span> is the constant <code>1</code>;
+      <span class="legend-box var"></span> is a variable lookup. Click any
+      node to expand the sub-expression it computes.
+    </p>
+    <div id="tree-container"></div>
+  </section>
+
+  <section class="info">
+    <h3>What this does</h3>
+    <p>
+      The compiler implements the seven structural macros from
+      <strong>SI §2.1</strong> of the paper:
+    </p>
+    <pre class="recipe">
+exp(z)  ↦  eml(z, 1)
+ln(z)   ↦  eml(1, exp(eml(1, z)))    = eml(1, eml(eml(1, z), 1))
+x − y   ↦  eml(ln(x), exp(y))
+−z      ↦  ln(1) − z
+x + y   ↦  x − (−y)
+1/z     ↦  exp(−ln(z))
+x · y   ↦  exp(ln(x) + ln(y))</pre>
+    <p>
+      Plus derived macros for <code>x²</code>, <code>x/2</code>,
+      <code>(x+y)/2</code>, <code>√x</code>, <code>x^y</code>,
+      <code>log_b y</code>, <code>hypot(x, y)</code>, <code>σ(x)</code>,
+      <code>sinh</code>, <code>cosh</code>, <code>tanh</code>,
+      <code>arsinh</code>, <code>arcosh</code>, <code>artanh</code>.
+    </p>
+    <p class="caveat">
+      <strong>Caveat.</strong> Trigonometric primitives (<code>sin</code>,
+      <code>cos</code>, <code>tan</code>, <code>arctan</code>,
+      <code>arcsin</code>, <code>arccos</code>) require the
+      <em>complex</em> EML grammar (<code>EMLTermℂ</code>). They are
+      sealed in the formal artefact via Euler-bridge witnesses, but this
+      browser tool currently shows only the real-fragment compile.
+    </p>
+    <p>
+      Tree sizes match the
+      <a href="../../lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean"
+         target="_blank"><code>K_count_*</code></a>
+      theorems in the formalization (modulo the structural compiler's
+      uniform-shape inflation vs. hand-tuned paper Table 4).
+    </p>
+    <p>
+      Source paper: A. Odrzywołek,
+      <em>All elementary functions from a single binary operator</em>,
+      arXiv:<a href="https://arxiv.org/abs/2603.21852" target="_blank">2603.21852</a>.
+      Lean formalization:
+      <a href="https://github.com/nasqret/eml-formalization" target="_blank">github.com/nasqret/eml-formalization</a>.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <p>
+    Builds the same <code>EMLTerm</code> trees as
+    <code>EML.Framework.Compilers.ELToEML.lean</code> in the Lean artefact.
+    No backend — everything runs in your browser.
+  </p>
+</footer>
+
+<script src="eml.js"></script>
+</body>
+</html>
