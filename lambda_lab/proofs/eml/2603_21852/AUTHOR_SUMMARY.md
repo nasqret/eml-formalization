@@ -223,13 +223,21 @@ symbolic equivalence. **Out of scope for this formalisation.**
   EML; the cousins are confirmed empirically via the Mathematica /
   Rust `VerifyBaseSet` procedure. A full parallel sealing effort for
   either cousin is **1–2 weeks per cousin**. Plans D and E in
-  `OPEN_QUESTIONS.md`. **Plan D — IN PROGRESS:** 5 of 36 paper
-  claims sealed (`edl_paper_claim_{one, var, e_const, exp, log}`).
-  D8 / log x is non-trivial — Aristotle (chunk 085) discovered the
-  three-step composition `edl one (edl (edl one (var 0)) e_const)`.
-  Constants `−1`, `2`, `1/2` appear conjecturally unreachable from
-  closed EDL terms (Aristotle's Schanuel-conjecture analytical note).
-  Trig and hyperbolic primitives blocked by addition unreachability.
+  `OPEN_QUESTIONS.md`. **Plan D — at structural ceiling:** 8 of 36
+  EDL paper claims sealed in the framework
+  (`edl_paper_claim_{one, var, e_const, exp, log, div, exp_exp,
+  log_log}`). D8 / log x is non-trivial — Aristotle (chunk 085)
+  discovered the three-step composition `edl one (edl (edl one (var
+  0)) e_const)`; D9 / div is `edl(D8(x), D4(y))` (chunk 086, Aristotle
+  also corrected the statement). Constants `−1`, `2`, `1/2` are
+  conjecturally unreachable from closed EDL terms (Schanuel-conjecture
+  obstruction); the remaining 25 primitives (multiplication-needing
+  arithmetic, trig, hyperbolic) are blocked by absence of an addition
+  mechanism in `edl(a, b) = exp(a)/log(b)`. **Plan E — at structural
+  ceiling:** 5 of 36 sealed: `one`, `var` over ℝ, plus the EReal
+  pilot lifted from chunk 088 (`one_E`, `var_E`, `minusInf` — the
+  paper-paired `−∞` constant via a parallel `NegEMLTermE` grammar).
+  Same arithmetic obstruction for the remaining 31 primitives.
 * **Sheffer naming cleanup — DONE (Plan A complete).** Our scaffolding
   now has exactly the **two paper-named cousins** (`EDL` and `−EML`)
   matching paper §3.1 (lines 273–284). The previously-misnamed
@@ -243,7 +251,7 @@ symbolic equivalence. **Out of scope for this formalisation.**
   *preliminary unverified candidates* for the constant-free Sheffer
   open question (SI §1.5 #3) and they are out of scope for this
   formalisation. See
-  [`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md)
+  [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
   for the full audit trail.
 
 ### Three §G boundary points (architectural)

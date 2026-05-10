@@ -854,7 +854,7 @@ Same kernel, same `rfl`-checked Table-4 counterparts, plus a **Sheffer §3.1 sca
 
 After the negative-side companions, two architectural moves landed (May 8–9, 2026):
 
-**1. Plan A — Sheffer cleanup.** The earlier scaffolding had `LDE = log(x)/exp(y)` (division) misnamed as the paper's `−EML` (which is **subtraction**). Renamed `LDETerm → NegEMLTerm` with the correct subtraction operator. Fabricated binary `T₁`/`T₂` removed (the paper's actual T₁/T₂ are **ternary** per SI §1.4 and out of scope). Line-level paper sourcing in `Sheffer/PaperSourcing.md`.
+**1. Plan A — Sheffer cleanup.** The earlier scaffolding had `LDE = log(x)/exp(y)` (division) misnamed as the paper's `−EML` (which is **subtraction**). Renamed `LDETerm → NegEMLTerm` with the correct subtraction operator. Fabricated binary `T₁`/`T₂` removed (the paper's actual T₁/T₂ are **ternary** per SI §1.4 and out of scope). Line-level paper sourcing in `notes/legacy_planning/Sheffer_PaperSourcing.md`.
 
 **2. Path C′ — full-real-domain trig.** GPT Pro's recommendation (`gpt_pro_bundle/trig_widening/RESPONSE.md`): rather than chase the paper's "manual i-sign correction" (architecturally infeasible — `EMLTermℂ.eval` hard-codes Mathlib's principal `Complex.log`), use **range-reduction by substitution**. Foundation: one lemma `ADDsafeℂ_ofReal_ofReal` that discharges the gnarly 11-condition `mkAddℂ` precondition bundle when both args are real-valued. Then:
 
@@ -876,6 +876,8 @@ After the trig closure, attention turned to **per-primitive completeness for the
 
 **Plan D (EDL).** 8 of 36 paper claims sealed in the framework:
 
+
+
 | Primitive | Witness | Discovered by |
 |---|---|---|
 | `1`, `var x`, `e_const` | trivial | grammar |
@@ -887,9 +889,9 @@ After the trig closure, attention turned to **per-primitive completeness for the
 
 The remaining 28 paper primitives are **structurally unreachable** from closed EDL terms — Aristotle's analytical note: `edl(a,b) = exp(a)/log(b)` provides no mechanism for addition of sub-expression values, so multiplication, negation, sqr, sqrt, all trig/hyperbolic primitives are blocked. This validates the paper's "EDL completeness is conjectured, not proven" framing.
 
-**Plan E (−EML).** 2 of 36 sealed (atoms `one`, `var`); the `−∞` constant requires switching `NegEMLTerm` to `EReal`.
+**Plan E (−EML).** 5 of 36 sealed: `one`, `var` over ℝ, plus the EReal-grammar pilot `one_E`, `var_E`, and the paper-paired `minusInf` constant (E3 — Aristotle chunk 088 lifted into `Sheffer.lean` with a parallel `NegEMLTermE` over `EReal`).
 
-**Public API total: 58 paper claims** — 48 EML in `PaperClaims.lean` + 8 EDL + 2 −EML in `Sheffer.lean`.
+**Public API total: 61 paper claims** — 48 EML in `PaperClaims.lean` + 8 EDL + 5 −EML in `Sheffer.lean`.
 
 ---
 
@@ -928,7 +930,7 @@ These are deliberately *unrelated* to EML — different mathematical content (nu
 
 | Horizon | Goal | Status |
 |---|---|---|
-| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points documented · **full-real-domain trig** (Path C′) · **8 EDL + 2 −EML** Sheffer-cousin witnesses | ✓ 58 paper claims, sorry-free |
+| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points documented · **full-real-domain trig** (Path C′) · **8 EDL + 5 −EML** Sheffer-cousin witnesses (incl. EReal-grammar `−∞` for Plan E E3) | ✓ 61 paper claims, sorry-free |
 | Already done | K-counting: machine-checked Table 4 figures for 15 witnesses (`KCounting.lean`, `rfl`-proofs) | ✓ done |
 | Now → 1 wk | Plan E proper — EReal-grammar `NegEMLTerm` for the `−∞` constant | scoped |
 | 1 → 4 wk | Rebuild the GPT-Pro review bundle with the post-submission artefact | scheduled |

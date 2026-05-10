@@ -24,8 +24,9 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 |---|---:|---|
 | 📐 EML paper primitives sealed | **36 / 36** | atoms · real unaries · hyperbolic · binaries · trig |
 | 📜 `paper_claim_*` theorems (EML) | **48** | in `EML.Framework.PaperClaims`; includes Path C′ `sin_full`, `arctan_full`, `tan_full` |
-| 📜 EDL `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan D progress; `one`, `var`, `e_const`, `exp x`, `log x`) |
-| 📜 −EML `paper_claim_*` theorems | **2** | in `EML.Framework.Sheffer` (Plan E pilot; `one`, `var`) |
+| 📜 EDL `paper_claim_*` theorems | **8** | in `EML.Framework.Sheffer` (Plan D; `one`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`) |
+| 📜 −EML `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan E; ℝ-grammar `one`, `var` + EReal-grammar `one_E`, `var_E`, `minusInf`) |
+| 📜 **Total public claims** | **61** | 48 EML + 8 EDL + 5 −EML |
 | 🌳 K-count theorems (`rfl`-checked tree sizes) | **15** | in `EML.Framework.KCounting` |
 | 🛠 Lean kernel jobs | **8 056** | `lake build` finishes sorry-free |
 | 🚫 `sorry` / `admit` / axiom abuse | **0** | clean by `#print axioms` |
@@ -176,7 +177,7 @@ Expected result: `Build completed successfully (8054 jobs).` On a cold Mathlib c
 ### Verify what's sealed
 
 ```bash
-make scoreboard           # lists 45 paper_claim theorems and 15 K_count theorems
+make scoreboard           # lists 48 EML paper_claim theorems + 15 K_count theorems
 make sanity               # #checks paper_claim_pi, paper_claim_sin, paper_claim_cos
 make stats                # repo-wide statistics
 ```

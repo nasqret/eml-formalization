@@ -28,7 +28,8 @@ appears.
 - `arctan x = arcsin(x / √(1+x²))` substitution witness (Path C′ §3)
 - `tan` periodic substitution (Path C′ §4)
 
-See `Periodicity.md` for the full implementation roadmap.
+See `notes/legacy_planning/Periodicity_plan.md` for the original
+Path C′ implementation roadmap (kept for traceability).
 -/
 
 namespace EML

@@ -1,0 +1,216 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\hypersetup{colorlinks, linkcolor=blue!50!black, citecolor=blue!50!black,
+            urlcolor=blue!60!black}
+
+\newcommand{\eml}{\mathrm{eml}}
+
+\title{Why a single binary operator deserves attention\\[3pt]
+       \large A speculative companion to the EML formalization}
+
+\author{Bartosz Naskręcki\\[2pt]
+  \small Adam Mickiewicz University, Poznań / Politechnika Warszawska\\
+  \small \texttt{bartosz.naskrecki@amu.edu.pl}}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is a deliberately speculative companion to the technical
+formalization paper
+(\texttt{notes/extended\_paper/eml\_formalization\_paper.pdf}). The
+formalization establishes that one binary operator,
+$\eml(x, y) := \exp(x) - \log(y)$, paired with the constant $1$,
+generates the $36$-element catalogue of elementary functions used in
+typical scientific calculators
+\cite{odrzywolek2026eml}. The purpose of \emph{this} document is
+to argue that the existence of such a continuous Sheffer operator is
+not a curiosity of the elementary-function algebra alone: similar
+``one binary plus one terminal'' generative reductions arise across
+several distinct areas of physics --- some explicitly, some
+implicitly --- and the EML observation can be used to clarify what
+structural fact is being relied on in each case.
+
+We make no claim of formal isomorphism; the analogies offered here
+are structural prompts, not theorems. The reader is invited to take
+them as a programme of \emph{questions} for the relevant
+sub-communities, rather than as established connections.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================================
+\section{Scope and disclaimer}
+\label{sec:scope}
+% =====================================================================
+
+This note is exploratory. The technical paper
+\cite{naskrecki2026formalization} establishes a precise mathematical
+fact (a Lean 4 + Mathlib formalization of Odrzywołek's completeness
+theorem); the present document is concerned with whether that fact
+points to a broader pattern. We separate the two so that the
+technical paper can stand on its formal-methods merits without being
+diluted by speculative analogies.
+
+The four sections that follow each pose the question \emph{``in
+domain $X$, is there a structural reduction analogous to the EML
+Sheffer operator?''} and offer a sketch of what an affirmative
+answer would look like. Sections \ref{sec:hamiltonian} (Hamiltonian
+normal forms), \ref{sec:wess-zumino} (Wess--Zumino covering
+identities), \ref{sec:cft} (conformal-bootstrap reductions), and
+\ref{sec:analog-computing} (single-instruction analog hardware) are
+each a few pages of motivated speculation. Section
+\ref{sec:open-questions} collects the open problems that fall out
+of the analogies.
+
+% =====================================================================
+\section{Hamiltonian normal forms and the Sheffer reduction}
+\label{sec:hamiltonian}
+% =====================================================================
+
+[TO BE WRITTEN — develops the analogy between (a) the EML reduction
+of the 36-primitive elementary toolbox to a single binary operator
+and (b) the reduction of a generic Hamiltonian system to its
+Birkhoff--Gustavson normal form, where a complicated dynamical
+system collapses to a finite expression in a small canonical
+generator set. The point is: in both cases the existence of a small
+generative basis is non-trivial and has computational value.
+
+Open question: does the Birkhoff--Gustavson normal form admit a
+``Sheffer reduction'' --- a single canonical-transform kernel from
+which all integrable normal forms can be recovered, paired with a
+finite seed? If yes, what is the kernel?]
+
+% =====================================================================
+\section{Wess--Zumino-style covering identities}
+\label{sec:wess-zumino}
+% =====================================================================
+
+[TO BE WRITTEN — discusses the 4d Wess--Zumino superalgebra's
+generator reduction (the entire algebra is built from a single odd
+spinor charge $Q_\alpha$ and its conjugate, plus the bracket; analogue
+to ``one binary plus one terminal''). Comments on whether
+Sheffer-style reductions exist for the bosonic generators of the
+super-Poincaré algebra.
+
+Open question: is the supercharge's generative role essential, or is
+it a notational convenience? In the EML case we can prove (via the
+formalization) that no smaller generator set works for the full
+36-primitive catalogue; what is the analogous statement in the
+supercharge setting?]
+
+% =====================================================================
+\section{Gauge-fixing and conformal-bootstrap reductions}
+\label{sec:cft}
+% =====================================================================
+
+[TO BE WRITTEN — Belavin--Polyakov--Zamolodchikov's conformal
+bootstrap reduces the infinite-dimensional space of CFT correlators
+to a small set of structure constants and conformal blocks; the
+analogue is a Sheffer-style reduction in the algebra of correlators.
+
+Open question: in the bootstrap algebra, is the OPE the ``single
+binary operator'' analogue, with the identity operator playing the
+role of the constant 1? If so, what is the analogue of the
+36-primitive catalogue --- the list of correlators that the
+bootstrap is required to reproduce?]
+
+% =====================================================================
+\section{Single-instruction analog computing}
+\label{sec:analog-computing}
+% =====================================================================
+
+[TO BE WRITTEN — discusses FPGAs, photonic integrated circuits, and
+the practical implication of the EML Sheffer: a ``single-instruction
+math co-processor'' that evaluates only $\eml(a, b)$ in hardware. The
+formal proof of completeness implies that such a co-processor is
+universal for the 36-primitive class, modulo the boundary points;
+this is a substantially stronger statement than the empirical
+verification provides.
+
+Open question: what is the silicon-area / latency / energy tradeoff
+of a single-EML-instruction analog co-processor, compared with the
+standard floating-point unit that implements all 36 primitives
+separately? At what circuit size does the Sheffer reduction become
+economically interesting?]
+
+% =====================================================================
+\section{Open questions}
+\label{sec:open-questions}
+% =====================================================================
+
+The four analogies above each pose a concrete open question
+(highlighted at the end of the corresponding section). Collected
+here for ease of reference:
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+  \item \textbf{Birkhoff--Gustavson kernel.} Does the
+    Birkhoff--Gustavson normal form admit a single canonical-transform
+    kernel from which all integrable normal forms can be recovered,
+    paired with a finite seed?
+
+  \item \textbf{Supercharge minimality.} In the 4d
+    Wess--Zumino algebra, can the role of the spinor supercharge as
+    ``the single generator'' be made into a formal Sheffer-style
+    minimality theorem?
+
+  \item \textbf{OPE as Sheffer operator.} In the conformal bootstrap,
+    can the operator product expansion be cast as a Sheffer
+    operator on the algebra of correlators, with the identity
+    operator as constant?
+
+  \item \textbf{Single-EML hardware.} What is the practical viability
+    of a single-instruction EML analog co-processor for elementary
+    function evaluation?
+\end{enumerate}
+
+% =====================================================================
+\section{What the formalization tells us}
+\label{sec:what-formalization-says}
+% =====================================================================
+
+[TO BE WRITTEN — closing observation. The formalization makes two
+contributions to the broader programme: (a) it establishes that
+\emph{the EML Sheffer reduction is a theorem, not a conjecture}, so
+analogues in physics can be discussed without the loophole "but is
+it really minimal?"; (b) the witness-family form (one term per
+region of the input domain) is precisely the form that a
+single-instruction hardware unit would naturally implement, since
+hardware does case analysis on input range as a matter of course.
+
+The technical paper restricts itself to the formalization. This note
+exists to argue that the formalization's value extends beyond
+formal methods: a structural fact about elementary functions is
+also a structural prompt for several adjacent fields, and the prompt
+is now mathematically settled.]
+
+\medskip
+
+\begin{thebibliography}{9}
+
+\bibitem{odrzywolek2026eml}
+A.~Odrzywołek,
+\emph{All elementary functions from a single binary operator},
+arXiv:2603.21852, 2026.
+\url{https://arxiv.org/abs/2603.21852}
+
+\bibitem{naskrecki2026formalization}
+B.~Naskręcki,
+\emph{Formalizing the EML completeness theorem in Lean 4: an
+extended account of the construction and of the multi-agent
+workflow that produced it},
+companion paper
+\texttt{notes/extended\_paper/eml\_formalization\_paper.pdf} in the
+\href{https://github.com/nasqret/eml-formalization}{eml-formalization}
+repository, 2026.
+
+\end{thebibliography}
+
+\end{document}

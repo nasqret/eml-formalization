@@ -27,6 +27,17 @@ dist/
 node_modules/
 slides/*.html.bak
 slides/build/
+slides/*/build/
+
+# LaTeX intermediates
+*.aux
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.out
+*.bbl
+*.blg
 
 # Lean
 **/*.olean

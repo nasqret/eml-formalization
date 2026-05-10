@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+title: "EML formalization — Lean 4 + Mathlib v4.28"
+message: "If you use this artefact, please cite both the source paper and this formalization."
+type: software
+authors:
+  - family-names: Naskręcki
+    given-names: Bartosz
+    email: bartosz.naskrecki@amu.edu.pl
+    affiliation: "Adam Mickiewicz University, Poznań / Politechnika Warszawska"
+    orcid: "https://orcid.org/0000-0002-0036-6022"
+repository-code: "https://github.com/nasqret/eml-formalization"
+url: "https://github.com/nasqret/eml-formalization"
+abstract: >-
+  Lean 4 + Mathlib v4.28 formalization of arXiv:2603.21852
+  (A. Odrzywołek, "All elementary functions from a single binary
+  operator"). All 36 paper primitives are sealed via literal
+  EMLTermℂ witness terms whose `eval?` matches the paper's stated
+  value, on a non-empty open subdomain of the natural mathematical
+  domain. Includes Plan A (Sheffer cleanup), Path C′ (full-real-domain
+  trig via range-reduction), and partial Plans D/E (EDL/−EML
+  Sheffer-cousin completeness, at the structural ceiling). 61
+  paper-claim theorems exposed in the public API. lake build
+  finishes sorry-free at 8056 jobs; independently re-verified on
+  PCSS Eagle HPC.
+keywords:
+  - Lean 4
+  - Mathlib
+  - formal verification
+  - Sheffer operator
+  - elementary functions
+  - automated theorem proving
+license: MIT
+references:
+  - type: article
+    authors:
+      - family-names: Odrzywołek
+        given-names: Andrzej
+    title: "All elementary functions from a single binary operator"
+    year: 2026
+    url: "https://arxiv.org/abs/2603.21852"
+    identifiers:
+      - type: other
+        value: "arXiv:2603.21852"

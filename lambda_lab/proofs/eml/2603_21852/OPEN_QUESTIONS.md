@@ -245,7 +245,7 @@ The previously-misnamed `LDETerm` (which was *division*, not paper's
 *subtraction*) has been replaced; the fabricated binary `T1Term` /
 `T2Term` (the paper's actual T₁ / T₂ are **ternary**, SI §1.4) have
 been removed. See
-[`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md)
+[`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
 for line-level paper citations.
 
 ---
@@ -260,7 +260,7 @@ for line-level paper citations.
 > cousins; `LDETerm` was replaced by `NegEMLTerm` with the correct
 > subtraction operator; the fabricated binary `T1Term`/`T2Term` were
 > removed; line-level paper sourcing lives in
-> [`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md);
+> [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md);
 > README.md, lambda_lab/.../README.md, AUTHOR_SUMMARY.md, and
 > DASHBOARD.md updated. `lake build EML.Framework.Sheffer` clean.
 > The plan-of-record below is preserved for the audit trail.

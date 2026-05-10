@@ -907,9 +907,11 @@ that narrowing for $\sin$, $\arctan$, $\tan$. The headline theorem
 
 \noindent\textbf{Public Lean API.} $48$ \texttt{paper\_claim\_*}
 theorems exported by \texttt{EML.Framework.PaperClaims}, plus $8$
-\texttt{edl\_paper\_claim\_*} (Plan~D) and $2$
-\texttt{negEml\_paper\_claim\_*} (Plan~E pilot) in
-\texttt{EML.Framework.Sheffer} \textemdash\ a total of $58$
+\texttt{edl\_paper\_claim\_*} (Plan~D) and $5$
+\texttt{negEml\_paper\_claim\_*} (Plan~E, including the
+\texttt{minusInf} witness via the parallel
+\texttt{NegEMLTermE} grammar over \texttt{EReal}) in
+\texttt{EML.Framework.Sheffer} \textemdash\ a total of $61$
 machine-checked completeness theorems. Local \texttt{lake build}:
 $8056$ jobs, sorry-free. Independent re-verification on PCSS Eagle
 HPC: clean.
@@ -939,7 +941,8 @@ Sheffer.
 After cleanup, \texttt{Sheffer.lean} hosts exactly the two
 paper-named cousins, $\mathrm{EDL}$ and $-\mathrm{EML}$, with the
 correct definitions and a line-level paper-sourcing audit trail in
-\texttt{Sheffer/PaperSourcing.md}. The fabricated binary T$_1$/T$_2$
+\texttt{notes/legacy\_planning/Sheffer\_PaperSourcing.md}.
+The fabricated binary T$_1$/T$_2$
 are removed; the paper's real ternary T$_1$/T$_2$ are documented as
 preliminary future work, not as part of the present scaffolding.
 
