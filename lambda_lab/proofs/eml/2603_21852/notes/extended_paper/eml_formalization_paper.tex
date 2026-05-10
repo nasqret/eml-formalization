@@ -53,10 +53,9 @@
 
 \begin{abstract}
 A.~Odrzywołek (arXiv:2603.21852) recently established that one
-binary operator,
-$\mathrm{eml}(x, y) = \exp(x) - \log(y)$, paired with the constant
-$1$, suffices to express the $36$-element catalogue of elementary
-functions found in a typical scientific calculator. The result is a
+binary operator, $\mathrm{eml}(x, y) = \exp(x) - \log(y)$, paired
+with the constant $1$, suffices to express the $36$ elementary
+functions of a typical scientific calculator. The result is a
 continuous analogue of Sheffer's 1913 NAND theorem for propositional
 logic, and is supported in the source paper by exhaustive numerical
 search, symbolic simplification, and a three-lemma proof sketch.
@@ -426,13 +425,13 @@ $\mathsf{C}_f \downarrow v$ holds together with $\Re(v) = f(x)$
 or $\Im(v) = f(x)$.
 
 The full architecture is laid out in the companion 14-page expository
-paper \cite{naskrecki2026notes} (\texttt{notes/proof\_structure.pdf}
+paper \cite{naskrecki2026notes} (\path{notes/proof_structure.pdf}
 in the repository); we treat that as a more elementary tour and focus
 here on the harder cases (\cref{sec:path-c-prime}, \cref{sec:plan-d-e}).
 
 % =====================================================================
-\section{Path~$C'$: full-real-domain trig via range-reduction
-by substitution}
+\section{\texorpdfstring{Path~$C'$}{Path C'}: full-real-domain trig
+via range-reduction by substitution}
 \label{sec:path-c-prime}
 % =====================================================================
 
@@ -504,11 +503,11 @@ a meta-level operation choosing a different witness shape per region
 of $x$, mathematically equivalent to the witness-family construction
 of Path~$C'$.
 
-\subsection{Plan~$C'$: range-reduction by substitution}
+\subsection{\texorpdfstring{Plan~$C'$}{Plan C'}: range-reduction by substitution}
 
-GPT~Pro's recommendation (consultation transcript:
-\texttt{gpt\_pro\_bundle/trig\_widening/RESPONSE.md}) refines the
-original Plan~C (multi-witness periodicity) with three engineering
+GPT~Pro's recommendation (the consultation transcript is preserved
+under \path{gpt_pro_bundle/trig_widening/} in the repository) refines
+the original Plan~C (multi-witness periodicity) with three engineering
 moves:
 
 \begin{enumerate}[topsep=2pt, itemsep=4pt]
@@ -553,9 +552,9 @@ an algebraic identity that reduces it to a primitive whose witness is
 
 \subsection{Result}
 
-Three new public theorems---\texttt{paper\_claim\_sin\_full},
-\texttt{paper\_claim\_arctan\_full}, \texttt{paper\_claim\_tan\_full}
----replace the old narrow versions and cover the full natural domains
+Three new public theorems --- \path{paper_claim_sin_full},
+\path{paper_claim_arctan_full}, and \path{paper_claim_tan_full} ---
+replace the old narrow versions and cover the full natural domains
 $\mathbb{R}\setminus\{\pi/2\}$, $\mathbb{R}$, and
 $\{x : \cos x \neq 0\}$ respectively.
 
@@ -575,11 +574,10 @@ structural ceiling}
 \label{sec:plan-d-e}
 % =====================================================================
 
-The paper presents EML, EDL, and $-\!$EML as a ``family'' (paper
-\S3.1, equation block \verb|\label{Sheffers}|) but proves
-per-primitive completeness only for EML. The cousins are confirmed
-empirically via the Mathematica/Rust \texttt{VerifyBaseSet}
-procedure, not formally.
+The paper presents EML, EDL, and $-\!$EML as a ``family''
+(paper~\S3.1) but proves per-primitive completeness only for EML.
+The cousins are confirmed empirically via the Mathematica/Rust
+\texttt{VerifyBaseSet} procedure, not formally.
 
 \subsection{Plan~D: 8 of 36 EDL primitives sealed}
 
@@ -633,7 +631,7 @@ $\exp(b)$. As a result:
 This validates the paper's own framing of EDL completeness as
 \emph{conjectured}, not proven.
 
-\subsection{Plan~E: 5 of 36 $-\!$EML primitives sealed}
+\subsection{\texorpdfstring{Plan~E: 5 of 36 $-\!$EML}{Plan E: 5 of 36 −EML} primitives sealed}
 
 $-\!$EML is paired with the constant $-\infty$, which forces the
 grammar to switch from $\mathbb{R}$-valued to extended-real-valued
@@ -666,39 +664,43 @@ the role of each and the protocol that connected them.
 \subsection*{The four agents and their division of labour}
 
 \begin{center}
-\begin{tabular}{l p{0.32\linewidth} p{0.42\linewidth}}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}l X X@{}}
 \toprule
 \textbf{Agent} & \textbf{Role} & \textbf{Worked on} \\
 \midrule
 Claude Code (local) & Orchestrator: framework architecture,
-combinator algebra, lifting Aristotle results into the framework,
-documentation. & Everything that touched the framework layer
-(\texttt{Framework/Complex/}, \texttt{Framework/Sheffer/}). \\
+combinator algebra, lifting prover results into the framework,
+documentation.
+& Everything in the framework layer (the complex-grammar
+combinators and the Sheffer-cousin scaffolding). \\
 
-Aristotle (cloud) & Atomic theorem prover: given a
-\texttt{target.lean} file with a \texttt{sorry} placeholder, returns
-a sealed proof. Submitted via the project's chunk schema (see
-\cref{ssec:chunks-protocol}). & 10 chunks across Path~$C'$ and
-Plan~D/E (see \cref{tab:aristotle-chunks}). Average wall-clock
-$\sim$15~min/chunk; total $\sim$2.5~hours of human-attended time. \\
+Aristotle (cloud) & Atomic theorem prover: given a Lean target with
+a \texttt{sorry} placeholder, returns a sealed proof. Submitted via
+the project's chunk schema (see \cref{ssec:chunks-protocol}).
+& 10 chunks across Plan~$C'$ and Plans~D/E (see
+\cref{tab:aristotle-chunks}). Average wall-clock $\sim$15~min per
+chunk; total $\sim$2.5~hours of human-attended time. \\
 
-GPT Pro (cloud) & Architectural reviewer: a single audit consult on
-the trig-narrowing bottleneck. & Authored Path~$C'$ recommendation;
-identified the \texttt{ADDsafe}$_{\mathbb{C}}$\texttt{\_ofReal\_ofReal}
-foundation lemma. \\
+GPT Pro (cloud) & Architectural reviewer: a single audit
+consultation on the trigonometric-widening bottleneck.
+& Authored the Plan~$C'$ recommendation; identified the
+real-valued-addition foundation lemma that made the recipe
+mechanisable. \\
 
-PCSS Eagle (HPC) & Independent re-verifier: parallel
-\texttt{lean} typecheck across 24--32 cores in a fresh environment.
-& Sequence of Mathlib + project rebuilds; final
-\texttt{verify\_all.sbatch} run reports 8056/8056 jobs successful. \\
+PCSS Eagle (HPC) & Independent re-verifier: parallel Lean typecheck
+across 24--32 cores in a fresh environment.
+& Sequence of Mathlib + project rebuilds; the final batch run
+reports 8056/8056 jobs successful. \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \subsection*{The chunk protocol}\label{ssec:chunks-protocol}
 
 The atomic unit of work is a \emph{chunk}, a numbered subdirectory
-under \texttt{lambda\_lab/proofs/eml/2603\_21852/chunks/} containing:
+under \path{lambda_lab/proofs/eml/2603_21852/chunks/} containing:
 
 \begin{itemize}[topsep=2pt, itemsep=2pt]
 \item \texttt{chunk.md} --- human-readable target, motivation,
@@ -782,7 +784,7 @@ fresh build caught it. After \texttt{rm}-ing the corrupt oleans and
 rebuilding, both passed and the project re-verified to 8056/8056.
 
 % =====================================================================
-\section{Lessons from $10$ Aristotle chunks}
+\section{\texorpdfstring{Lessons from $10$}{Lessons from 10} Aristotle chunks}
 \label{sec:aristotle-lessons}
 % =====================================================================
 
@@ -933,13 +935,13 @@ response is preserved verbatim in
 observations from that document drove the implementation:
 
 \begin{enumerate}[topsep=2pt, itemsep=4pt]
-\item \emph{Path~A is the wrong centre of gravity.} Mathlib has the
-  general branch-jump facts (\texttt{Complex.log\_exp\_eq\_sub\_toIocDiv},
-  \texttt{Complex.log\_exp\_exists}), but threading them through
-  every macro proof would turn \texttt{mkAdd}$_{\mathbb{C}}$,
-  \texttt{mkMul}$_{\mathbb{C}}$, \texttt{mkDiv}$_{\mathbb{C}}$, and
-  every trig proof into branch-accounting proofs. ``A lot of proof
-  debt for a phenomenon you can mostly avoid.''
+\item \emph{Path~A is the wrong centre of gravity.} Mathlib has
+  general branch-jump facts available (\path{Complex.log_exp_eq_sub_toIocDiv}
+  and \path{Complex.log_exp_exists}), but threading them through every
+  macro proof would turn the addition, multiplication, and division
+  combinators (and every trig proof on top of them) into
+  branch-accounting proofs. ``A lot of proof debt for a phenomenon
+  you can mostly avoid.''
 
 \item \emph{Path~B is mostly a dead end.} A custom complex-log
   branch is not implementable in our grammar because
