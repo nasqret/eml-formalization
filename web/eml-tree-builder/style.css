@@ -148,6 +148,27 @@ main {
   font-size: 14px;
 }
 
+.domain {
+  background: #f4f0ff;
+  border: 1px solid #c8b8ee;
+  color: #3a1a6e;
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.grammar-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-left: 6px;
+  font-family: "SF Mono", Menlo, monospace;
+}
+.grammar-tag.real    { background: #d8efe0; color: #15532b; }
+.grammar-tag.complex { background: #ead8ef; color: #4a1559; }
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));

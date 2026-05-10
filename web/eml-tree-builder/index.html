@@ -89,6 +89,7 @@
   </section>
 
   <section id="error" class="error" hidden></section>
+  <section id="domain" class="domain" hidden></section>
   <section id="projection" class="projection" hidden></section>
 
   <section class="metrics">
@@ -148,13 +149,16 @@ x · y   ↦  exp(ln(x) + ln(y))</pre>
       the metric tiles.
     </p>
     <p class="caveat">
-      Trig witnesses are <em>top-level</em> constructions in the formal
-      artefact — they don't compose with the real-fragment compiler in
-      the browser tool. Path C′'s subst<sub>0</sub>-based widening
-      (full-real-domain trig) is sealed in
-      <code>EML.Framework.Complex.Periodicity</code> but isn't reproduced
-      live here; the witnesses below are the local positive-side
-      versions.
+      When an expression contains any trig sub-expression, the entire
+      compile switches to the <em>complex</em> grammar
+      (<code>EMLTermℂ</code>): all additions are routed through the
+      9-node <code>mkAdd</code><sub>ℂ</sub> ADDsafe pattern, and any
+      trig call with a non-variable argument is realised via
+      Path&nbsp;C′ <code>subst<sub>0</sub></code> — the witness is built
+      with a fresh placeholder variable and the caller's compiled
+      argument is substituted in. So <code>log(sin(1+x²))</code> now
+      compiles end-to-end. The grammar pill above the metric tiles
+      tells you which pipeline (real or complex) was used.
     </p>
     <p>
       Tree sizes match the

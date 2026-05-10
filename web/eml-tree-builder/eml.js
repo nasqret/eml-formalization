@@ -333,6 +333,58 @@ const TRIG_WITNESSES = {
 const TRIG_NAMES = Object.keys(TRIG_WITNESSES);
 
 // ---------------------------------------------------------------------
+// Complex-grammar macros for the rest of the catalogue.
+// These mirror the real-fragment macros but route every addition
+// through `mkAddC` (the 9-node ADDsafe pattern), matching the formal
+// artefact's principal-branch discipline. Used when an expression
+// involves a trig sub-expression and must therefore be compiled in
+// the complex grammar throughout (Path C′ subst0 style).
+// ---------------------------------------------------------------------
+
+const mkNegC   = (z) => mkSubC(mkLogC(EML.one()), z);
+const mkInvC   = (z) => mkExpC(mkNegC(mkLogC(z)));
+const mkSqC    = (x) => mkMulC(x, x);
+const mkSqrtC  = (x) => mkExpC(mkMulC(halfC(), mkLogC(x)));
+const mkHalveC = (x) => mkDivC(x, twoTermC);
+const mkAvgC   = (x, y) => mkHalveC(mkAddC(x, y));
+const mkPowC   = (x, y) => mkExpC(mkMulC(y, mkLogC(x)));
+const mkLogBC  = (b, y) => mkDivC(mkLogC(y), mkLogC(b));
+const mkHypotC = (x, y) => mkSqrtC(mkAddC(mkSqC(x), mkSqC(y)));
+const mkSigmaC = (x) => mkInvC(mkAddC(EML.one(), mkExpC(mkNegC(x))));
+const mkSinhC  = (x) => mkHalveC(mkSubC(mkExpC(x), mkExpC(mkNegC(x))));
+const mkCoshC  = (x) => mkHalveC(mkAddC(mkExpC(x), mkExpC(mkNegC(x))));
+const mkTanhC  = (x) => mkDivC(mkSinhC(x), mkCoshC(x));
+const mkArsinhC = (x) => mkLogC(mkAddC(x, mkSqrtC(mkAddC(mkSqC(x), EML.one()))));
+const mkArcoshC = (x) => mkLogC(mkAddC(x, mkSqrtC(mkSubC(mkSqC(x), EML.one()))));
+const mkArtanhC = (x) => mkMulC(halfC(),
+  mkLogC(mkDivC(mkAddC(EML.one(), x), mkSubC(EML.one(), x))));
+
+// Complex variants of small natural-number constants, built compositionally.
+function mkConstNatC(n) {
+  if (n === 0) return mkLogC(EML.one());
+  if (n === 1) return EML.one();
+  if (n === 2) return twoTermC;
+  let acc = EML.one();
+  for (let i = 1; i < n; i++) acc = mkAddC(acc, EML.one());
+  return acc;
+}
+
+// ---------------------------------------------------------------------
+// subst0 — Path C′ style variable replacement on EMLTermℂ trees.
+// Replaces every `var(varName)` node in `t` with `replacement`.
+// Mirrors `EMLTermℂ.subst0` from `Framework/Complex/Subst.lean`.
+// ---------------------------------------------------------------------
+
+function subst0(t, replacement, varName) {
+  if (t.kind === 'one' || t.kind === 'realize') return t;
+  if (t.kind === 'var') return t.name === varName ? replacement : t;
+  return EML.eml(
+    subst0(t.a, replacement, varName),
+    subst0(t.b, replacement, varName)
+  );
+}
+
+// ---------------------------------------------------------------------
 // Parser — recursive descent for a small math expression grammar
 // ---------------------------------------------------------------------
 
@@ -506,6 +558,31 @@ const NAMED_CONST = {
   negOne: mkNegOne, neg_one: mkNegOne,
 };
 
+const UNARY_C = {
+  exp: mkExpC, log: mkLogC, ln: mkLogC, neg: mkNegC, inv: mkInvC,
+  sq: mkSqC, sqrt: mkSqrtC, halve: mkHalveC,
+  sigma: mkSigmaC, sigmoid: mkSigmaC,
+  sinh: mkSinhC, cosh: mkCoshC, tanh: mkTanhC,
+  arsinh: mkArsinhC, arcosh: mkArcoshC, artanh: mkArtanhC,
+  asinh: mkArsinhC, acosh: mkArcoshC, atanh: mkArtanhC,
+};
+
+const BINARY_C = {
+  hypot: mkHypotC, pow: mkPowC, logb: mkLogBC, log_b: mkLogBC,
+  avg: mkAvgC, mean: mkAvgC,
+};
+
+const NAMED_CONST_C = {
+  e: () => mkExpC(EML.one()),
+  pi: () => piTermC, π: () => piTermC,
+  one: () => EML.one(),
+  zero: () => mkLogC(EML.one()),
+  two: () => twoTermC,
+  half: () => halfC(), half_const: () => halfC(),
+  negOne: () => mkSubC(mkLogC(EML.one()), EML.one()),
+  neg_one: () => mkSubC(mkLogC(EML.one()), EML.one()),
+};
+
 function compile(ast) {
   switch (ast.type) {
     case 'num': {
@@ -527,27 +604,10 @@ function compile(ast) {
     case 'call': {
       const name = ast.name.toLowerCase();
       if (TRIG_WITNESSES[name]) {
-        if (ast.args.length !== 1)
-          throw new Error(`${name} expects 1 argument, got ${ast.args.length}`);
-        // Trig witnesses are top-level only (the substitution into a
-        // surrounding compile would mix complex-grammar witnesses with
-        // structural-compiler output in a way the tool doesn't model).
-        const arg = ast.args[0];
-        if (arg.type !== 'name') {
-          throw new Error(
-            `${name} witness requires a single variable as argument ` +
-            `(e.g. ${name}(x)); got a compound expression. The complex ` +
-            `EMLTermℂ witnesses are top-level constructions in the formal ` +
-            `artefact too — composition with the real-fragment compiler ` +
-            `would happen via Path C′ subst0, which this tool doesn't yet model.`);
-        }
-        const w = TRIG_WITNESSES[name];
-        const tree = w.build(arg.name);
-        tree.__trigProjection = w.proj;
-        tree.__trigName = name;
-        tree.__trigNote = w.note;
-        tree.__trigVar = arg.name;
-        return tree;
+        // Any AST containing a trig call is dispatched to compileC by
+        // compileAndRender, so we should not reach this branch in the
+        // real-fragment compile. Defensive fallback: route to compileC.
+        return compileC(ast);
       }
       if (UNARY[name]) {
         if (ast.args.length !== 1)
@@ -579,6 +639,219 @@ function compile(ast) {
     }
     case 'neg': return mkNeg(compile(ast.arg));
     default: throw new Error(`Unknown AST node: ${ast.type}`);
+  }
+}
+
+// ---------------------------------------------------------------------
+// AST helpers
+// ---------------------------------------------------------------------
+
+function astHasTrig(ast) {
+  if (!ast) return false;
+  switch (ast.type) {
+    case 'call': {
+      const name = ast.name.toLowerCase();
+      if (TRIG_WITNESSES[name]) return true;
+      return ast.args.some(astHasTrig);
+    }
+    case 'add': case 'sub': case 'mul': case 'div': case 'pow':
+      return astHasTrig(ast.left) || astHasTrig(ast.right);
+    case 'neg': return astHasTrig(ast.arg);
+    default: return false;
+  }
+}
+
+// ---------------------------------------------------------------------
+// Complex-grammar compile — used when the AST contains any trig sub-
+// expression. Trig calls with non-variable arguments are realised via
+// Path C′ subst0: the witness is built with a fresh variable, and the
+// caller's compiled argument is substituted for it.
+// ---------------------------------------------------------------------
+
+function compileC(ast) {
+  switch (ast.type) {
+    case 'num': {
+      const n = ast.value;
+      if (n === 0) return mkLogC(EML.one());
+      if (n === 1) return EML.one();
+      if (n === 2) return twoTermC;
+      if (n === 0.5) return halfC();
+      if (Number.isInteger(n) && n > 0) return mkConstNatC(n);
+      if (Number.isInteger(n) && n < 0) return mkNegC(mkConstNatC(-n));
+      throw new Error(`Numeric literal ${n} not directly representable in complex grammar`);
+    }
+    case 'name': {
+      if (NAMED_CONST_C[ast.name]) return NAMED_CONST_C[ast.name]();
+      return EML.var(ast.name);
+    }
+    case 'call': {
+      const name = ast.name.toLowerCase();
+      if (TRIG_WITNESSES[name]) {
+        if (ast.args.length !== 1)
+          throw new Error(`${name} expects 1 argument, got ${ast.args.length}`);
+        const arg = ast.args[0];
+        const w = TRIG_WITNESSES[name];
+        // For a bare variable we just specialise the witness — same as before.
+        if (arg.type === 'name' && !NAMED_CONST_C[arg.name]) {
+          const tree = w.build(arg.name);
+          tree.__trigProjection = w.proj;
+          tree.__trigName = name;
+          tree.__trigNote = w.note;
+          tree.__trigVar = arg.name;
+          return tree;
+        }
+        // Non-variable argument: build with a fresh placeholder var, then
+        // subst0 the compiled argument in. Mirrors the formal artefact's
+        // `<witness>.subst0 <compiled-arg>` construction.
+        const FRESH = '_t';
+        const witness = w.build(FRESH);
+        const compiledArg = compileC(arg);
+        const result = subst0(witness, compiledArg, FRESH);
+        // Once a trig witness sits inside a larger complex compile, its
+        // .re/.im projection is no longer the whole answer — record it
+        // anyway so the surrounding renderer can show the inner node's
+        // semantics, but mark that the OUTER projection is what the user
+        // sees. We let the outermost trig (if it is the root) keep its
+        // metadata; nested ones get their metadata stripped.
+        if (!result.__trigProjection) {
+          result.__trigProjection = w.proj;
+          result.__trigName = name;
+          result.__trigNote = w.note;
+          result.__trigVar = '⟨compound⟩';
+          result.__trigCompound = true;
+        }
+        return result;
+      }
+      if (UNARY_C[name]) {
+        if (ast.args.length !== 1)
+          throw new Error(`${name} expects 1 argument, got ${ast.args.length}`);
+        return UNARY_C[name](compileC(ast.args[0]));
+      }
+      if (BINARY_C[name]) {
+        if (ast.args.length !== 2)
+          throw new Error(`${name} expects 2 arguments, got ${ast.args.length}`);
+        return BINARY_C[name](compileC(ast.args[0]), compileC(ast.args[1]));
+      }
+      throw new Error(`Unknown function: ${ast.name}`);
+    }
+    case 'add': return mkAddC(compileC(ast.left), compileC(ast.right));
+    case 'sub': return mkSubC(compileC(ast.left), compileC(ast.right));
+    case 'mul': return mkMulC(compileC(ast.left), compileC(ast.right));
+    case 'div': return mkDivC(compileC(ast.left), compileC(ast.right));
+    case 'pow': {
+      const exp = ast.right;
+      if (exp.type === 'num' && Number.isInteger(exp.value) && exp.value >= 1
+          && exp.value <= 8) {
+        const base = compileC(ast.left);
+        let acc = base;
+        for (let i = 1; i < exp.value; i++) acc = mkMulC(acc, base);
+        return acc;
+      }
+      return mkPowC(compileC(ast.left), compileC(ast.right));
+    }
+    case 'neg': return mkNegC(compileC(ast.arg));
+    default: throw new Error(`Unknown AST node: ${ast.type}`);
+  }
+}
+
+// ---------------------------------------------------------------------
+// Domain inference — produces a short human-readable domain string for
+// any AST. Approximate; the goal is "useful at a glance", not "minimal
+// formal description". Each subexpression produces a Domain value
+// (a string label plus a "narrow" flag); composition is by intersection.
+// ---------------------------------------------------------------------
+
+const FULL = 'ℝ';
+
+function domainIntersect(a, b) {
+  if (a === FULL) return b;
+  if (b === FULL) return a;
+  if (a === b) return a;
+  return `${a} ∩ ${b}`;
+}
+
+function astToString(ast) {
+  switch (ast.type) {
+    case 'num':  return String(ast.value);
+    case 'name': return ast.name;
+    case 'call': return ast.name + '(' + ast.args.map(astToString).join(', ') + ')';
+    case 'add':  return '(' + astToString(ast.left) + ' + ' + astToString(ast.right) + ')';
+    case 'sub':  return '(' + astToString(ast.left) + ' − ' + astToString(ast.right) + ')';
+    case 'mul':  return '(' + astToString(ast.left) + '·' + astToString(ast.right) + ')';
+    case 'div':  return '(' + astToString(ast.left) + '/' + astToString(ast.right) + ')';
+    case 'pow':  return astToString(ast.left) + '^' + astToString(ast.right);
+    case 'neg':  return '−' + astToString(ast.arg);
+    default:     return '?';
+  }
+}
+
+function inferDomain(ast) {
+  // Returns a human-readable domain string for the whole expression.
+  // Inner constraints are always included; outer constraints are
+  // expressed in terms of the actual argument expressions when useful.
+  switch (ast.type) {
+    case 'num': return FULL;
+    case 'name': return FULL;
+    case 'call': {
+      const name = ast.name.toLowerCase();
+      const argDoms = ast.args.map(inferDomain);
+      const inner = argDoms.reduce(domainIntersect, FULL);
+      const outer = domainOuter(name, ast.args);
+      return domainIntersect(inner, outer);
+    }
+    case 'add': case 'sub': case 'mul':
+      return domainIntersect(inferDomain(ast.left), inferDomain(ast.right));
+    case 'div': {
+      const num = inferDomain(ast.left);
+      const den = inferDomain(ast.right);
+      return domainIntersect(domainIntersect(num, den),
+        `{${astToString(ast.right)} ≠ 0}`);
+    }
+    case 'pow': {
+      const base = inferDomain(ast.left);
+      const exp  = inferDomain(ast.right);
+      // Only the general path (compiled via exp(y·log(x))) needs base > 0.
+      // Integer-power compilations (the small-n case) repeat multiplication
+      // and tolerate any real base; we mirror that here.
+      const expIsSmallPosInt = ast.right.type === 'num'
+        && Number.isInteger(ast.right.value)
+        && ast.right.value >= 1
+        && ast.right.value <= 8;
+      const baseConstraint = expIsSmallPosInt
+        ? FULL
+        : `{${astToString(ast.left)} > 0}`;
+      return domainIntersect(domainIntersect(base, exp), baseConstraint);
+    }
+    case 'neg': return inferDomain(ast.arg);
+    default: return FULL;
+  }
+}
+
+function domainOuter(name, args) {
+  // Outer constraint for a unary/binary application, parameterised by
+  // the actual arguments so the displayed domain reads naturally.
+  const a0 = args[0] ? astToString(args[0]) : '?';
+  const a1 = args[1] ? astToString(args[1]) : '?';
+  switch (name) {
+    case 'log': case 'ln':              return `{${a0} > 0}`;
+    case 'sqrt':                        return `{${a0} > 0}`;
+    case 'inv':                         return `{${a0} ≠ 0}`;
+    case 'logb': case 'log_b':          return `{${a0} > 0, ${a0} ≠ 1, ${a1} > 0}`;
+    case 'pow':                         return `{${a0} > 0}`;
+    case 'arcosh': case 'acosh':        return `{${a0} ≥ 1}`;
+    case 'artanh': case 'atanh':        return `{${a0} ∈ (−1, 1)}`;
+    case 'arcsin':                      return `{${a0} ∈ (−1, 1)}`;
+    case 'arccos':                      return `{${a0} ∈ (−1, 1)}`;
+    case 'tan':                         return `{cos(${a0}) ≠ 0}`;
+    case 'arctan':                      return FULL;
+    case 'sin': case 'cos':             return FULL;
+    case 'sinh': case 'cosh': case 'tanh': return FULL;
+    case 'arsinh': case 'asinh':        return FULL;
+    case 'exp': case 'neg': case 'sq':
+    case 'halve': case 'sigma': case 'sigmoid':
+    case 'avg': case 'mean':            return FULL;
+    case 'hypot':                       return `{(${a0}, ${a1}) ≠ (0, 0)}`;
+    default:                            return FULL;
   }
 }
 
@@ -783,12 +1056,15 @@ function makeTooltip() {
 function compileAndRender(input) {
   const errEl = document.getElementById('error');
   const projEl = document.getElementById('projection');
+  const domEl = document.getElementById('domain');
   errEl.hidden = true;
   errEl.textContent = '';
   if (projEl) projEl.hidden = true;
+  if (domEl) domEl.hidden = true;
   try {
     const ast = new Parser(input).parse();
-    const tree = compile(ast);
+    const useComplex = astHasTrig(ast);
+    const tree = useComplex ? compileC(ast) : compile(ast);
     document.getElementById('k-count').textContent = rpnLength(tree);
     document.getElementById('depth').textContent = depth(tree);
     document.getElementById('leaves').textContent = leafCount(tree);
@@ -796,10 +1072,23 @@ function compileAndRender(input) {
     document.getElementById('rpn-output').textContent = rpnString(tree);
     if (tree.__trigProjection && projEl) {
       projEl.hidden = false;
+      const arg = tree.__trigCompound ? '⟨compound⟩' : tree.__trigVar;
       projEl.innerHTML =
-        `<strong>${tree.__trigName}(${tree.__trigVar}) = ` +
+        `<strong>${tree.__trigName}(${arg}) = ` +
         `(witness.eval ${tree.__trigProjection})</strong>` +
-        ` &mdash; ${tree.__trigNote}`;
+        ` &mdash; ${tree.__trigNote}` +
+        (tree.__trigCompound
+          ? ' <em>(compound argument substituted via Path C′ subst<sub>0</sub>)</em>'
+          : '');
+    }
+    if (domEl) {
+      domEl.hidden = false;
+      const dom = inferDomain(ast);
+      const grammarTag = useComplex
+        ? '<span class="grammar-tag complex">complex grammar (EMLTermℂ)</span>'
+        : '<span class="grammar-tag real">real grammar (EMLTerm)</span>';
+      domEl.innerHTML =
+        `<strong>Domain:</strong> ${dom} &nbsp;${grammarTag}`;
     }
     renderTree(tree, document.getElementById('tree-container'));
   } catch (err) {
