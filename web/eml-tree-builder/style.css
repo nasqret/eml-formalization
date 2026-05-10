@@ -89,13 +89,27 @@ main {
 .input-row button:hover { filter: brightness(1.05); }
 
 .examples {
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.example-group {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
   align-items: center;
-  margin-bottom: 24px;
-  font-size: 13px;
-  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.example-label {
+  display: inline-block;
+  min-width: 230px;
+  font-weight: 600;
+  color: var(--fg);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .examples button.ex {

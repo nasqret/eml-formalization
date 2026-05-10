@@ -26,25 +26,66 @@
   </section>
 
   <section class="examples">
-    <span>Examples:</span>
-    <button class="ex" data-expr="log(x)">log(x)</button>
-    <button class="ex" data-expr="exp(x)">exp(x)</button>
-    <button class="ex" data-expr="x + y">x + y</button>
-    <button class="ex" data-expr="x * y">x · y</button>
-    <button class="ex" data-expr="1/x">1/x</button>
-    <button class="ex" data-expr="x^2">x²</button>
-    <button class="ex" data-expr="sqrt(x)">√x</button>
-    <button class="ex" data-expr="sigma(x)">σ(x)</button>
-    <button class="ex" data-expr="(x+y)/2">(x+y)/2</button>
-    <button class="ex" data-expr="hypot(x, y)">hypot(x,y)</button>
-    <button class="ex" data-expr="sinh(x)">sinh(x)</button>
-    <button class="ex" data-expr="exp(x) - log(y)">exp(x) − log(y)</button>
-    <button class="ex" data-expr="cos(x)">cos(x)</button>
-    <button class="ex" data-expr="sin(x)">sin(x)</button>
-    <button class="ex" data-expr="tan(x)">tan(x)</button>
-    <button class="ex" data-expr="arctan(x)">arctan(x)</button>
-    <button class="ex" data-expr="arcsin(x)">arcsin(x)</button>
-    <button class="ex" data-expr="arccos(x)">arccos(x)</button>
+    <div class="example-group">
+      <span class="example-label">Atoms (7):</span>
+      <button class="ex" data-expr="1">1</button>
+      <button class="ex" data-expr="x">x</button>
+      <button class="ex" data-expr="e">e</button>
+      <button class="ex" data-expr="pi">π</button>
+      <button class="ex" data-expr="neg_one">−1</button>
+      <button class="ex" data-expr="two">2</button>
+      <button class="ex" data-expr="half">½</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Real unaries (8):</span>
+      <button class="ex" data-expr="exp(x)">exp(x)</button>
+      <button class="ex" data-expr="log(x)">log(x)</button>
+      <button class="ex" data-expr="neg(x)">−x</button>
+      <button class="ex" data-expr="halve(x)">x/2</button>
+      <button class="ex" data-expr="inv(x)">1/x</button>
+      <button class="ex" data-expr="sq(x)">x²</button>
+      <button class="ex" data-expr="sqrt(x)">√x</button>
+      <button class="ex" data-expr="sigma(x)">σ(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Hyperbolic (6):</span>
+      <button class="ex" data-expr="sinh(x)">sinh(x)</button>
+      <button class="ex" data-expr="cosh(x)">cosh(x)</button>
+      <button class="ex" data-expr="tanh(x)">tanh(x)</button>
+      <button class="ex" data-expr="arsinh(x)">arsinh(x)</button>
+      <button class="ex" data-expr="arcosh(x)">arcosh(x)</button>
+      <button class="ex" data-expr="artanh(x)">artanh(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Real binaries (8):</span>
+      <button class="ex" data-expr="x + y">x + y</button>
+      <button class="ex" data-expr="x - y">x − y</button>
+      <button class="ex" data-expr="x * y">x · y</button>
+      <button class="ex" data-expr="x / y">x ÷ y</button>
+      <button class="ex" data-expr="avg(x, y)">avg(x, y)</button>
+      <button class="ex" data-expr="pow(x, y)">x^y</button>
+      <button class="ex" data-expr="logb(x, y)">log_x y</button>
+      <button class="ex" data-expr="hypot(x, y)">hypot(x, y)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Trigonometric (6, complex grammar):</span>
+      <button class="ex" data-expr="sin(x)">sin(x)</button>
+      <button class="ex" data-expr="cos(x)">cos(x)</button>
+      <button class="ex" data-expr="tan(x)">tan(x)</button>
+      <button class="ex" data-expr="arcsin(x)">arcsin(x)</button>
+      <button class="ex" data-expr="arccos(x)">arccos(x)</button>
+      <button class="ex" data-expr="arctan(x)">arctan(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">SI expressions:</span>
+      <button class="ex" data-expr="exp(x) - log(y)" title="Paper Eq. (1) — the eml operator unfolded">eml(x, y)</button>
+      <button class="ex" data-expr="log(x)" title="SI §2.4 — ln(z) compiled to eml(1, eml(eml(1, z), 1)), K=7">ln(z) (SI §2.4)</button>
+      <button class="ex" data-expr="exp(x) / log(y)" title="Paper §3 — the EDL Sheffer cousin (preview, not a sealed witness here)">edl(x, y)</button>
+      <button class="ex" data-expr="log(x) - exp(y)" title="Paper §3 — the −EML Sheffer cousin (preview)">−eml(y, x)</button>
+      <button class="ex" data-expr="sqrt((1 + sqrt(5))/2)" title="SI §2.4 — golden ratio φ; full structural compile is K=359">φ partial</button>
+      <button class="ex" data-expr="exp(exp(x))" title="Plan D D10 — Aristotle-discovered EDL composition; here as EML">exp(exp x)</button>
+      <button class="ex" data-expr="log(log(x))" title="Plan D D11 — nested log composition">log(log x)</button>
+    </div>
   </section>
 
   <section id="error" class="error" hidden></section>
