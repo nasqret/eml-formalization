@@ -48,33 +48,36 @@
 \maketitle
 
 \begin{abstract}
-This is an extended companion to A.~Odrzywołek's paper
-\emph{All elementary functions from a single binary operator}
-(arXiv:2603.21852), documenting (a)~a complete formalization of the
-paper's headline completeness theorem in Lean 4 with Mathlib v4.28,
-and (b)~the multi-agent engineering workflow (Aristotle proof search,
-GPT Pro architectural review, PCSS Eagle HPC re-verification, Claude
-orchestration) that produced it. We place special emphasis on how the
-\emph{form} of the proof---grammars, structural compilers, witness
-families---suggests a research programme well beyond the original
-36-primitive theorem: per-primitive completeness for the
-$\mathrm{EDL}$ and $-\!\mathrm{EML}$ Sheffer cousins (we seal a partial
-artefact, $13$ of $72$ paper claims, and prove a structural-ceiling
-theorem ruling out the rest from closed terms), and a Path~$C'$
-technique for full-real-domain trig that generalises from the paper's
-``manual $i$-sign correction'' prose into an explicit
-range-reduction-by-substitution recipe. A separate companion essay
-(\texttt{notes/physics\_motivation/}) discusses speculative analogues
-in physics --- Hamiltonian normal forms, Wess--Zumino covering
-identities, conformal-bootstrap reductions, single-instruction analog
-computing --- and is intentionally excluded from the present paper to
-keep the technical scope self-contained.
+A.~Odrzywołek (arXiv:2603.21852) recently established that one
+binary operator,
+$\mathrm{eml}(x, y) = \exp(x) - \log(y)$, paired with the constant
+$1$, suffices to express the $36$-element catalogue of elementary
+functions found in a typical scientific calculator. The result is a
+continuous analogue of Sheffer's 1913 NAND theorem for propositional
+logic, and is supported in the source paper by exhaustive numerical
+search, symbolic simplification, and a three-lemma proof sketch.
 
-The artefact described here is hosted at
-\url{https://github.com/nasqret/eml-formalization} (MIT licence).
-At submission time: $61$ \texttt{paper\_claim\_*} theorems exposed
-in the public Lean API, $8056$ \texttt{lake} jobs sorry-free,
-independently re-verified on PCSS Eagle HPC.
+This paper describes a complete formalization of that headline
+completeness theorem in Lean 4. Two contributions are reported.
+Mathematically, we describe the architecture --- a layered language
+of grammars and structural compilers, plus a partial-evaluation
+semantics --- that allowed the proof to clear the obstacle the source
+paper had explicitly flagged: the standard convention $\log 0 = 0$
+required in a totalising prover collides with the shortest constant
+witnesses the paper's compiler produces. We also report a
+post-submission widening that extends the trigonometric witnesses
+from narrow open subdomains around zero to the full natural domain,
+generalising the source paper's prose remark about ``manual $i$-sign
+correction'' into an explicit range-reduction recipe.
+
+Methodologically, the paper documents the multi-agent workflow that
+produced the artefact: an automated proof-search service for atomic
+theorems, a single architectural-review consultation with a
+state-of-the-art language model, an HPC cluster for independent
+re-verification, and a local orchestrator for end-to-end coordination.
+The split of effort was strikingly asymmetric: roughly two-and-a-half
+hours of automated proof labour, one architectural consultation, and
+about a month of human-in-the-loop architectural decisions.
 \end{abstract}
 
 \tableofcontents
@@ -139,34 +142,123 @@ $\ln(0)$.
 \end{quote}
 
 The \emph{purpose of this paper} is twofold. Mathematically, we
-describe the architecture that allowed the formalization to clear the
-SI's flagged obstacle: a three-grammar, two-compiler pipeline
-($\F \to \EL \to \EML$, with a complex extension $\EMLC$ for the trig
-family) plus a partial-evaluation semantics that sidesteps the
-junk-value collision. We also document a post-submission widening
-(``Path~$C'$'') that closes the trig narrowing gap inherited from the
-strict $\arg < \pi$ requirement of Mathlib's principal-branch
-$\mathrm{Complex.log}$, and partial progress on per-primitive
-completeness for the $\EDL$ and $-\EML$ cousins.
+describe the architecture that allowed the formalization to clear
+the obstacle the SI flagged: a small layered pipeline of intermediate
+languages, plus a partial-evaluation semantics that simply refuses to
+commit to a value at the junk points and so sidesteps the collision.
+We also document a post-submission widening of the trigonometric
+witnesses to the full real domain, and partial progress on
+per-primitive completeness for the source paper's two ``cousin''
+operators. The organisation of this work into named ``Plans''
+(A through E, summarised in \cref{sec:plans}) is preserved from the
+project's repository for reference; the substantive content of each
+Plan is described in its own section below.
 
-Methodologically, we describe the multi-agent workflow: Aristotle
-\cite{harmonic2025aristotle} for proof search on individual chunks,
-GPT~Pro for an independent architectural audit, PCSS~Eagle HPC for
-cluster re-verification, and Claude~Code for orchestration. The
-artefact's $\sim\!\!1$~month construction time was dominated by the
-human-in-the-loop architectural decisions; mechanical proof labour
-contributed $\sim\!\!9$~hours of Aristotle wall-clock total across $10$
-chunks.
+Methodologically, we describe the multi-agent workflow that produced
+the artefact: an automated proof-search service for atomic theorems,
+a single architectural-review consultation with a state-of-the-art
+language model, an HPC cluster for independent re-verification, and a
+local orchestrator coordinating the construction. The artefact's
+$\sim\!\!1$~month construction time was dominated by human
+architectural decisions; mechanical proof labour contributed
+$\sim\!\!2.5$~hours of automated wall-clock across roughly a dozen
+``chunks'' (atomic theorems submitted to the proof-search service).
 
-A separate companion essay
-(\texttt{notes/physics\_motivation/} in the same repository) collects
-speculative analogues in physics where a Sheffer-style generative
-basis already arises or would clarify the underlying structure
----Hamiltonian normal forms, Wess--Zumino covering identities,
-conformal-bootstrap reductions, single-instruction analog computing.
-We deliberately keep the present paper restricted to the formalization
-and the workflow, so that the formal-methods reader has a
-self-contained technical document.
+For readers who would like to play with the construction before
+diving into the Lean code, we have also built an interactive web
+companion --- the \emph{EML Tree Builder} --- where any function
+typed in standard mathematical notation is compiled to its EML term
+in the browser, with the resulting tree, RPN string, $K$-count, and
+domain shown live. It is hosted in the project repository at
+\url{https://github.com/nasqret/eml-formalization} under
+\texttt{web/eml-tree-builder/}; opening \texttt{index.html} runs
+the same compiler pipeline described in this paper, with no backend
+or installation. Worked examples from the source paper's
+Supplementary Information are provided as one-click buttons.
+
+% =====================================================================
+\section{Roadmap and the ``Plans'' terminology}
+\label{sec:plans}
+% =====================================================================
+
+Throughout this paper we refer to a sequence of named ``Plans'' --- A,
+B, C, $C'$, D, E. These labels were originally introduced in the
+project's repository to track the post-submission engineering
+roadmap, and they persist as section anchors here because the body
+of the paper reports on the work each Plan attempted. To make the
+paper readable independently of the repository, we summarise the
+six Plans up-front before any technical content is given. The reader
+is invited to skim this section and refer back as needed.
+
+\begin{center}
+\small
+\begin{tabular}{l p{0.30\linewidth} l p{0.30\linewidth}}
+\toprule
+\textbf{Plan} & \textbf{Intent} & \textbf{Outcome} & \textbf{What it produced} \\
+\midrule
+A   & Align the formal scaffolding for the source paper's two
+      ``Sheffer cousin'' operators with the paper's actual definitions
+      (an early draft had one cousin misimplemented).
+    & complete
+    & A tidy renamed module with the two paper-named cousins (one
+      based on division, one on subtraction) and their correct
+      operator definitions. \\[2pt]
+
+B   & Widen the trigonometric witnesses to the full real domain by
+      introducing a custom complex-log branch (mimicking the source
+      paper's ``manual $i$-sign correction'').
+    & infeasible
+    & An architectural finding: the formal grammar's evaluation
+      function is hard-wired to use Mathlib's principal-branch
+      complex log, so a custom branch cannot be threaded through
+      without rewriting the kernel. Plan~B was therefore abandoned. \\[2pt]
+
+C   & Original idea: cover the full real domain by case analysis on
+      $x$, with one witness per region. Subsumed by Plan~$C'$.
+    & superseded
+    & --- \\[2pt]
+
+$C'$ & Range-reduction by substitution: prove one foundational lemma
+       (real-valued addition is always safe), then realise each
+       trigonometric identity via variable substitution into a witness
+       that already covers the natural domain.
+    & complete
+    & Three new public witnesses ($\sin$, $\arctan$, $\tan$ on full
+      natural domains), assembled from $\sim\!\!650$ lines of
+      Lean infrastructure. \\[2pt]
+
+D   & Per-primitive completeness for the first Sheffer cousin (the
+      one based on division of exp by log).
+    & partial; structural ceiling
+    & Eight of the source paper's $36$ primitives sealed as
+      formal witnesses; the remaining $28$ are conjecturally
+      unreachable from closed terms because the cousin's grammar
+      provides no addition mechanism. \\[2pt]
+
+E   & Per-primitive completeness for the second Sheffer cousin (the
+      one based on subtraction of log from exp).
+    & partial; structural ceiling
+    & Five of $36$ primitives sealed, with an extended-real
+      grammar pilot to accommodate the cousin's required constant
+      $-\infty$. Same structural obstruction as Plan~D. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Timeline.} Plans~A and~B were executed first ($\sim\!\!4$
+days). Plan~B's failure prompted a single architectural consultation
+with a state-of-the-art language model; the consultant's
+recommendation became Plan~$C'$, which was executed over the next
+$\sim\!\!10$ days. Plans~D and~E ran in parallel afterwards, taking
+$\sim\!\!5$ further days before hitting the structural ceiling
+described above. The full elapsed time, from the original artefact
+to the state described in this paper, was approximately one month.
+
+\paragraph{Why the alphabet skips letters.} Plan~C was a real plan
+that was never implemented; we keep its name only because the
+ultimately-successful Plan~$C'$ was its lineal descendant. We
+preserve the original lettering throughout this paper for fidelity to
+the repository's audit trail.
 
 % =====================================================================
 \section{The F36 source language}
@@ -226,23 +318,38 @@ These two regimes are the substance of the headline theorem
 \label{sec:headline-theorem}
 % =====================================================================
 
+Informally: each of the $36$ elementary primitives can be written
+as a finite tree built only from the constant $1$, variable
+references, and the two-argument operator
+$\mathrm{eml}(a, b) = \exp(a) - \log(b)$, in such a way that
+evaluating the tree --- in real arithmetic where possible, complex
+arithmetic for the trigonometric family --- reproduces the primitive
+on a non-empty open subset of its mathematical domain. Stated
+formally:
+
 \begin{theorem}[Completeness for the F36 class]
 \label{thm:headline}
 Let $\F = \F_{36}$ denote the catalogue of $36$ paper primitives.
-Let $\Eset$ be the single-binary-operator grammar
-\begin{equation}
-    \Eset \;\ni\; T \;::=\; \mathbf{1} \;\big|\; \mathbf{x}_n \;\big|\;
-    \eml(T, T), \qquad \eml(a, b) := \exp(a) - \log(b).
-\end{equation}
-Then for each $f \in \F$ there is a finite expression $\mathsf{T}_f
-\in \Eset$ (or its complex variant $\Eset_{\mathbb{C}}$) such that on
-a non-empty open subset of $f$'s natural domain, the partial evaluation
-of $\mathsf{T}_f$ yields a value whose appropriate projection
-$\Re$ or $\Im$ equals $f(x)$.
+Let $\Eset$ be the single-binary-operator grammar generated by
+$\mathbf{1}$, $\mathbf{x}_n$, and $\mathrm{eml}(T, T)$, with
+$\mathrm{eml}(a, b) := \exp(a) - \log(b)$. Then for each $f \in \F$
+there is a finite term $\mathsf{T}_f \in \Eset$ (or, in the complex
+case, in the obvious complex-valued variant $\Eset_{\mathbb{C}}$) such
+that on a non-empty open subset of $f$'s natural domain, the partial
+evaluation of $\mathsf{T}_f$ produces a value whose real (resp.
+imaginary) part equals $f(x)$.
 \end{theorem}
 
-The proof reduces to a three-language pipeline, depicted as the
-commutative diagram
+The qualifier ``partial evaluation'' is the key sidestep mentioned in
+the introduction: a term that contains $\log(0)$ as a subexpression
+is treated as undefined rather than collapsing to a junk value, and
+the existential ``$\exists\, \mathsf{T}_f$'' is only required to hold
+on an open subset, so points where the natural mathematical domain
+ends never need to be addressed by the term.
+
+\medskip
+
+The proof of the theorem follows a three-language pipeline:
 
 \begin{center}
 \begin{tikzcd}[column sep=large, row sep=large]
@@ -271,27 +378,32 @@ partial form sidesteps the junk-value boundary precisely because we
 existential quantifier is over a non-empty \emph{open} subset only.
 
 \paragraph{The combinator algebra.}
-A small zoo of \emph{derived combinators} lifts the basic
-\textsf{exp}/\textsf{log} machinery to a usable repertoire:
+Most useful operations on EML terms are not implemented directly; they
+are assembled from a small set of \emph{derived combinators} that wrap
+the basic exp/log primitives. The combinators carry the names
+$\mathrm{mkExp}$, $\mathrm{mkLog}$, $\mathrm{mkAdd}$, $\mathrm{mkSub}$,
+$\mathrm{mkMul}$, $\mathrm{mkDiv}$ and so on, with subscript $\mathbb{C}$
+when used in the complex variant of the grammar. Each combinator has a
+\emph{closure lemma} stating the conditions on its inputs under which
+the formal evaluation matches the intended mathematical operation. The
+two important closure conditions for the body of this paper are:
 
-\begin{center}
-\begin{tabular}{l l l}
-\toprule
-\textbf{Combinator} & \textbf{Definition} & \textbf{Closure condition} \\
-\midrule
-$\mathrm{mkExp}_{\mathbb{C}}\ T$ & $\eml(T, \mathbf{1})$ & always \\
-$\mathrm{mkLog}_{\mathbb{C}}\ T$ & $\eml(\mathbf{1}, \mathrm{mkExp}_{\mathbb{C}}\ \eml(\mathbf{1}, T))$ & $\arg(T) < \pi$ \\
-$\mathrm{mkAdd}_{\mathbb{C}}\ A\ B$ & 9-node ADDsafe pattern & $\mathrm{ADDsafe}_{\mathbb{C}}(A, B)$ \\
-$\mathrm{mkSub}_{\mathbb{C}}\ A\ B$ & $\eml(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkExp}_{\mathbb{C}}\ B)$ & $\arg(A) < \pi$, $B \in \mathrm{strip}$ \\
-$\mathrm{mkMul}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkAdd}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
-$\mathrm{mkDiv}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkSub}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
-\bottomrule
-\end{tabular}
-\end{center}
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item $\mathrm{mkLog}_{\mathbb{C}}\ T$ requires $\arg(T) < \pi$:
+    Mathlib's complex log has its branch cut on the negative real
+    axis, so the macro fails for inputs that land on that axis.
+  \item $\mathrm{mkAdd}_{\mathbb{C}}\ A\ B$ requires a packaged
+    eleven-clause predicate (called $\mathrm{ADDsafe}_{\mathbb{C}}$
+    in the artefact) that ensures every intermediate log call is
+    away from its branch cut. The macro is implemented by an
+    explicit nine-node pattern that arranges the bookkeeping so
+    that this predicate can usually be discharged automatically.
+\end{itemize}
 
-Each combinator has a closure lemma stating the conditions under which
-the formal evaluation matches the intended mathematical operation.
-The combinators are reused across all $36$ primitive witnesses.
+The remaining combinators (subtraction, multiplication, division) are
+short compositions of the above and inherit their conditions. The same
+six combinators are reused across all $36$ primitive witnesses; full
+definitions are in the source repository.
 
 \paragraph{The structural compiler.} The compiler
 $\EL \to \EML$ is a single inductively-defined function whose
@@ -1029,10 +1141,7 @@ The headline result of the source paper --- that one binary operator
 plus one terminal generates the $36$-primitive catalogue of
 elementary functions --- is now machine-checked. The artefact is
 public, the build is reproducible, and the per-claim witness terms
-are exposed in the Lean public API. The companion physics-motivation
-essay explores the broader question of why such reductions deserve
-attention beyond the formal-methods community; we leave that
-discussion to its own document.
+are exposed in the Lean public API.
 
 \bigskip
 
@@ -1041,11 +1150,16 @@ possible without (a) Odrzywołek's source paper and supplementary
 information, which together constitute an unusually detailed seed
 artefact for formalization; (b) the Mathlib community, whose
 $\sim\!8000$-job library underpins every step of the construction;
-(c) Harmonic AI, who provided Aristotle access through the relevant
-period; (d) Anthropic, whose Claude Code orchestrated the
-construction; and (e) the Polish national HPC infrastructure (PCSS
-Eagle, project pl0414-02), which provided independent
-re-verification compute.
+(c) Harmonic AI, who provided automated proof-search access
+through the relevant period;
+(d) OpenAI, whose GPT~Pro model produced the single architectural
+recommendation that broke the trigonometric-widening deadlock and
+shaped the design of Plan~$C'$ --- a critical contribution without
+which the artefact would have stayed at its narrow-domain submission
+state;
+(e) Anthropic, whose Claude Code orchestrated the construction; and
+(f) the Polish national HPC infrastructure (PCSS Eagle, project
+pl0414-02), which provided independent re-verification compute.
 
 \medskip
 
