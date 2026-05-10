@@ -26,18 +26,21 @@ roughly increasing effort.
 | **Physics-motivation companion essay** — flesh out the four stub chapters in `notes/physics_motivation/` (Hamiltonian normal forms, Wess–Zumino, CFT bootstrap, single-instruction analog computing) | ~10–15 pages of prose | Pre-existing scaffold; each chapter is independently draftable |
 | **`First_run.md` pruning** — trim sections that have become redundant with `OPEN_QUESTIONS.md` and `DASHBOARD.md` | small | Keeps the bootstrap recipe focused |
 
-## Frontier (research-grade, not within-reach engineering)
+## Frontier (research-grade)
 
-These are the candidates for an external consult (e.g. a GPT Pro audit
-in the same style as the Path C′ trig-widening consult; bundle pattern
-in `gpt_pro_bundle/`):
+GPT Pro consultation completed 2026-05-10
+(transcript in `gpt_pro_bundle/frontier_questions/RESPONSE.md`).
+Pro's overall ranking, summarised:
 
-| Frontier item | What we'd ask |
-|---|---|
-| **Schanuel-style structural ceiling for Plan D / E** — make the informal Aristotle analysis (chunk 085) rigorous: prove that exact constants $-1$, $2$, $\tfrac12$ are unreachable from closed terms in the EDL grammar paired with $\{1, e\}$, conditional on Schanuel's conjecture | Independent assessment of whether this is feasible in Lean given current Mathlib; identify the right intermediate lemma to target |
-| **Three §G structural boundary points** ($\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0,0)$) — can these be closed by switching to an EReal grammar, or is the obstruction deeper? | Architectural review: does extending the EML grammar with EReal semantics let the natural witnesses evaluate correctly at boundary points, or does the same junk-value collision return? |
-| **Universal minimality of EML** (paper §5) — currently paper-open; requires a constant-free Sheffer impossibility result | Is this approachable with current methods, or fundamentally an open mathematical problem? |
-| **The seven SI §1.5 open questions** — taxonomy of Sheffer operators, canonical-form (Stern–Brocot-like) enumeration, leaf-only evaluation, variable-transplant depths, real-only Sheffer, $-\infty$ elimination, constant-free binary Sheffer | Which (if any) admit partial progress in the current artefact's framework? |
+| Rank | Direction | Pro's verdict | Recommended Lean target |
+|---|---|---|---|
+| **1** | **SI §1.5 #5 — variable-transplant depths** | tractable now | A `transplant4` combinator that substitutes any term into the depth-4 identity, plus the family `identity_terms_at_depth_multiples_of_four` (depth = 4k for arbitrary k). Best ratio of impact to effort: finite syntax, no external mathematics, Lean-checkable answer to one of the author's SI questions. |
+| **2** | **§G boundary points via narrow EReal templates** | tractable now (narrowly scoped) | A small extended-domain log adapter `logE? : EReal → Option EReal` allowing `log 0 = ⊥` (the original "guard reject 0" was wrong), plus per-template lemmas `sqrt_templateE_zero`, `arcosh_templateE_one`, `hypot_templateE_zero_zero`. Use `Mathlib.Analysis.SpecialFunctions.Log.ERealExp` and `Log.ENNRealLogExp`. **Do not** wholesale re-lift the compiler; this is a faithful-boundary-semantics file alongside `StructuralLimits.lean`, not a kernel rewrite. |
+| **3** | **Plan D / E ceiling — closed-EDL closure + transcendence-barrier hypothesis** | tractable conditional on a named hypothesis | `EDLClosedVal` predicate matching the syntax exactly (do not factor through a generic "EL-closure of {1, e}" — Pro warns this set has unbounded transcendence degree under iterates `e, exp e, exp(exp e), …` and is not the fixed-degree extension of ℚ(e) we'd hoped for); `edl_closed_eval_in_closedVal` lemma; conditional impossibility theorems gated by a named `EDLTranscendenceBarrier` typeclass (no fake `Schanuel`). Add a `Set.Countable` thinness lemma if useful, but countability cannot resolve the targets `−1, 2, 1/2` since ℚ itself is countable. |
+| **4** | **Universal minimality (paper §5)** | premature as stated | Not a Lean problem yet — needs a function class for `B`. The polynomial-binary obstruction is the right first serious lemma: `IsPolynomialBinary B → no BTerm generates Real.exp`, using `Polynomial.tendsto_div_exp_atTop` (already in Mathlib). Survives the `B(x,y)=x−y/2` diagonal trap. Other natural classes to chase later: rational, semialgebraic, Pfaffian, real-analytic. |
+
+The detailed Lean code skeletons for each direction live in
+`gpt_pro_bundle/frontier_questions/RESPONSE.md`.
 
 ## Quick triage
 
