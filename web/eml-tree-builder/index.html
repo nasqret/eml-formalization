@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EML Tree Builder — interactive compiler for arXiv:2603.21852</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h1>EML Tree Builder</h1>
+  <p class="sub">
+    Type a mathematical function. The compiler translates it through the
+    same <code>F36 → EL → EML</code> pipeline used in the Lean proof, and
+    renders the resulting <code>EMLTerm</code> tree built only from
+    <code>1</code>, <code>x</code>, and <code>eml(a, b) = exp(a) − log(b)</code>.
+  </p>
+</header>
+
+<main>
+  <section class="input-row">
+    <label for="expr">f(x) =</label>
+    <input id="expr" type="text" value="log(x)" autocomplete="off" spellcheck="false">
+    <button id="compile">Compile</button>
+  </section>
+
+  <section class="examples">
+    <div class="example-group">
+      <span class="example-label">Atoms (7):</span>
+      <button class="ex" data-expr="1">1</button>
+      <button class="ex" data-expr="x">x</button>
+      <button class="ex" data-expr="e">e</button>
+      <button class="ex" data-expr="pi">π</button>
+      <button class="ex" data-expr="neg_one">−1</button>
+      <button class="ex" data-expr="two">2</button>
+      <button class="ex" data-expr="half">½</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Real unaries (8):</span>
+      <button class="ex" data-expr="exp(x)">exp(x)</button>
+      <button class="ex" data-expr="log(x)">log(x)</button>
+      <button class="ex" data-expr="neg(x)">−x</button>
+      <button class="ex" data-expr="halve(x)">x/2</button>
+      <button class="ex" data-expr="inv(x)">1/x</button>
+      <button class="ex" data-expr="sq(x)">x²</button>
+      <button class="ex" data-expr="sqrt(x)">√x</button>
+      <button class="ex" data-expr="sigma(x)">σ(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Hyperbolic (6):</span>
+      <button class="ex" data-expr="sinh(x)">sinh(x)</button>
+      <button class="ex" data-expr="cosh(x)">cosh(x)</button>
+      <button class="ex" data-expr="tanh(x)">tanh(x)</button>
+      <button class="ex" data-expr="arsinh(x)">arsinh(x)</button>
+      <button class="ex" data-expr="arcosh(x)">arcosh(x)</button>
+      <button class="ex" data-expr="artanh(x)">artanh(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Real binaries (8):</span>
+      <button class="ex" data-expr="x + y">x + y</button>
+      <button class="ex" data-expr="x - y">x − y</button>
+      <button class="ex" data-expr="x * y">x · y</button>
+      <button class="ex" data-expr="x / y">x ÷ y</button>
+      <button class="ex" data-expr="avg(x, y)">avg(x, y)</button>
+      <button class="ex" data-expr="pow(x, y)">x^y</button>
+      <button class="ex" data-expr="logb(x, y)">log_x y</button>
+      <button class="ex" data-expr="hypot(x, y)">hypot(x, y)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">Trigonometric (6, complex grammar):</span>
+      <button class="ex" data-expr="sin(x)">sin(x)</button>
+      <button class="ex" data-expr="cos(x)">cos(x)</button>
+      <button class="ex" data-expr="tan(x)">tan(x)</button>
+      <button class="ex" data-expr="arcsin(x)">arcsin(x)</button>
+      <button class="ex" data-expr="arccos(x)">arccos(x)</button>
+      <button class="ex" data-expr="arctan(x)">arctan(x)</button>
+    </div>
+    <div class="example-group">
+      <span class="example-label">SI expressions:</span>
+      <button class="ex" data-expr="exp(x) - log(y)" title="Paper Eq. (1) — the eml operator unfolded">eml(x, y)</button>
+      <button class="ex" data-expr="log(x)" title="SI §2.4 — ln(z) compiled to eml(1, eml(eml(1, z), 1)), K=7">ln(z) (SI §2.4)</button>
+      <button class="ex" data-expr="exp(x) / log(y)" title="Paper §3 — the EDL Sheffer cousin (preview, not a sealed witness here)">edl(x, y)</button>
+      <button class="ex" data-expr="log(x) - exp(y)" title="Paper §3 — the −EML Sheffer cousin (preview)">−eml(y, x)</button>
+      <button class="ex" data-expr="sqrt((1 + sqrt(5))/2)" title="SI §2.4 — golden ratio φ; full structural compile is K=359">φ partial</button>
+      <button class="ex" data-expr="exp(exp(x))" title="Plan D D10 — Aristotle-discovered EDL composition; here as EML">exp(exp x)</button>
+      <button class="ex" data-expr="log(log(x))" title="Plan D D11 — nested log composition">log(log x)</button>
+    </div>
+  </section>
+
+  <section id="error" class="error" hidden></section>
+  <section id="projection" class="projection" hidden></section>
+
+  <section class="metrics">
+    <div class="metric"><span class="label">K (RPN length)</span><span id="k-count" class="value">—</span></div>
+    <div class="metric"><span class="label">tree depth</span><span id="depth" class="value">—</span></div>
+    <div class="metric"><span class="label">leaves</span><span id="leaves" class="value">—</span></div>
+    <div class="metric"><span class="label">eml nodes</span><span id="eml-count" class="value">—</span></div>
+  </section>
+
+  <section class="rpn">
+    <h3>RPN string (post-order)</h3>
+    <pre id="rpn-output">—</pre>
+  </section>
+
+  <section class="tree">
+    <h3>EML tree</h3>
+    <p class="hint">
+      Each <span class="legend-box eml"></span> is an
+      <code>eml(a, b) = exp(a) − log(b)</code> node;
+      <span class="legend-box one"></span> is the constant <code>1</code>;
+      <span class="legend-box var"></span> is a variable lookup. Click any
+      node to expand the sub-expression it computes.
+    </p>
+    <div id="tree-container"></div>
+  </section>
+
+  <section class="info">
+    <h3>What this does</h3>
+    <p>
+      The compiler implements the seven structural macros from
+      <strong>SI §2.1</strong> of the paper:
+    </p>
+    <pre class="recipe">
+exp(z)  ↦  eml(z, 1)
+ln(z)   ↦  eml(1, exp(eml(1, z)))    = eml(1, eml(eml(1, z), 1))
+x − y   ↦  eml(ln(x), exp(y))
+−z      ↦  ln(1) − z
+x + y   ↦  x − (−y)
+1/z     ↦  exp(−ln(z))
+x · y   ↦  exp(ln(x) + ln(y))</pre>
+    <p>
+      Plus derived macros for <code>x²</code>, <code>x/2</code>,
+      <code>(x+y)/2</code>, <code>√x</code>, <code>x^y</code>,
+      <code>log_b y</code>, <code>hypot(x, y)</code>, <code>σ(x)</code>,
+      <code>sinh</code>, <code>cosh</code>, <code>tanh</code>,
+      <code>arsinh</code>, <code>arcosh</code>, <code>artanh</code>.
+    </p>
+    <p>
+      <strong>Trigonometric primitives</strong> are built from the
+      <em>complex</em> EML grammar (<code>EMLTermℂ</code>). The closed
+      constants <code>i</code> and <code>π</code> are shown as
+      <span class="legend-box realize"></span> labelled leaves with
+      their actual K-counts (their internal structure — the
+      <code>EMLRealizationℂ</code> closure machinery — is hidden so
+      the canvas stays legible). The result of a trig compile is read
+      via <code>.re</code> or <code>.im</code> projection, shown above
+      the metric tiles.
+    </p>
+    <p class="caveat">
+      Trig witnesses are <em>top-level</em> constructions in the formal
+      artefact — they don't compose with the real-fragment compiler in
+      the browser tool. Path C′'s subst<sub>0</sub>-based widening
+      (full-real-domain trig) is sealed in
+      <code>EML.Framework.Complex.Periodicity</code> but isn't reproduced
+      live here; the witnesses below are the local positive-side
+      versions.
+    </p>
+    <p>
+      Tree sizes match the
+      <a href="../../lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean"
+         target="_blank"><code>K_count_*</code></a>
+      theorems in the formalization (modulo the structural compiler's
+      uniform-shape inflation vs. hand-tuned paper Table 4).
+    </p>
+    <p>
+      Source paper: A. Odrzywołek,
+      <em>All elementary functions from a single binary operator</em>,
+      arXiv:<a href="https://arxiv.org/abs/2603.21852" target="_blank">2603.21852</a>.
+      Lean formalization:
+      <a href="https://github.com/nasqret/eml-formalization" target="_blank">github.com/nasqret/eml-formalization</a>.
+    </p>
+  </section>
+</main>
+
+<footer>
+  <p>
+    Builds the same <code>EMLTerm</code> trees as
+    <code>EML.Framework.Compilers.ELToEML.lean</code> in the Lean artefact.
+    No backend — everything runs in your browser.
+  </p>
+</footer>
+
+<script src="eml.js"></script>
+</body>
+</html>

@@ -152,12 +152,13 @@ Setup complete. Status:
 Recent activity (from git log -5):
   {paste git log --oneline -5 output}
 
-What is open (from OPEN_QUESTIONS.md):
-  - Plan A: Sheffer cleanup (1–2 h)
-  - Plan B: full-real-domain trig via custom branch (1–3 d)
-  - Plan C: full-real-domain trig via multi-witness periodicity (2–3 d)
-  - Plan D: EDL per-primitive completeness (1–2 wk)
-  - Plan E: −EML per-primitive completeness (1–2 wk)
+Plans status (from OPEN_QUESTIONS.md):
+  - Plan A: Sheffer cleanup                                    ✅ DONE
+  - Plan B: custom log branch                                  ❌ architecturally infeasible (see §B.0)
+  - Plan C′: full-real-domain trig via range-reduction         ✅ DONE
+            (GPT Pro recommendation; sin/arctan/tan covered)
+  - Plan D: EDL per-primitive completeness                     🔄 8/36 sealed; 28 conjecturally unreachable
+  - Plan E: −EML per-primitive completeness                    🔄 2/36 sealed (atoms); needs EReal grammar
 
 Ready to work. What would you like to tackle?
 ```

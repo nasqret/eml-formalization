@@ -379,6 +379,72 @@ theorem negEml_paper_claim_var :
     ∃ t : NegEMLTerm, ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
   ⟨.var 0, fun _ => rfl⟩
 
+/-! ## §3.1d-bis — `NegEMLTermE`: −EML over `EReal` (Plan E E3 lift)
+
+The paper's `−EML` is paired with `−∞`, which has no representative in
+`ℝ`. To seal the `minusInf` constant we need an EReal-valued grammar.
+This is the chunk-088 EReal pilot lifted into the framework.
+
+The grammar adds a `minusInf` constructor and evaluates over `EReal`.
+The `negEml` rule uses the same `log(x) − exp(y)` semantics, but
+guarded so that `log` is only applied to strictly positive finite
+reals (the EReal toReal round-trip pinned by an explicit equality).
+
+This sub-grammar is a parallel companion to `NegEMLTerm`, not a
+replacement; the original real-valued grammar above keeps proving
+the simpler atoms without the EReal machinery. -/
+
+/-- −EML term grammar over `EReal`, with `minusInf` as a primitive
+constructor. -/
+inductive NegEMLTermE
+  | one      : NegEMLTermE
+  | var      : Nat → NegEMLTermE
+  | minusInf : NegEMLTermE
+  | negEml   : NegEMLTermE → NegEMLTermE → NegEMLTermE
+  deriving Repr
+
+namespace NegEMLTermE
+
+/-- Tree-size measure. -/
+def size : NegEMLTermE → Nat
+  | one        => 1
+  | var _      => 1
+  | minusInf   => 1
+  | negEml a b => 1 + size a + size b
+
+/-- Partial evaluation over `EReal`. The `negEml` rule extracts
+finite-real values (via `EReal.toReal`) and applies `log` / `exp`;
+returns `none` outside the natural domain. -/
+noncomputable def eval? (env : Nat → EReal) : NegEMLTermE → Option EReal
+  | one        => some 1
+  | var n      => some (env n)
+  | minusInf   => some ⊥
+  | negEml a b => (eval? env a).bind fun va =>
+                    (eval? env b).bind fun vb =>
+                      let ra := va.toReal
+                      let rb := vb.toReal
+                      if (va = (ra : EReal)) ∧ (vb = (rb : EReal)) ∧ (0 < ra)
+                      then some ((Real.log ra : EReal) - (Real.exp rb : EReal))
+                      else none
+
+end NegEMLTermE
+
+/-- **E1-E / −EML EReal `1`** — Trivial: `.one`. -/
+theorem negEml_paper_claim_one_E :
+    ∃ t : NegEMLTermE, ∀ env : Nat → EReal, t.eval? env = some 1 :=
+  ⟨.one, fun _ => rfl⟩
+
+/-- **E2-E / −EML EReal `x`** — Trivial: `.var 0`. -/
+theorem negEml_paper_claim_var_E :
+    ∃ t : NegEMLTermE, ∀ env : Nat → EReal, t.eval? env = some (env 0) :=
+  ⟨.var 0, fun _ => rfl⟩
+
+/-- **E3 / −EML EReal `−∞`** — The paper-paired constant: Sealed by
+direct `.minusInf` constructor. (Aristotle chunk 088.) -/
+theorem negEml_paper_claim_minusInf :
+    ∃ t : NegEMLTermE, ∀ env : Nat → EReal, t.eval? env = some (⊥ : EReal) :=
+  ⟨.minusInf, fun _ => rfl⟩
+
 /-! ## Public summary
 
 This file scaffolds the **two paper-named Sheffer companions** of EML
