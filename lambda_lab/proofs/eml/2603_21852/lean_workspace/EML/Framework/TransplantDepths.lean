@@ -272,6 +272,46 @@ private lemma eval_one_of_depth_one {t : EMLTerm} (h : t.depth = 1) :
     rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval zero_lt_one,
         Real.log_one, sub_zero]
 
+/-- Helper: a term of depth 2 evaluated on the all-ones environment
+returns one of three specific values: `e-1`, `exp e`, or `exp e - 1`. -/
+private lemma eval_one_of_depth_two {t : EMLTerm} (h : t.depth = 2) :
+    t.eval? (fun _ : Nat => (1 : ℝ)) = some (Real.exp 1 - 1) ∨
+    t.eval? (fun _ : Nat => (1 : ℝ)) = some (Real.exp (Real.exp 1)) ∨
+    t.eval? (fun _ : Nat => (1 : ℝ)) = some (Real.exp (Real.exp 1) - 1) := by
+  match t with
+  | .one => simp [depth] at h
+  | .var _ => simp [depth] at h
+  | .eml a b =>
+    have hmax : max a.depth b.depth = 1 := by simp [depth] at h; omega
+    have ha_le : a.depth ≤ 1 := le_of_max_le_left (le_of_eq hmax)
+    have hb_le : b.depth ≤ 1 := le_of_max_le_right (le_of_eq hmax)
+    have h_a0_or_a1 : a.depth = 0 ∨ a.depth = 1 := by omega
+    have h_b0_or_b1 : b.depth = 0 ∨ b.depth = 1 := by omega
+    let env : Nat → ℝ := fun _ => 1
+    rcases h_a0_or_a1 with ha0 | ha1
+    · rcases h_b0_or_b1 with hb0 | hb1
+      · rw [ha0, hb0] at hmax; simp at hmax
+      · -- (0, 1): eval = e - 1
+        have ha_eval : a.eval? env = some 1 := eval_one_of_depth_zero ha0
+        have hb_eval : b.eval? env = some (Real.exp 1) := eval_one_of_depth_one hb1
+        left
+        rw [show (EMLTerm.eml a b).eval? env = some (Real.exp 1 - Real.log (Real.exp 1))
+              from EMLTerm.eval?_eml_of_pos ha_eval hb_eval (Real.exp_pos _),
+            Real.log_exp]
+    · rcases h_b0_or_b1 with hb0 | hb1
+      · -- (1, 0): eval = exp e
+        have ha_eval : a.eval? env = some (Real.exp 1) := eval_one_of_depth_one ha1
+        have hb_eval : b.eval? env = some 1 := eval_one_of_depth_zero hb0
+        right; left
+        rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval zero_lt_one,
+            Real.log_one, sub_zero]
+      · -- (1, 1): eval = exp e - 1
+        have ha_eval : a.eval? env = some (Real.exp 1) := eval_one_of_depth_one ha1
+        have hb_eval : b.eval? env = some (Real.exp 1) := eval_one_of_depth_one hb1
+        right; right
+        rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval (Real.exp_pos _),
+            Real.log_exp]
+
 /-- **No identity term at depth 1.** No `EMLTerm` of depth exactly 1
 evaluates to the identity on every real environment. -/
 theorem no_identity_at_depth_one :
