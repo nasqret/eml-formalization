@@ -8,3 +8,4 @@ import EML.Framework.Complex.Subst
 import EML.Framework.Complex.Periodicity
 import EML.Framework.TransplantDepths
 import EML.Framework.StructuralLimitsEReal
+import EML.Framework.EDLClosedVal
