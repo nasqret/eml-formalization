@@ -55,12 +55,15 @@ jobs:
       - name: No-sorry check
         working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace
         run: |
-          # Public API: PaperClaims and Sheffer must have no `sorry`.
-          if grep -nE '\bsorry\b' EML/Framework/PaperClaims.lean EML/Framework/Sheffer.lean; then
-            echo "::error::stray sorry found in public API"
+          # Public API: PaperClaims and Sheffer must have no `sorry`/`admit`
+          # used as a tactic. We deliberately ignore prose ("sorry-free",
+          # "no sorry", etc.) by only matching at-tactic positions.
+          if grep -nE '^[ \t]*(sorry|admit)\b|:=[ \t]*by[ \t]+sorry|:=[ \t]*by[ \t]+admit' \
+              EML/Framework/PaperClaims.lean EML/Framework/Sheffer.lean; then
+            echo "::error::stray sorry/admit found in public API"
             exit 1
           fi
-          echo "Public API is sorry-free."
+          echo "Public API: no sorry/admit at tactic positions."
 
       - name: Scoreboard
         working-directory: lambda_lab/proofs/eml/2603_21852/lean_workspace

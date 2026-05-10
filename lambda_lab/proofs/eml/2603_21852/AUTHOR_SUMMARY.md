@@ -251,7 +251,7 @@ symbolic equivalence. **Out of scope for this formalisation.**
   *preliminary unverified candidates* for the constant-free Sheffer
   open question (SI §1.5 #3) and they are out of scope for this
   formalisation. See
-  [`Sheffer/PaperSourcing.md`](lean_workspace/EML/Framework/Sheffer/PaperSourcing.md)
+  [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
   for the full audit trail.
 
 ### Three §G boundary points (architectural)

@@ -243,7 +243,7 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 > `T₂(x,x,x) = 1`) and are out of scope for the present formalisation —
 > the SI flags them as preliminary candidates for the constant-free Sheffer
 > open question (SI §1.5 #3). Line-level paper sourcing in
-> [`Sheffer/PaperSourcing.md`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer/PaperSourcing.md).
+> [`notes/legacy_planning/Sheffer_PaperSourcing.md`](lambda_lab/proofs/eml/2603_21852/notes/legacy_planning/Sheffer_PaperSourcing.md).
 
 ---
 
