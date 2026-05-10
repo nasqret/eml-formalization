@@ -30,7 +30,7 @@
 | | |
 |---|---:|
 | Paper primitives sealed | **36 / 36** (100%) |
-| `paper_claim_*` theorems exposed | **58** (48 EML in `PaperClaims` + 8 EDL + 2 −EML in `Sheffer`) |
+| `paper_claim_*` theorems exposed | **61** (48 EML in `PaperClaims` + 8 EDL + 5 −EML in `Sheffer`) |
 | `K_count_*` `rfl`-checked tree sizes | **15** |
 | Lean kernel jobs in `lake build EML` | **8 056** |
 | `sorry` / `admit` occurrences | **0** |
@@ -171,7 +171,7 @@ pie showData
 | 853 | [`Framework/F36ToEL.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/F36ToEL.lean) | F36 → EL translator: 36-case dispatch with closure lemmas |
 | 554 | [`Framework/Unconditional.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Unconditional.lean) | Domain-free wrapping helpers used by every paper claim |
 | 460 | [`Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard** — 48 EML paper_claim theorems (incl. Path C′ `sin_full`, `arctan_full`, `tan_full`) |
-| 397 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | EDL + −EML scaffolding + 8 EDL + 2 −EML paper claims |
+| 463 | [`Framework/Sheffer.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Sheffer.lean) | EDL + −EML scaffolding + 8 EDL + 5 −EML paper claims (incl. EReal-grammar E3 minusInf) |
 | 584 | [`Framework/Complex/Periodicity.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/Complex/Periodicity.lean) | Path C′ infrastructure: `subst0`, `ADDsafeℂ_ofReal_ofReal`, period constants, shift terms, witness families |
 | 293 | [`Framework/ELToEML.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/ELToEML.lean) | The structural compiler (Theorem 2 in `proof_structure.pdf`) |
 | 275 | [`Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | All 15 `K_count_*` theorems, all `:= rfl` |

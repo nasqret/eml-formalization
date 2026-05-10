@@ -876,6 +876,8 @@ After the trig closure, attention turned to **per-primitive completeness for the
 
 **Plan D (EDL).** 8 of 36 paper claims sealed in the framework:
 
+
+
 | Primitive | Witness | Discovered by |
 |---|---|---|
 | `1`, `var x`, `e_const` | trivial | grammar |
@@ -887,9 +889,9 @@ After the trig closure, attention turned to **per-primitive completeness for the
 
 The remaining 28 paper primitives are **structurally unreachable** from closed EDL terms — Aristotle's analytical note: `edl(a,b) = exp(a)/log(b)` provides no mechanism for addition of sub-expression values, so multiplication, negation, sqr, sqrt, all trig/hyperbolic primitives are blocked. This validates the paper's "EDL completeness is conjectured, not proven" framing.
 
-**Plan E (−EML).** 2 of 36 sealed (atoms `one`, `var`); the `−∞` constant requires switching `NegEMLTerm` to `EReal`.
+**Plan E (−EML).** 5 of 36 sealed: `one`, `var` over ℝ, plus the EReal-grammar pilot `one_E`, `var_E`, and the paper-paired `minusInf` constant (E3 — Aristotle chunk 088 lifted into `Sheffer.lean` with a parallel `NegEMLTermE` over `EReal`).
 
-**Public API total: 58 paper claims** — 48 EML in `PaperClaims.lean` + 8 EDL + 2 −EML in `Sheffer.lean`.
+**Public API total: 61 paper claims** — 48 EML in `PaperClaims.lean` + 8 EDL + 5 −EML in `Sheffer.lean`.
 
 ---
 
@@ -928,7 +930,7 @@ These are deliberately *unrelated* to EML — different mathematical content (nu
 
 | Horizon | Goal | Status |
 |---|---|---|
-| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points documented · **full-real-domain trig** (Path C′) · **8 EDL + 2 −EML** Sheffer-cousin witnesses | ✓ 58 paper claims, sorry-free |
+| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points documented · **full-real-domain trig** (Path C′) · **8 EDL + 5 −EML** Sheffer-cousin witnesses (incl. EReal-grammar `−∞` for Plan E E3) | ✓ 61 paper claims, sorry-free |
 | Already done | K-counting: machine-checked Table 4 figures for 15 witnesses (`KCounting.lean`, `rfl`-proofs) | ✓ done |
 | Now → 1 wk | Plan E proper — EReal-grammar `NegEMLTerm` for the `−∞` constant | scoped |
 | 1 → 4 wk | Rebuild the GPT-Pro review bundle with the post-submission artefact | scheduled |

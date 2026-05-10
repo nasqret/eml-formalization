@@ -907,9 +907,11 @@ that narrowing for $\sin$, $\arctan$, $\tan$. The headline theorem
 
 \noindent\textbf{Public Lean API.} $48$ \texttt{paper\_claim\_*}
 theorems exported by \texttt{EML.Framework.PaperClaims}, plus $8$
-\texttt{edl\_paper\_claim\_*} (Plan~D) and $2$
-\texttt{negEml\_paper\_claim\_*} (Plan~E pilot) in
-\texttt{EML.Framework.Sheffer} \textemdash\ a total of $58$
+\texttt{edl\_paper\_claim\_*} (Plan~D) and $5$
+\texttt{negEml\_paper\_claim\_*} (Plan~E, including the
+\texttt{minusInf} witness via the parallel
+\texttt{NegEMLTermE} grammar over \texttt{EReal}) in
+\texttt{EML.Framework.Sheffer} \textemdash\ a total of $61$
 machine-checked completeness theorems. Local \texttt{lake build}:
 $8056$ jobs, sorry-free. Independent re-verification on PCSS Eagle
 HPC: clean.
