@@ -229,5 +229,66 @@ theorem identity_terms_at_depth_multiples_of_four (k : Nat) :
       ∀ env : Nat → ℝ, t.eval? env = some (env 0) :=
   ⟨idMulFour k, idMulFour_depth k, idMulFour_eval k⟩
 
+/-! ## Bounded-depth nonexistence companion
+
+The affirmative result above shows identity terms exist at every depth
+that is a multiple of 4. The natural converse asks whether identity
+terms can exist at depths that are *not* multiples of 4 — in
+particular at the smallest non-trivial depth, 1.
+
+Here we prove the smallest such negative case: **no `EMLTerm` of depth
+exactly 1 evaluates to the identity on every real environment.**
+The argument is finite case analysis: an `EMLTerm` of depth 1 is
+necessarily of the shape `eml a b` with both children atoms, and each
+of the four leaf-atom shapes can be ruled out by exhibiting a single
+counterexample environment.
+
+Larger non-multiples of 4 (depths 2, 3, 5, 6, 7, …) remain paper-open
+in our artefact; Pro flagged the depth-2 and depth-3 cases as bounded
+finite-search problems that could be discharged similarly.
+-/
+
+/-- Helper: a term of depth 0 evaluated on the all-ones environment
+returns `some 1`, regardless of whether the atom is `.one` or `.var n`. -/
+private lemma eval_one_of_depth_zero {t : EMLTerm} (h : t.depth = 0) :
+    t.eval? (fun _ : Nat => (1 : ℝ)) = some 1 := by
+  cases t with
+  | one => rfl
+  | var _ => rfl
+  | eml _ _ => simp [depth] at h
+
+/-- **No identity term at depth 1.** No `EMLTerm` of depth exactly 1
+evaluates to the identity on every real environment. -/
+theorem no_identity_at_depth_one :
+    ¬ ∃ t : EMLTerm, t.depth = 1 ∧
+      ∀ env : Nat → ℝ, t.eval? env = some (env 0) := by
+  rintro ⟨t, hd, hev⟩
+  -- A depth-1 term is `eml a b` with both children atomic. The
+  -- key fact: on the all-ones environment, every depth-0 child
+  -- evaluates to `some 1` (whether it's `.one` or `.var n`), so
+  -- `eml a b` evaluates to `some (exp 1 - log 1) = some e`.
+  -- The identity hypothesis demands `some 1`. But `e ≠ 1`.
+  match t with
+  | .one => simp [depth] at hd
+  | .var _ => simp [depth] at hd
+  | .eml a b =>
+    have ha : a.depth = 0 := by
+      simp [depth] at hd; omega
+    have hb : b.depth = 0 := by
+      simp [depth] at hd; omega
+    let env : Nat → ℝ := fun _ => 1
+    have ha_eval : a.eval? env = some 1 := eval_one_of_depth_zero ha
+    have hb_eval : b.eval? env = some 1 := eval_one_of_depth_zero hb
+    have h_eval : (EMLTerm.eml a b).eval? env = some (Real.exp 1) := by
+      rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval zero_lt_one,
+          Real.log_one, sub_zero]
+    have h_id : (EMLTerm.eml a b).eval? env = some 1 := hev env
+    -- Combining: some (exp 1) = some 1, so exp 1 = 1. But exp 1 ≥ 2.
+    rw [h_eval] at h_id
+    have h_eq : Real.exp 1 = 1 := Option.some.inj h_id
+    have h_ge : (2 : ℝ) ≤ Real.exp 1 := by
+      have := Real.add_one_le_exp (1 : ℝ); linarith
+    linarith
+
 end EMLTerm
 end EML
