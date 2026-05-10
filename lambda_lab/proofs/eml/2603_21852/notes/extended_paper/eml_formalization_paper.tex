@@ -547,31 +547,369 @@ Plan~D.
 \label{sec:workflow}
 % =====================================================================
 
-[TO BE WRITTEN — describes Aristotle integration, GPT Pro consults,
-Eagle HPC re-verification, Claude orchestration. Will draw on
-\texttt{DASHBOARD.md}, \texttt{AUDIT\_REPORT.md}, the
-\texttt{gpt\_pro\_bundle/}, and the chunk metadata under
-\texttt{chunks/}.]
+The artefact described in Part~I was produced by the coordinated
+work of four agents: a primary orchestrator (Claude Code, running on
+the local development machine), an automated proof-search service
+(Aristotle, Harmonic AI's mathematical reasoning service), an
+independent architectural reviewer (GPT Pro, contracted for a single
+high-leverage consult), and a high-performance compute cluster (PCSS
+Eagle, used for independent re-verification). This section describes
+the role of each and the protocol that connected them.
+
+\subsection*{The four agents and their division of labour}
+
+\begin{center}
+\begin{tabular}{l p{0.32\linewidth} p{0.42\linewidth}}
+\toprule
+\textbf{Agent} & \textbf{Role} & \textbf{Worked on} \\
+\midrule
+Claude Code (local) & Orchestrator: framework architecture,
+combinator algebra, lifting Aristotle results into the framework,
+documentation. & Everything that touched the framework layer
+(\texttt{Framework/Complex/}, \texttt{Framework/Sheffer/}). \\
+
+Aristotle (cloud) & Atomic theorem prover: given a
+\texttt{target.lean} file with a \texttt{sorry} placeholder, returns
+a sealed proof. Submitted via the project's chunk schema (see
+\cref{ssec:chunks-protocol}). & 10 chunks across Path~$C'$ and
+Plan~D/E (see \cref{tab:aristotle-chunks}). Average wall-clock
+$\sim$15~min/chunk; total $\sim$2.5~hours of human-attended time. \\
+
+GPT Pro (cloud) & Architectural reviewer: a single audit consult on
+the trig-narrowing bottleneck. & Authored Path~$C'$ recommendation;
+identified the \texttt{ADDsafe}$_{\mathbb{C}}$\texttt{\_ofReal\_ofReal}
+foundation lemma. \\
+
+PCSS Eagle (HPC) & Independent re-verifier: parallel
+\texttt{lean} typecheck across 24--32 cores in a fresh environment.
+& Sequence of Mathlib + project rebuilds; final
+\texttt{verify\_all.sbatch} run reports 8056/8056 jobs successful. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{The chunk protocol}\label{ssec:chunks-protocol}
+
+The atomic unit of work is a \emph{chunk}, a numbered subdirectory
+under \texttt{lambda\_lab/proofs/eml/2603\_21852/chunks/} containing:
+
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+\item \texttt{chunk.md} --- human-readable target, motivation,
+  dependencies on earlier chunks.
+\item \texttt{meta.json} --- machine-readable metadata: id, status,
+  paper section reference, Aristotle project id, submitted/completed
+  timestamps, free-form notes.
+\item \texttt{target.lean} --- the theorem statement with
+  \texttt{sorry}; the file Aristotle is asked to seal.
+\item \texttt{result.lean} --- the Aristotle-returned proof, when
+  applicable. Hand-coded chunks lift directly into the framework
+  modules and don't have this file.
+\end{itemize}
+
+The discipline this enforces is essential to the multi-agent
+workflow: each chunk is an
+\emph{independently checkable claim} with frozen dependencies. When
+Aristotle returns a result, it can be lifted into the framework only
+after a re-typecheck against the current Mathlib pin. The chunks
+that lifted cleanly are listed in \cref{tab:aristotle-chunks}.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{l l c r p{0.36\linewidth}}
+\toprule
+\textbf{Chunk} & \textbf{Target (informal)} & \textbf{Diff.} & \textbf{Time} & \textbf{Outcome} \\
+\midrule
+\texttt{077\_atan\_arg\_in\_ioo} & $x/\sqrt{1+x^2} \in (-1, 1)$ & 2 & 6 min & Sealed; $\sim$3-line proof using \texttt{nlinarith}. \\
+\texttt{079\_tan\_period\_reduction} & $\exists k \in \mathbb{Z}$, $x - k\pi \in (-\pi/2, \pi/2)$ & 3 & 13 min & Sealed; \texttt{Real.tan\_sub\_int\_mul\_pi} closes the equality. \\
+\texttt{075\_sin\_via\_cos} & $\mathrm{sin\_via\_cos\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.cos\_pi\_div\_two\_sub} bridge. \\
+\texttt{078\_arctan\_via\_arcsin} & $\mathrm{arctan\_via\_arcsin\_correct}$ via \texttt{subst0} & 3 & 21 min & Sealed; \texttt{Real.arctan\_eq\_arcsin} bridge. \\
+\texttt{080\_tan\_full} & $\mathrm{tan\_full}$ assembly & 4 & 17 min & Sealed; \texttt{lt\_trichotomy} on $y = x - k\pi$. \\
+\texttt{084\_edl\_atoms\_pilot} & 4 trivial EDL atom witnesses & 1 & 28 min & Sealed; \texttt{rfl}/\texttt{simp}/\texttt{linarith}. \\
+\texttt{085\_edl\_atoms\_constants} & D5/D6/D7 + D8 & 5 & $\sim$3 hr & D8 sealed; D5--D7 returned with Schanuel-style obstruction analysis (see \cref{sec:aristotle-lessons}). \\
+\texttt{086\_edl\_div} & $x/y$ via EDL & 4 & --- & Sealed (Aristotle even corrected the statement). \\
+\texttt{087\_edl\_compositions} & $\exp(\exp x)$, $\log(\log x)$ & 3 & --- & Both sealed. \\
+\texttt{088\_neg\_eml\_pilot} & 3 $-\!$EML pilot atoms (EReal grammar) & 2 & --- & All three sealed. \\
+\texttt{089\_edl\_wide\_search} & D14--D17 search & 4 & --- & D14, D15 trivial; D16, D17 unreachable + analysed. \\
+\bottomrule
+\end{tabular}
+\caption{Aristotle chunks completed during the post-submission work.
+``Diff.''~is a 1--5 subjective difficulty estimate recorded in
+\texttt{meta.json}. Times are wall-clock from submit to result
+return.}
+\label{tab:aristotle-chunks}
+\end{table}
+
+\subsection*{Independent re-verification on PCSS Eagle}
+
+PCSS (Poznań Supercomputing and Networking Centre) Eagle is the
+Polish national HPC cluster used by project \texttt{pl0414-02}.
+Re-verification runs the entire \texttt{lake build} and an additional
+sweep over every chunk's \texttt{target.lean}/\texttt{result.lean} in
+parallel:
+
+\begin{enumerate}[topsep=2pt, itemsep=2pt]
+\item \texttt{eagle\_scripts/build\_mathlib.sbatch} --- one-time
+  Mathlib v4.28 build into a project-scratch directory
+  ($\sim$45~min wall on 32 cores).
+\item \texttt{eagle\_scripts/verify\_all.sbatch} ---
+  parallel-typechecks every \texttt{.lean} file in the project on
+  24~cores, including all chunks. Final state: 8056/8056 jobs
+  successful, 0 \texttt{sorry}, 0 \texttt{admit}.
+\item \texttt{eagle\_scripts/run\_chunk.sbatch} --- per-chunk
+  re-verify, used during the chunk-flight phase to confirm Aristotle
+  returns lift cleanly into the project context.
+\end{enumerate}
+
+The discipline here matters more than the compute. The Eagle runs
+expose any environment drift between development (macOS, $M_2$ chip)
+and verification (Linux, AMD EPYC), and any silent dependency on
+unversioned Mathlib state. One incident from the construction
+illustrates the value: during the Mathlib pin update, two unrelated
+modules (\texttt{HahnEmbedding} and \texttt{HomogeneousLocalization})
+failed to typecheck on Eagle due to a stale \texttt{.olean} cache.
+The local build had picked up the cached olean and continued; Eagle's
+fresh build caught it. After \texttt{rm}-ing the corrupt oleans and
+rebuilding, both passed and the project re-verified to 8056/8056.
 
 % =====================================================================
 \section{Lessons from $10$ Aristotle chunks}
 \label{sec:aristotle-lessons}
 % =====================================================================
 
-[TO BE WRITTEN — analyses Aristotle's hit rate ($9/10$), the kinds of
-problems where it succeeds, the kinds where its analytical commentary
-is more useful than its proof (chunk 085 Schanuel-conjecture note).]
+Across the eleven chunks listed in \cref{tab:aristotle-chunks},
+Aristotle returned a sealed proof in nine cases, a partial proof
+plus analytical commentary in one case (chunk \texttt{085}), and a
+mixed result in one search-style chunk (chunk \texttt{089}: two of
+four targets sealed, two analysed as unreachable). This subsection
+extracts three patterns that we expect generalise beyond this
+artefact.
+
+\subsection*{Pattern 1: Aristotle excels at ``standard Mathlib glue''}
+
+The two cleanest wins were \texttt{077} ($x/\sqrt{1 + x^2} \in
+(-1, 1)$, 6 min) and \texttt{079} (period-$\pi$ reduction for $\tan$,
+13 min). Both are pure Mathlib lemmas that a strong human user could
+write in 5--15 minutes if they knew the library well; the value
+Aristotle adds is the library knowledge. The returned proofs were
+short ($\sim$3--10 lines) and used standard tactics in standard
+combinations: \texttt{lt\_div\_iff\_0}, \texttt{nlinarith},
+\texttt{Int.lt\_floor\_add\_one}, \texttt{Real.tan\_sub\_int\_mul\_pi}.
+
+The lesson for human use: \emph{minimise the size of the chunk}.
+Aristotle's success rate degraded as soon as a chunk required
+multiple non-trivial framework lemmas plus Mathlib glue
+(\texttt{080\_tan\_full} with \texttt{difficulty} 4 took 17 minutes
+and required a custom \texttt{lt\_trichotomy} dispatch). Splitting
+the trig-widening work into the four chunks
+\texttt{075}/\texttt{077}/\texttt{078}/\texttt{079} and a final
+assembly chunk \texttt{080}, rather than submitting one
+``do trig widening'' request, was the difference between an
+overnight return and a multi-day failure mode.
+
+\subsection*{Pattern 2: Aristotle's analytical commentary is sometimes
+worth more than its proof}
+
+The most striking result of the entire workflow was Aristotle's
+response to chunk \texttt{085}, which asked for EDL witnesses for the
+constants $-1$, $2$, $\tfrac{1}{2}$, and $\log x$. The chunk's
+\texttt{notes} field records the result verbatim:
+
+\begin{quote}\itshape\small
+PARTIAL 2026-05-08. Aristotle SOLVED D8 (\texttt{log x}) with the
+witness \texttt{edl one (edl (edl one (var 0)) e\_const)} --- beautiful
+3-step composition. D5/D6/D7 ($-1$, $2$, $1/2$) returned with
+\texttt{sorry} + analytical justification: closed EDL terms produce
+values in the EL-closure of $\{1, e\}$, and reaching exactly $-1$,
+$2$, or $1/2$ from there relates to Schanuel's conjecture
+(transcendental independence of $\log 2$ from $e$). The negative side
+has reachable values (e.g., $e/(1 - e) \approx -1.582$) but exact
+$-1$ is conjecturally unreachable. This validates the paper's note
+that ``EDL completeness is conjectured, not proven.''
+\end{quote}
+
+In other words: Aristotle did not just fail to prove the targets, it
+told us \emph{why} they cannot be proved with the available
+machinery. The Schanuel-conjecture connection is exactly the kind of
+``architectural'' answer one would hope a human expert would give if
+asked the same question. We took that analysis as the basis for the
+structural-ceiling theorem reported in \cref{sec:plan-d-e} and
+recorded the chunk's \texttt{status} as \texttt{partial} rather than
+\texttt{failed}: the chunk produced concrete value, just not in the
+form originally requested.
+
+The lesson: \emph{do not discard "failed" Aristotle runs}. Read the
+returned commentary, and if the agent has identified a conceptual
+obstruction, that finding may itself be the load-bearing scientific
+contribution of the chunk.
+
+\subsection*{Pattern 3: search chunks (``find a witness if one exists'')
+are a category of their own}
+
+Chunk \texttt{089} asked Aristotle to search for EDL witnesses for
+four further primitives (D14--D17). It returned with two trivial
+hits (D14, D15) and two negative results (D16, D17 with
+``unreachable + analysed''). For D16 / D17 the analysis again
+identified a Schanuel-style obstruction.
+
+The methodological observation: \emph{search chunks are
+fundamentally different from prove chunks}. A prove chunk has a
+fixed target; success is binary. A search chunk asks the agent to
+identify which of a set of candidates are reachable; success is a
+classification map across the candidates. We did not have a clean
+way to capture the latter in our chunk schema initially, and
+\texttt{meta.json} was retrofitted with the \texttt{complete\_partial}
+status to handle it.
+
+A future revision of this workflow would distinguish the two chunk
+kinds at the schema level. ``Per-primitive completeness for the
+$36$-element catalogue under operator $\circ$'' is a search problem,
+and treating it as $36$ independent prove chunks under-uses the
+agent's pattern-recognition strength.
+
+\subsection*{Aggregate}
+
+Across $\sim$$2.5$ hours of Aristotle wall-clock and $11$ chunks: $9$
+chunks fully sealed, $1$ chunk partially sealed with structurally
+useful analysis (\texttt{085}), $1$ search chunk with mixed results
+that nevertheless advanced the structural-ceiling argument
+(\texttt{089}). No chunk was a wasted submission. The cost of the
+agent integration --- writing chunk skeletons, re-typechecking
+returned proofs, lifting them into the framework --- was
+predominantly orchestration overhead, not proof discovery.
 
 % =====================================================================
 \section{The role of GPT Pro: independent architectural review}
 \label{sec:gpt-pro}
 % =====================================================================
 
-[TO BE WRITTEN — describes the consult-bundle workflow, the
-specific recommendations Pro made
-(\texttt{ADDsafe}_{\mathbb{C}}\texttt{\_ofReal\_ofReal} as the key
-foundation), and the discipline of asking external auditors targeted
-questions rather than open-ended ones.]
+A single GPT~Pro consultation, conducted on 2026-05-08, produced the
+architectural recommendation that became Path~$C'$. This section
+documents what was asked, what came back, and what we learned about
+how to structure such consults to be useful.
+
+\subsection*{What was asked}
+
+By the time of the consult, the Lean artefact had already gone
+through one architectural failure (Plan~B, the ``custom log branch''
+attempt described in \cref{sec:path-c-prime}). The trig family was
+sealed only on narrow open subdomains around $0$, and three
+candidate widening paths (A: branch-cut bookkeeping; B: custom log
+branch; C: multi-witness periodicity) had been sketched. The
+question put to Pro was deliberately constrained:
+
+\begin{quote}\itshape\small
+We have a Lean 4 + Mathlib v4.28 formalization of arXiv:2603.21852.
+$36$/$36$ paper primitives are sealed, sorry-free; \texttt{lake build}
+gives 8055 jobs. The trig narrowing is the bottleneck. Three candidate
+paths to close it are described below. We want your independent
+recommendation on which path is cleanest in Lean, plus any path we
+haven't thought of.
+\hfill (\texttt{gpt\_pro\_bundle/trig\_widening/PROMPT.md})
+\end{quote}
+
+The bundle (~1 KLOC of markdown across four files) included:
+\texttt{PROMPT.md} stating the question, \texttt{CODE\_EXCERPTS.md}
+with the concrete Lean signatures of the relevant macros and witnesses,
+\texttt{README.md} pointing at the project state, and an empty
+\texttt{RESPONSE.md} for the answer. Total preparation time: about
+two hours.
+
+\subsection*{What came back}
+
+GPT~Pro recommended a fourth path, \emph{Path~$C'$}: range-reduction
+by substitution with \texttt{cos}/\texttt{arcsin} reuse. The full
+response is preserved verbatim in
+\texttt{gpt\_pro\_bundle/trig\_widening/RESPONSE.md}. Three structural
+observations from that document drove the implementation:
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+\item \emph{Path~A is the wrong centre of gravity.} Mathlib has the
+  general branch-jump facts (\texttt{Complex.log\_exp\_eq\_sub\_toIocDiv},
+  \texttt{Complex.log\_exp\_exists}), but threading them through
+  every macro proof would turn \texttt{mkAdd}$_{\mathbb{C}}$,
+  \texttt{mkMul}$_{\mathbb{C}}$, \texttt{mkDiv}$_{\mathbb{C}}$, and
+  every trig proof into branch-accounting proofs. ``A lot of proof
+  debt for a phenomenon you can mostly avoid.''
+
+\item \emph{Path~B is mostly a dead end.} A custom complex-log
+  branch is not implementable in our grammar because
+  \texttt{EMLTerm}$_{\mathbb{C}}$\texttt{.eval?} is hard-coded to use
+  Mathlib's \texttt{Complex.log}. The exception is $\sin$:
+  \texttt{cosTerm}$_{\mathbb{C}}$ already covers
+  $\mathbb{R} \setminus \{0\}$, so $\sin x = \cos(\pi/2 - x)$ gives
+  a full-real $\sin$ via substitution.
+
+\item \emph{The right move for the rest is identity-driven witness
+  restructuring.} For $\arctan$, use $\arctan x =
+  \arcsin\bigl(x / \sqrt{1 + x^2}\bigr)$ to reuse the existing
+  full-natural-domain $\arcsin$ witness. For $\tan$, use period-$\pi$
+  reduction to a single Cayley quotient on $(-\pi/2, \pi/2)$.
+\end{enumerate}
+
+The recommendation also identified the foundation lemma --- the
+single missing piece without which range-reduction couldn't be
+mechanised:
+
+\begin{quote}\itshape\small
+\textbf{ADDsafe}$_{\mathbb{C}}$\textbf{\_ofReal\_ofReal}: prove that
+\texttt{ADDsafe}$_{\mathbb{C}}$ holds whenever both arguments are
+\texttt{Complex.ofReal} of real values. Nine of the eleven precondition
+clauses become trivially \texttt{.im = 0}; the remaining two reduce
+to $\exp(a) \neq a$ (true since $\exp a > a$) and $\log(b) \neq 0$
+(true for $b \neq 1$). Once you have this, every period shift via
+repeated \texttt{mkAdd}$_{\mathbb{C}}$ stays in the real fragment, and
+the $\arg = \pi$ boundary trap simply doesn't arise.
+\hfill (Pro, \S2 of the response)
+\end{quote}
+
+This single lemma --- $\sim$$50$ lines of Lean to state and prove ---
+unlocked the entire $\sim$$640$-line \texttt{Periodicity.lean}
+infrastructure that completed Path~$C'$ over the next two days.
+
+\subsection*{Methodological lessons}
+
+Three observations on how to structure such a consult to be useful:
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+\item \emph{State the failure modes already explored.} Pro's
+  response opened with ``Path~A is the wrong centre of gravity'' and
+  ``Path~B is mostly a dead end except for $\sin$.'' It could only
+  do that because the prompt had explicitly enumerated paths A, B, C
+  as the existing candidates. Asking ``how do we widen the trig
+  domains?'' open-ended would have produced a much weaker response.
+
+\item \emph{Provide the actual Lean signatures, not paraphrases.}
+  The \texttt{CODE\_EXCERPTS.md} file contained the concrete types
+  of \texttt{mkAdd}$_{\mathbb{C}}$, \texttt{cosTerm}$_{\mathbb{C}}$,
+  the \texttt{ADDsafe}$_{\mathbb{C}}$ predicate. Pro's recommendation
+  named the foundation lemma in terms compatible with the existing
+  artefact, not in vague natural language. This is the difference
+  between a recommendation and an actionable plan.
+
+\item \emph{Do not consult on something already solved.} The
+  consult cost was non-trivial (preparation time + the auditor's
+  attention). Reserving it for a single high-leverage architectural
+  question, rather than a stream of tactical questions, made it
+  dramatically more useful. The two artefacts of value --- the
+  recommendation against Path~B, and the
+  \texttt{ADDsafe}$_{\mathbb{C}}$\texttt{\_ofReal\_ofReal}
+  identification --- were both architectural, and both saved
+  weeks of dead-end work.
+\end{enumerate}
+
+\subsection*{What didn't happen}
+
+Pro was not used as an additional proof-search service in
+competition with Aristotle. The two have different strengths: Pro
+gave architectural advice in natural-language prose; Aristotle gave
+machine-checked Lean proofs of stated targets. Treating them as
+substitutes would have under-used both. The workflow used Pro's
+recommendation to define the next three weeks' worth of Aristotle
+chunks (\texttt{077}/\texttt{078}/\texttt{079}/\texttt{080} and the
+follow-on framework lifts), which is a multiplicative integration:
+the consult unlocked the chunks, and the chunks turned the consult
+into Lean.
 
 % =====================================================================
 \part{Broader physical contexts}

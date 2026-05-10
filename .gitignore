@@ -35,7 +35,9 @@ slides/*/build/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-lambda_lab/proofs/eml/2603_21852/notes/proof_structure.out
+*.out
+*.bbl
+*.blg
 
 # Lean
 **/*.olean
