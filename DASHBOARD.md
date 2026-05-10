@@ -59,6 +59,30 @@ pie showData
 
 Every cell either lists the sealed subdomain or marks the §G boundary point.
 
+> **About the K-count column.** Three different compilation paths feed the
+> formal artefact's witnesses, and the K-counts you see below are a mix of all
+> three. The web companion at `web/eml-tree-builder/` uses *only* path (a) plus
+> the verbatim trig witnesses, so its K-counts agree with this table for
+> log/exp/sub/mul/div/sq/sqrt/sigmoid/sinh/cosh/tanh and for the entire trig
+> family, but **diverge** for path-(b) and path-(c) entries — see the end of
+> this section for the full mapping.
+>
+> - **(a) Direct compositional macros.** The default for unaries and arithmetic;
+>   matches the SI's prose construction. Example: `log(x)` compiles to
+>   `eml(1, eml(eml(1, x), 1))`, K = 7.
+> - **(b) Hand-tuned closed-constant packages** (`EMLRealizationℂ`). Used for
+>   `π`, `i`, `−i`, `0ℂ`, `2ℂ` — the tree includes the Riemann-sheet
+>   bookkeeping needed to extract these values from the complex grammar. These
+>   rows are tagged "(closed)" or "(closed, complex)" below.
+> - **(c) Compiler-produced** (`F36Expr.translate?` → `ELExpr.compile`). Used
+>   for the high-K entries `mul`, `div`, `pow`, `logb`, `arcsin` (narrow),
+>   `hypot`, `arccos`, `arsinh`, `arcosh`. These figures are the structural
+>   compiler's mechanically-uniform output, much larger than what a hand
+>   construction would give.
+>
+> The trig-family witnesses (`cos`, `sin`, `tan`, `arctan`, `arcsin_open`) are
+> manual Euler-bridge constructions — small and bespoke, not from path (a).
+
 | Family | Primitive | Sealed on | Witness K | Status |
 |---|---|---|---:|:-:|
 | **Atoms** | `1` | full | 1 | ✅ |

@@ -193,11 +193,59 @@ x · y   ↦  exp(ln(x) + ln(y))</pre>
       tells you which pipeline (real or complex) was used.
     </p>
     <p>
-      Tree sizes match the
+      <strong>How tree sizes here compare to the
       <a href="../../lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean"
          target="_blank"><code>K_count_*</code></a>
-      theorems in the formalization (modulo the structural compiler's
-      uniform-shape inflation vs. hand-tuned paper Table 4).
+      theorems and the
+      <a href="../../DASHBOARD.md" target="_blank">DASHBOARD</a>.</strong>
+      The Lean artefact uses three different witness sources mixed
+      together, only one of which this tool reproduces:
+    </p>
+    <ul>
+      <li>
+        <strong>Direct compositional macros</strong> for
+        <code>log</code>, <code>exp</code>, <code>sub</code>,
+        <code>mul</code>, <code>div</code>, <code>sq</code>,
+        <code>sqrt</code>, <code>σ</code>, <code>sinh</code>,
+        <code>cosh</code>, <code>tanh</code> — the tool reproduces these
+        exactly, so K-counts match the formalization (e.g.
+        <code>log(x)</code> = K&nbsp;7 on both sides).
+      </li>
+      <li>
+        <strong>Verbatim Euler-bridge witnesses</strong> for the trig
+        family (<code>cos</code> K&nbsp;1273, <code>tanCore</code>
+        K&nbsp;2817, <code>arctan</code> K&nbsp;1303, etc.) — these are
+        copied directly from the formalization, so K-counts also match.
+      </li>
+      <li>
+        <strong>Hand-tuned closed-constant packages</strong> in the
+        formalization for <code>π</code> and <code>i</code>
+        (<code>EMLRealizationℂ</code>, K&nbsp;233 / K&nbsp;407). The web
+        tool uses a much shorter <em>pedagogical placeholder</em>
+        (<code>π</code> = K&nbsp;39) that doesn't actually
+        evaluate — it requires <code>log(0)</code> in the real-fragment
+        chain. This is a deliberate compromise: showing the closure
+        machinery in the browser would dominate the canvas.
+      </li>
+      <li>
+        <strong>Full structural-compiler output</strong>
+        (<code>F36Expr.translate?</code> → <code>compile</code>) in the
+        formalization for <code>logb</code>, <code>div</code>,
+        <code>mul</code>, <code>pow</code>, <code>hypot</code>,
+        <code>arcsin</code> (narrow). Those K-counts run into the
+        millions because the compiler unrolls every operation
+        uniformly. This tool shortcuts via direct compositional macros
+        instead, so e.g. <code>logb(x, y)</code> here is K&nbsp;77
+        whereas the dashboard reports K&nbsp;9&nbsp;929&nbsp;087 — same
+        function, same domain, very different syntax tree.
+      </li>
+    </ul>
+    <p>
+      <strong>Bottom line:</strong> there is one mathematical artefact
+      (the Lean proof). This tool implements a clean subset that agrees
+      with the formal artefact for the majority of primitives, with two
+      explicit divergence points (closed constants and the
+      structural-compiler binaries) that are documented above.
     </p>
     <p>
       All paper / SI / repository links are listed in the
