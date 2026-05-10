@@ -24,6 +24,17 @@ echo "node: $(hostname)"
 echo "started: $(date -u +%FT%TZ)"
 echo
 
+# Restore pre-staged Lake cache (Mathlib oleans) if it isn't already in
+# place. Compute nodes have no internet, so `lake exe cache get` /
+# `lake update` would fail.
+if [ ! -d ".lake/packages/mathlib" ]; then
+  echo "==== restoring lake_cache.tar (~10 GB) ===="
+  echo "started: $(date -u +%FT%TZ)"
+  tar xf /mnt/storage_5/scratch/pl0414-02/lake_cache.tar
+  echo "restored: $(date -u +%FT%TZ)"
+  echo
+fi
+
 echo "==== lake build EML.Framework.TransplantDepths ===="
 lake build EML.Framework.TransplantDepths 2>&1 \
   | grep -E 'error|warning|Build completed' \
