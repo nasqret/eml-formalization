@@ -99,12 +99,15 @@ consequences:
    essentially full real-domain coverage. The paper's compiler
    achieves this by **not using the standard principal branch** —
    line 333: *"Another option, used in EML compiler, is to manually
-   correct `i` sign."* Our Lean uses Mathlib's `Complex.log` unmodified,
-   which forces the narrowing at `arg = π`. We've widened every trig
-   primitive to large symmetric subdomains around 0 by introducing
-   negative-side companions; full real-domain coverage would require
-   a custom branch convention or multi-witness periodic extension. See
-   `OPEN_QUESTIONS.md` for two concrete plans (Plan B / Plan C).
+   correct `i` sign."* Our Lean originally used Mathlib's `Complex.log`
+   unmodified and widened only to symmetric subdomains around 0 via
+   negative-side companions. Post-submission, **Path C′ closed the
+   remaining gap**: range-reduction by substitution (sin via cos(π/2−x),
+   arctan via arcsin(x/√(1+x²)), tan via period-π reduction) brings
+   `paper_claim_{sin_full, arctan_full, tan_full}` to their full
+   natural domains. See `OPEN_QUESTIONS.md` Plan C′ for the
+   construction; Plan B (custom log branch) was found architecturally
+   infeasible — §B.0 documents why.
 
 ---
 

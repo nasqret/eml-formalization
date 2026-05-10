@@ -36,19 +36,19 @@ Aristotle is **not** the right fit for:
 
 | ID | Title | Hand vs Aristotle | Estimated lines | Status |
 |---|---|---|---:|---|
-| 071 | `eval?_mkSubℂ_ofReal` — real-safe subtraction (parallel to `mkAddℂ_ofReal`) | Hand | 30 | ⏳ |
-| 072 | `shiftByPiℂ_pos`, `shiftByPiℂ_neg` — single π-shift terms + eval | Hand | 50 | ⏳ |
-| 073 | `shiftByPeriodℂ : ℤ → EMLTermℂ` + `eval?_shiftByPeriodℂ` (induction on `k`) | Hand | 80 | ⏳ |
-| 074 | `halfPiPubℂ` — π/2 as EMLTermℂ + eval | Hand | 40 | ⏳ |
-| 075 | `sinViaCosℂ` + correctness on `ℝ ∖ {π/2}` (uses `Real.cos_pi_div_two_sub`) | Hand | 60 | ⏳ |
-| 076 | `atanArgELℝ` — real-fragment compile of `x / √(1 + x²)` | Hand | 30 | ⏳ |
-| **077** | **`atanArg_in_Ioo`** — `x/√(1+x²) ∈ (-1, 1)` for all `x : ℝ` | **Aristotle** | 20 | ⏳ |
-| 078 | `arctanViaArcsinℂ` + correctness (uses `Real.arctan_eq_arcsin` + 077) | Hand | 80 | ⏳ |
-| **079** | **`tan_period_reduction`** — for `cos x ≠ 0`, ∃ `k : ℤ` with `x - k·π ∈ Ioo (-π/2) (π/2)` | **Aristotle** | 30 | ⏳ |
-| 080 | `tan_full` — combine 073/079 with existing `tanCoreTermℂ` | Hand | 80 | ⏳ |
-| 081 | `paper_claim_sin_full` (PaperClaims.lean wrap-up) | Hand | 15 | ⏳ |
-| 082 | `paper_claim_arctan_full` | Hand | 15 | ⏳ |
-| 083 | `paper_claim_tan_full` | Hand | 15 | ⏳ |
+| 071 | `eval?_mkSubℂ_ofReal` — real-safe subtraction (parallel to `mkAddℂ_ofReal`) | Hand | 30 | ✅ |
+| 072 | `shiftByPiℂ_pos`, `shiftByPiℂ_neg` — single π-shift terms + eval | Hand | 50 | ✅ |
+| 073 | `shiftByPeriodℂ : ℤ → EMLTermℂ` + `eval?_shiftByPeriodℂ` (induction on `k`) | Hand | 80 | ✅ |
+| 074 | `halfPiPubℂ` — π/2 as EMLTermℂ + eval | Hand | 40 | ✅ |
+| 075 | `sinViaCosℂ` + correctness on `ℝ ∖ {π/2}` (uses `Real.cos_pi_div_two_sub`) | Hand | 60 | ✅ |
+| 076 | `atanArgELℝ` — real-fragment compile of `x / √(1 + x²)` | Hand | 30 | ✅ |
+| **077** | **`atanArg_in_Ioo`** — `x/√(1+x²) ∈ (-1, 1)` for all `x : ℝ` | **Aristotle** | 20 | ✅ |
+| 078 | `arctanViaArcsinℂ` + correctness (uses `Real.arctan_eq_arcsin` + 077) | Hand | 80 | ✅ |
+| **079** | **`tan_period_reduction`** — for `cos x ≠ 0`, ∃ `k : ℤ` with `x - k·π ∈ Ioo (-π/2) (π/2)` | **Aristotle** | 30 | ✅ |
+| 080 | `tan_full` — combine 073/079 with existing `tanCoreTermℂ` | Hand | 80 | ✅ |
+| 081 | `paper_claim_sin_full` (PaperClaims.lean wrap-up) | Hand | 15 | ✅ |
+| 082 | `paper_claim_arctan_full` | Hand | 15 | ✅ |
+| 083 | `paper_claim_tan_full` | Hand | 15 | ✅ |
 
 **Total estimated effort.** ~545 lines across 13 chunks. With the
 foundation (`subst0`, `ADDsafeℂ_ofReal_ofReal`) already landed, each
@@ -135,9 +135,9 @@ with 45+ theorems. K-counts in `EDL_KCounting.lean`.
 
 ## Time estimate
 
-| Phase | Effort |
-|---|---|
-| Path C′ remaining | 3–5 days |
-| Plan D | 1–2 weeks |
-| Plan E | 1–2 weeks |
-| **Total long-term work** | ~1 month focused effort |
+| Phase | Effort | Status |
+|---|---|---|
+| Path C′ | 3–5 days | ✅ **DONE** (all 13 chunks landed; `paper_claim_*_full` in public API) |
+| Plan D | 1–2 weeks | 🔄 8/36 sealed in framework; 28 conjecturally unreachable (Aristotle's structural analysis) |
+| Plan E | 1–2 weeks | 🔄 2/36 sealed (atoms); EReal grammar refactor pending for the `−∞` constant |
+| **Status (2026-05-10)** | — | Path C′ complete; Plans D/E essentially at their structural ceilings |
