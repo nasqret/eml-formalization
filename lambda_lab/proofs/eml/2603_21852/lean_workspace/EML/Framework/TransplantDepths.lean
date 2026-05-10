@@ -257,6 +257,21 @@ private lemma eval_one_of_depth_zero {t : EMLTerm} (h : t.depth = 0) :
   | var _ => rfl
   | eml _ _ => simp [depth] at h
 
+/-- Helper: a term of depth 1 evaluated on the all-ones environment
+returns `some (Real.exp 1)` (i.e. `e`). -/
+private lemma eval_one_of_depth_one {t : EMLTerm} (h : t.depth = 1) :
+    t.eval? (fun _ : Nat => (1 : ℝ)) = some (Real.exp 1) := by
+  match t with
+  | .one => simp [depth] at h
+  | .var _ => simp [depth] at h
+  | .eml a b =>
+    have ha : a.depth = 0 := by simp [depth] at h; omega
+    have hb : b.depth = 0 := by simp [depth] at h; omega
+    have ha_eval := eval_one_of_depth_zero ha
+    have hb_eval := eval_one_of_depth_zero hb
+    rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval zero_lt_one,
+        Real.log_one, sub_zero]
+
 /-- **No identity term at depth 1.** No `EMLTerm` of depth exactly 1
 evaluates to the identity on every real environment. -/
 theorem no_identity_at_depth_one :
@@ -289,6 +304,69 @@ theorem no_identity_at_depth_one :
     have h_ge : (2 : ℝ) ≤ Real.exp 1 := by
       have := Real.add_one_le_exp (1 : ℝ); linarith
     linarith
+
+/-- **No identity term at depth 2.** No `EMLTerm` of depth exactly 2
+evaluates to the identity on every real environment.
+
+Proof strategy: a depth-2 term is `eml a b` with
+`max(a.depth, b.depth) = 1`. On the all-ones environment, depth-0
+children evaluate to `1` and depth-1 children to `e`. The three
+non-trivial sub-cases give eval values `e - 1`, `e^e`, and `e^e - 1`
+respectively. Each is bounded away from `1` using `exp 1 ≥ 2` and
+`Real.add_one_le_exp`. -/
+theorem no_identity_at_depth_two :
+    ¬ ∃ t : EMLTerm, t.depth = 2 ∧
+      ∀ env : Nat → ℝ, t.eval? env = some (env 0) := by
+  rintro ⟨t, hd, hev⟩
+  match t with
+  | .one => simp [depth] at hd
+  | .var _ => simp [depth] at hd
+  | .eml a b =>
+    have hmax : max a.depth b.depth = 1 := by simp [depth] at hd; omega
+    have ha_le : a.depth ≤ 1 := le_of_max_le_left (le_of_eq hmax)
+    have hb_le : b.depth ≤ 1 := le_of_max_le_right (le_of_eq hmax)
+    let env : Nat → ℝ := fun _ => 1
+    have h_id : (EMLTerm.eml a b).eval? env = some 1 := hev env
+    -- exp 1 > 2 (strict; needed to rule out exp 1 = 2 in the (0,1) case).
+    have h_e_gt_two : (2 : ℝ) < Real.exp 1 := by
+      have := Real.add_one_lt_exp (one_ne_zero); linarith
+    -- exp(exp 1) > exp 1 + 1 > 3.
+    have h_ee_gt_three : (3 : ℝ) < Real.exp (Real.exp 1) := by
+      have h1 := Real.add_one_lt_exp (Real.exp_pos 1).ne'; linarith
+    -- Case split on (a.depth, b.depth).
+    have h_a0_or_a1 : a.depth = 0 ∨ a.depth = 1 := by omega
+    have h_b0_or_b1 : b.depth = 0 ∨ b.depth = 1 := by omega
+    -- (0, 0) is incompatible with max = 1.
+    rcases h_a0_or_a1 with ha0 | ha1
+    · rcases h_b0_or_b1 with hb0 | hb1
+      · -- (a.depth = 0, b.depth = 0): max = 0 ≠ 1, contradiction.
+        rw [ha0, hb0] at hmax; simp at hmax
+      · -- (a.depth = 0, b.depth = 1): eval = exp 1 - log (exp 1) = e - 1.
+        have ha_eval : a.eval? env = some 1 := eval_one_of_depth_zero ha0
+        have hb_eval : b.eval? env = some (Real.exp 1) :=
+          eval_one_of_depth_one hb1
+        rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval (Real.exp_pos _),
+            Real.log_exp] at h_id
+        have h_eq : Real.exp 1 - 1 = 1 := Option.some.inj h_id
+        linarith
+    · rcases h_b0_or_b1 with hb0 | hb1
+      · -- (a.depth = 1, b.depth = 0): eval = exp(exp 1) - log 1 = e^e.
+        have ha_eval : a.eval? env = some (Real.exp 1) :=
+          eval_one_of_depth_one ha1
+        have hb_eval : b.eval? env = some 1 := eval_one_of_depth_zero hb0
+        rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval zero_lt_one,
+            Real.log_one, sub_zero] at h_id
+        have h_eq : Real.exp (Real.exp 1) = 1 := Option.some.inj h_id
+        linarith
+      · -- (a.depth = 1, b.depth = 1): eval = exp(exp 1) - log(exp 1) = e^e - 1.
+        have ha_eval : a.eval? env = some (Real.exp 1) :=
+          eval_one_of_depth_one ha1
+        have hb_eval : b.eval? env = some (Real.exp 1) :=
+          eval_one_of_depth_one hb1
+        rw [EMLTerm.eval?_eml_of_pos ha_eval hb_eval (Real.exp_pos _),
+            Real.log_exp] at h_id
+        have h_eq : Real.exp (Real.exp 1) - 1 = 1 := Option.some.inj h_id
+        linarith
 
 end EMLTerm
 end EML
