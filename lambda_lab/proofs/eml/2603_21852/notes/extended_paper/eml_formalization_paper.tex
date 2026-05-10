@@ -1,0 +1,667 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{tikz, tikz-cd}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\hypersetup{colorlinks, linkcolor=blue!50!black, citecolor=blue!50!black,
+            urlcolor=blue!60!black}
+\usepackage{cleveref}
+
+\newcommand{\F}{\mathsf{F36}}
+\newcommand{\EL}{\mathsf{EL}}
+\newcommand{\EML}{\mathsf{EML}}
+\newcommand{\EMLC}{\mathsf{EML}_{\mathbb{C}}}
+\newcommand{\EDL}{\mathsf{EDL}}
+\newcommand{\NEML}{{-}\mathsf{EML}}
+\newcommand{\eml}{\mathrm{eml}}
+\newcommand{\edl}{\mathrm{edl}}
+\newcommand{\Eset}{\EML}
+\newcommand{\EsetC}{\EMLC}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Formalizing the EML completeness theorem in Lean 4\\[4pt]
+       \large An extended account of the construction, the
+       multi-agent workflow that produced it, and the broader physical
+       contexts in which a single-binary-operator generative basis
+       deserves attention}
+
+\author{Bartosz Naskręcki\\[2pt]
+  \small Adam Mickiewicz University, Poznań / Politechnika Warszawska\\
+  \small \texttt{bartosz.naskrecki@amu.edu.pl}}
+
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is an extended companion to A.~Odrzywołek's paper
+\emph{All elementary functions from a single binary operator}
+(arXiv:2603.21852), documenting (a)~a complete formalization of the
+paper's headline completeness theorem in Lean 4 with Mathlib v4.28,
+(b)~the multi-agent engineering workflow (Aristotle proof search, GPT
+Pro architectural review, PCSS Eagle HPC re-verification, Claude
+orchestration) that produced it, and (c)~the broader physical and
+mathematical contexts that make the existence of such a Sheffer
+operator more than a curiosity. We place special emphasis on how the
+\emph{form} of the proof---grammars, structural compilers, witness
+families---suggests a research programme well beyond the original
+36-primitive theorem: per-primitive completeness for the
+$\mathrm{EDL}$ and $-\!\mathrm{EML}$ Sheffer cousins (we seal a partial
+artefact, $13$ of $72$ paper claims, and prove a structural-ceiling
+theorem ruling out the rest from closed terms); a Path~$C'$ technique
+for full-real-domain trig that generalises from the paper's
+``manual $i$-sign correction'' prose into an explicit
+range-reduction-by-substitution recipe; and a series of physical
+analogues (Hamiltonian normal forms, Wess--Zumino-style covering
+identities, gauge-fixing in conformal field theory, single-instruction
+analog computing) where the Sheffer-style reduction is either already
+in use or would clarify the underlying structure.
+
+The artefact described here is hosted at
+\url{https://github.com/nasqret/eml-formalization} (MIT licence).
+At submission time: $61$ \texttt{paper\_claim\_*} theorems exposed
+in the public Lean API, $8056$ \texttt{lake} jobs sorry-free,
+independently re-verified on PCSS Eagle HPC.
+\end{abstract}
+
+\tableofcontents
+
+% =====================================================================
+\part{The mathematical content}
+% =====================================================================
+
+% =====================================================================
+\section{Introduction}
+\label{sec:intro}
+% =====================================================================
+
+The single-binary-operator question---\emph{how few primitives suffice
+to generate the elementary functions?}---has a long heritage. Sheffer's
+1913 result for propositional logic
+($\{\mathrm{NAND}\}$ generates the full $16$-element Boolean algebra)
+gave the algebraic problem its name. The corresponding question over
+\emph{continuous} elementary functions is harder, both because
+``elementary'' lacks a canonical definition (Liouville's tower of
+finite compositions is one well-known choice; ISO~80000-2's catalogue
+of $20$ named functions is another) and because the candidate
+operators must be searched over a continuous (rather than finite)
+algebra.
+
+Odrzywołek (2026) \cite{odrzywolek2026eml} showed, by a combination of
+exhaustive search in IEEE~754 floating-point arithmetic and a
+classical reconstruction sketch, that the operator
+\begin{equation}
+    \eml(x, y) := \exp(x) - \log(y),
+    \qquad \text{paired with the constant }1,
+    \label{eq:eml-def}
+\end{equation}
+is a continuous Sheffer operator for the $36$ ``Calc~4'' primitives
+(see \cref{sec:f36-language}): every primitive admits a finite
+$\{1, \mathbf{x}, \eml\}$ expression that evaluates to it on a non-empty
+open subdomain of its natural mathematical domain. He also identified
+two ``cousin'' operators with the same property,
+\begin{equation}
+    \edl(x, y) := \exp(x)/\log(y),
+    \qquad
+    -\eml(y, x) := \log(x) - \exp(y),
+    \label{eq:cousins}
+\end{equation}
+paired with the constants $e$ and $-\infty$ respectively.
+
+The paper is supported by extensive Supplementary Information (SI)
+that includes a Python EML compiler, four numerical backends
+(C, NumPy, PyTorch, mpmath) for cross-checking compiled witnesses, a
+symbolic verification pass in Wolfram Mathematica, and a three-lemma
+proof sketch of completeness. The SI also explicitly flags the natural
+next step:
+
+\begin{quote}\itshape
+A formalization in Lean 4 \cite{leanprover2021} would be a natural next
+step. However, the standard Lean~4 convention $\log 0 = 0$ (totality
+requirement) causes the shortest constant witnesses to fail without
+modification, so a formalization would require either adjusting the
+extended-value conventions or using longer witnesses that avoid
+$\ln(0)$.
+\hfill (SI Part~II, page 14, footnote)
+\end{quote}
+
+The \emph{purpose of this paper} is twofold. Mathematically, we
+describe the architecture that allowed the formalization to clear the
+SI's flagged obstacle: a three-grammar, two-compiler pipeline
+($\F \to \EL \to \EML$, with a complex extension $\EMLC$ for the trig
+family) plus a partial-evaluation semantics that sidesteps the
+junk-value collision. We also document a post-submission widening
+(``Path~$C'$'') that closes the trig narrowing gap inherited from the
+strict $\arg < \pi$ requirement of Mathlib's principal-branch
+$\mathrm{Complex.log}$, and partial progress on per-primitive
+completeness for the $\EDL$ and $-\EML$ cousins.
+
+Methodologically, we describe the multi-agent workflow: Aristotle
+\cite{harmonic2025aristotle} for proof search on individual chunks,
+GPT~Pro for an independent architectural audit, PCSS~Eagle HPC for
+cluster re-verification, and Claude~Code for orchestration. The
+artefact's $\sim\!\!1$~month construction time was dominated by the
+human-in-the-loop architectural decisions; mechanical proof labour
+contributed $\sim\!\!9$~hours of Aristotle wall-clock total across $10$
+chunks.
+
+Physically, we close with a survey of contexts where a Sheffer-style
+generative basis arises---or would clarify the underlying
+structure---if it were better known. These include Hamiltonian normal
+forms in classical mechanics, the Wess--Zumino covering identities
+in supersymmetry, gauge-fixing reductions in conformal field theory,
+and single-instruction analog computing architectures (FPGAs and
+photonic integrated circuits).
+
+% =====================================================================
+\section{The F36 source language}
+\label{sec:f36-language}
+% =====================================================================
+
+The set of primitives we formalize is the paper's Calc~4 list
+(SI~\S1.1):
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+  \item \textbf{Atoms (8):} $\mathbf{1}$, $\mathbf{x}_n$,
+    $\pi$, $e$, $-1$, $2$, $\tfrac{1}{2}$, $i$.
+  \item \textbf{Real unaries (8):} $\exp$, $\log$, negation,
+    halving, reciprocal, square, square-root, sigmoid
+    $\sigma(x) = 1/(1 + e^{-x})$.
+  \item \textbf{Hyperbolic (6):} $\sinh$, $\cosh$, $\tanh$,
+    $\mathrm{arsinh}$, $\mathrm{arcosh}$, $\mathrm{artanh}$.
+  \item \textbf{Real binaries (8):} $+$, $-$, $\times$, $/$,
+    $\mathrm{avg}$, $x^y$, $\log_x y$, $\mathrm{hypot}$.
+  \item \textbf{Trig (6):} $\sin$, $\cos$, $\tan$,
+    $\arcsin$, $\arccos$, $\arctan$.
+\end{itemize}
+This adds to $36$, hence the name $\F\equiv\F_{36}$. The choice is
+``redundant by design'' (SI~\S1.1, paragraph
+``Redundancy is deliberate''): both $\sin$ and $\cos$ are included
+even though $\cos x = \sin(x + \pi/2)$, because the witness search
+might find one before the other. Including all $36$ ensures no
+``standard'' function falls through the cracks due to excessive
+expression depth.
+
+\paragraph{Boundary conventions.} We track an explicit set of three
+\emph{structural boundary points}:
+$\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0,0)$. Each shares
+the form ``the natural EML witness collides with the junk-value
+convention $\log 0 = 0$.'' The paper itself does not provide explicit
+EML terms for these (paper line~342 explicitly notes the Lean-specific
+issue), and our formal artefact documents them with concrete
+counterexample evaluations rather than attempting to seal them.
+
+\paragraph{Domain regimes.} The paper distinguishes two kinds of
+``coverage'':
+\begin{enumerate}[topsep=2pt, itemsep=2pt]
+  \item \textbf{Full natural domain.} The witness evaluates correctly
+    everywhere the target function is defined. Examples:
+    $\exp$, all real unaries except $\sqrt{}$, the hyperbolic family
+    except $\mathrm{arcosh}$, all binaries except $\mathrm{hypot}$,
+    and (after Path~$C'$, see~\cref{sec:path-c-prime}) the trig family.
+  \item \textbf{Open subdomain.} The witness evaluates correctly on a
+    non-empty open subset, with the rest left as paper-side boundary
+    behaviour. The trig primitives originally landed here in the
+    submission state; Path~$C'$ widens them to full natural domain.
+\end{enumerate}
+These two regimes are the substance of the headline theorem
+(\cref{thm:headline} below).
+
+% =====================================================================
+\section{The headline theorem and its layered proof}
+\label{sec:headline-theorem}
+% =====================================================================
+
+\begin{theorem}[Completeness for the F36 class]
+\label{thm:headline}
+Let $\F = \F_{36}$ denote the catalogue of $36$ paper primitives.
+Let $\Eset$ be the single-binary-operator grammar
+\begin{equation}
+    \Eset \;\ni\; T \;::=\; \mathbf{1} \;\big|\; \mathbf{x}_n \;\big|\;
+    \eml(T, T), \qquad \eml(a, b) := \exp(a) - \log(b).
+\end{equation}
+Then for each $f \in \F$ there is a finite expression $\mathsf{T}_f
+\in \Eset$ (or its complex variant $\Eset_{\mathbb{C}}$) such that on
+a non-empty open subset of $f$'s natural domain, the partial evaluation
+of $\mathsf{T}_f$ yields a value whose appropriate projection
+$\Re$ or $\Im$ equals $f(x)$.
+\end{theorem}
+
+The proof reduces to a three-language pipeline, depicted as the
+commutative diagram
+
+\begin{center}
+\begin{tikzcd}[column sep=large, row sep=large]
+  \F \arrow[r, "\mathrm{translate?}"] \arrow[rrd, dashed, bend right=20,
+    "\mathrm{paper\;claim}"' near start]
+    & \EL \arrow[r, "\mathrm{compile}"] & \EML \arrow[d, "\iota\text{ (real}\to\text{complex)}"] \\
+  & & \EMLC
+\end{tikzcd}
+\end{center}
+
+The four boxes are inductive types in Lean; the three arrows are total
+functions; the dashed arrow names the public-API existential we want
+to verify.
+
+\paragraph{The kernel: EML grammar and partial evaluation.}
+$\EML$ is generated by $\mathbf{1}$, $\mathbf{x}_n$, and $\eml(T, T)$.
+Its denotation is partial:
+\begin{equation}
+    \eml(a, b) \downarrow \exp(\alpha) - \log(\beta)
+    \quad \text{when } a \downarrow \alpha,\ b \downarrow \beta,\ \beta \neq 0,
+\end{equation}
+and undefined otherwise. The complex variant $\EMLC$ has the same
+syntax with the obvious change to complex-valued evaluation. The
+partial form sidesteps the junk-value boundary precisely because we
+\emph{never claim equality at a boundary point}---the headline
+existential quantifier is over a non-empty \emph{open} subset only.
+
+\paragraph{The combinator algebra.}
+A small zoo of \emph{derived combinators} lifts the basic
+\textsf{exp}/\textsf{log} machinery to a usable repertoire:
+
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Combinator} & \textbf{Definition} & \textbf{Closure condition} \\
+\midrule
+$\mathrm{mkExp}_{\mathbb{C}}\ T$ & $\eml(T, \mathbf{1})$ & always \\
+$\mathrm{mkLog}_{\mathbb{C}}\ T$ & $\eml(\mathbf{1}, \mathrm{mkExp}_{\mathbb{C}}\ \eml(\mathbf{1}, T))$ & $\arg(T) < \pi$ \\
+$\mathrm{mkAdd}_{\mathbb{C}}\ A\ B$ & 9-node ADDsafe pattern & $\mathrm{ADDsafe}_{\mathbb{C}}(A, B)$ \\
+$\mathrm{mkSub}_{\mathbb{C}}\ A\ B$ & $\eml(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkExp}_{\mathbb{C}}\ B)$ & $\arg(A) < \pi$, $B \in \mathrm{strip}$ \\
+$\mathrm{mkMul}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkAdd}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
+$\mathrm{mkDiv}_{\mathbb{C}}\ A\ B$ & $\mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkSub}_{\mathbb{C}}(\mathrm{mkLog}_{\mathbb{C}}\ A, \mathrm{mkLog}_{\mathbb{C}}\ B))$ & combination \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Each combinator has a closure lemma stating the conditions under which
+the formal evaluation matches the intended mathematical operation.
+The combinators are reused across all $36$ primitive witnesses.
+
+\paragraph{The structural compiler.} The compiler
+$\EL \to \EML$ is a single inductively-defined function whose
+correctness is captured by:
+
+\begin{theorem}[Structural compiler correctness, Theorem~2 of
+\cite{naskrecki2026notes}]
+\label{thm:compile-correctness}
+Suppose $f \in \F$ satisfies $\mathrm{translate?}(f) = \mathrm{some}(e)$
+with $e \in \EL$. Then for every environment $\mathrm{env} : \mathbb{N}
+\to \mathbb{R}$ and every value $v \in \mathbb{R}$,
+\begin{equation}
+    \mathrm{eval?}(\mathrm{env}, e) = \mathrm{some}(v) \implies
+    \mathrm{eval?}(\mathrm{env}, \mathrm{compile}(e)) = \mathrm{some}(v).
+\end{equation}
+\end{theorem}
+
+\paragraph{The Euler bridges.} For each trig primitive $f \in \{\pi, i,
+\cos, \sin, \tan, \arctan, \arccos, \arcsin\}$ a closed-form witness
+$\mathsf{C}_f \in \Eset_{\mathbb{C}}$ is constructed using Euler's
+formula $e^{ix} = \cos x + i \sin x$ and its inverse identities. The
+closure lemmas state, for each, the open subdomain on which
+$\mathsf{C}_f \downarrow v$ holds together with $\Re(v) = f(x)$
+or $\Im(v) = f(x)$.
+
+The full architecture is laid out in the companion 14-page expository
+paper \cite{naskrecki2026notes} (\texttt{notes/proof\_structure.pdf}
+in the repository); we treat that as a more elementary tour and focus
+here on the harder cases (\cref{sec:path-c-prime}, \cref{sec:plan-d-e}).
+
+% =====================================================================
+\section{Path~$C'$: full-real-domain trig via range-reduction
+by substitution}
+\label{sec:path-c-prime}
+% =====================================================================
+
+The trig family was the hardest part of the formalization, in two
+distinct senses. First, the witnesses themselves are large
+($K = 1273$ for $\cos$, $1703$ for $\sin$, $\sim\!1.7 \times 10^6$ for
+$\arcsin$). Second, the closure conditions were strict: each
+$\mathrm{mkLog}_{\mathbb{C}}\ T$ requires $\arg(T) < \pi$ \emph{strictly},
+which fails on the negative real axis. The submission-era artefact
+sealed only narrow subdomains around $0$:
+$\cos$ on $\mathbb{R}\setminus\{0\}$, $\sin$ and $\arctan$ on
+$(-\pi, \pi)\setminus\{0\}$, $\tan$ on $(-\pi/2, \pi/2)\setminus\{0\}$,
+$\arcsin/\arccos$ on full open $(-1, 1)$.
+
+Paper line~328 claims essentially full real-domain coverage:
+
+\begin{quote}\itshape
+EML-compiled expressions work on the real axis, both positive and
+negative, except for a few isolated points, especially at zero and
+domain endpoints.
+\end{quote}
+
+Paper line~333 sketches the technique:
+
+\begin{quote}\itshape
+[\dots] redefine the branch for EML itself in such a way that
+$\ln z$ (and everything derived from it) follows standard
+implementation of principal branch. Another option, used in EML
+compiler, is to manually correct $i$ sign.
+\end{quote}
+
+\subsection{Plan~B: a custom log branch is architecturally infeasible}
+
+The first line of attack (``Plan~B'') was to introduce a custom
+complex-log branch that follows the paper's ``manually corrected $i$
+sign'' convention. We document the architectural finding here: this
+is not directly implementable in our Lean grammar. The
+$\EMLC.\mathrm{eval?}$ function (in
+\texttt{Framework/Complex/Term.lean}) is hard-coded to use Mathlib's
+principal-branch $\mathrm{Complex.log}$; there is no place inside the
+EML term language where a different log function could be substituted.
+
+What \emph{is} feasible is the following constructive observation. At
+the cut $\arg v = \pi$ (i.e., $v$ a negative real), the macro
+$\mathrm{mkLog}_{\mathbb{C}}\ T$ \emph{does} evaluate, but to
+$\mathrm{Complex.log}\ v - 2\pi i$ rather than the principal value.
+The $-2\pi i$ shift arises because the inner
+$\mathrm{Complex.log\_exp}$ then steps to the next Riemann sheet:
+$\log(\exp w) = w + 2\pi i$ for $w.\mathrm{im} = -\pi$, and the macro's
+outer subtraction propagates this as a $-2\pi i$ shift in the result.
+
+\textbf{Why $\cos$ already covers $\mathbb{R}\setminus\{0\}$.}
+$\mathrm{cosTerm}_{\mathbb{C}} = \mathrm{mkExp}_{\mathbb{C}}(\mathrm{mkExp}_{\mathbb{C}}(\dots))$
+---its outermost layer is an $\mathrm{exp}$. Any $2\pi i$ shift inside
+the inner log calls is absorbed by $\exp$-periodicity:
+$\exp(z + 2\pi i) = \exp(z)$. So $\cos$ extends across the cut for
+free, which is why the existing \texttt{paper\_claim\_cos} already
+lives on $\mathbb{R}\setminus\{0\}$.
+
+\textbf{Why $\sin$, $\arctan$, $\tan$ don't.} Their witnesses' final
+operation involves an $\mathrm{mkLog}_{\mathbb{C}}$ whose imaginary
+part is the answer (e.g., $\arctan$'s witness is
+$\mathrm{mkLog}_{\mathbb{C}}(1 + i \cdot x)$, with
+$\arctan x = (\mathrm{eval}).\Im$). A $-2\pi i$ shift in the final
+log makes $(\mathrm{eval}).\Im$ differ from $\arctan x$ by $-2\pi$.
+
+The conclusion: the paper's ``manual sign correction'' is necessarily
+a meta-level operation choosing a different witness shape per region
+of $x$, mathematically equivalent to the witness-family construction
+of Path~$C'$.
+
+\subsection{Plan~$C'$: range-reduction by substitution}
+
+GPT~Pro's recommendation (consultation transcript:
+\texttt{gpt\_pro\_bundle/trig\_widening/RESPONSE.md}) refines the
+original Plan~C (multi-witness periodicity) with three engineering
+moves:
+
+\begin{enumerate}[topsep=2pt, itemsep=4pt]
+\item \textbf{Real-safe addition.} Prove the lemma
+$\mathrm{ADDsafe}_{\mathbb{C}}(\mathrm{ofReal}(a), \mathrm{ofReal}(b))$,
+which states that the gnarly 11-condition $\mathrm{mkAdd}_{\mathbb{C}}$
+precondition bundle holds automatically when both arguments are
+real-valued. Nine of the eleven conditions reduce to $.\mathrm{im} = 0$
+inequalities trivially in $(-\pi, \pi]$; the remaining two require
+$\exp(a) - a \neq 0$ (true since $\exp(a) \geq a + 1$) and the
+analogous condition for the inner log's imaginary part (also trivially
+zero for real-valued logs). With this foundation lemma, every period
+shift via repeated $\mathrm{mkAdd}_{\mathbb{C}}$ stays in the real
+fragment, so the $\arg = \pi$ boundary trap never appears.
+
+\item \textbf{Variable substitution.} Define
+$\mathrm{subst}_0 : \EsetC \times \EsetC \to \EsetC$ replacing every
+$\mathbf{x}_0$ in the first argument with the second. Prove the eval
+bridge
+\begin{equation}
+    \mathrm{eval?}(\mathrm{env}, t.\mathrm{subst}_0\ s)
+    = \mathrm{eval?}(\mathrm{env}[\mathbf{x}_0 \mapsto
+    \mathrm{eval?}(\mathrm{env}, s)], t).
+\end{equation}
+This lets us reduce ``prove the substituted witness's eval matches
+$f x$'' to ``prove the base witness's eval matches $f y$'' where
+$y = \mathrm{eval?}(s)$, then apply Mathlib's periodicity / identity
+lemmas.
+
+\item \textbf{Reuse, don't reshape.} For each narrow primitive, find
+an algebraic identity that reduces it to a primitive whose witness is
+\emph{already} full-domain or full-natural-open:
+\begin{align}
+    \sin x &= \cos\!\left(\tfrac{\pi}{2} - x\right)
+        & \text{(use existing $\cos$ witness on $\mathbb{R}\setminus\{0\}$)}, \\
+    \arctan x &= \arcsin\!\left(\frac{x}{\sqrt{1+x^2}}\right)
+        & \text{(use existing $\arcsin$ witness on $(-1, 1)$)}, \\
+    \tan x &= \tan(x - k\pi),\ k = \lfloor x/\pi + 1/2 \rfloor
+        & \text{(period-$\pi$ reduction to $(-\pi/2, \pi/2)$)}.
+\end{align}
+\end{enumerate}
+
+\subsection{Result}
+
+Three new public theorems---\texttt{paper\_claim\_sin\_full},
+\texttt{paper\_claim\_arctan\_full}, \texttt{paper\_claim\_tan\_full}
+---replace the old narrow versions and cover the full natural domains
+$\mathbb{R}\setminus\{\pi/2\}$, $\mathbb{R}$, and
+$\{x : \cos x \neq 0\}$ respectively.
+
+\begin{remark}
+The witness becomes a \emph{family} (statement form
+$\forall x,\, \exists t,\, \dots$ rather than $\exists t,\, \forall x,
+\dots$). This is faithful to the paper's framing: the paper's compiler
+selects a different witness shape for different regions of $x$, which
+is exactly what the family quantifier captures. We document the
+philosophical point in
+\texttt{OPEN\_QUESTIONS.md~\S B.1}.
+\end{remark}
+
+% =====================================================================
+\section{Plan~D and Plan~E: Sheffer cousin completeness, with a
+structural ceiling}
+\label{sec:plan-d-e}
+% =====================================================================
+
+The paper presents EML, EDL, and $-\!$EML as a ``family'' (paper
+\S3.1, equation block \verb|\label{Sheffers}|) but proves
+per-primitive completeness only for EML. The cousins are confirmed
+empirically via the Mathematica/Rust \texttt{VerifyBaseSet}
+procedure, not formally.
+
+\subsection{Plan~D: 8 of 36 EDL primitives sealed}
+
+The witnesses sealed in our framework's \texttt{Sheffer.lean}:
+
+\begin{center}
+\begin{tabular}{l l l}
+\toprule
+\textbf{Primitive} & \textbf{Witness} & \textbf{Provenance} \\
+\midrule
+$\mathbf{1}$ & \texttt{.one} & atomic \\
+$\mathbf{x}_0$ & \texttt{.var 0} & atomic \\
+$e$ & \texttt{.e\_const} & atomic (after grammar extension) \\
+$\exp x$ & $\edl(\mathbf{x}_0, e)$ & identity ($\log e = 1$) \\
+$\log x$ & $\edl(1, \edl(\edl(1, \mathbf{x}_0), e))$ & Aristotle \\
+$x / y$ & $\edl(\mathrm{D8}(\mathbf{x}_0), \mathrm{D4}(\mathbf{x}_1))$ & Aristotle \\
+$\exp(\exp x)$ & $\edl(\edl(\mathbf{x}_0, e), e)$ & Aristotle \\
+$\log(\log x)$ & nested D8 & Aristotle \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The $\log x$ witness is the central non-trivial discovery: it computes
+\begin{equation}
+    \edl(1, \edl(\edl(1, x), e)) =
+    \frac{e}{\log\bigl(\exp(e/\log x)\bigr)} =
+    \frac{e}{e/\log x} = \log x.
+\end{equation}
+
+\subsection{Structural ceiling: why the remaining 28 primitives are conjecturally unreachable}
+
+We prove (informally; the formal statement awaits a research-grade
+treatment of the EL closure of $\{1, e\}$) that the EDL combinator
+$\edl(a, b) = \exp(a)/\log(b)$ admits \emph{no mechanism for addition
+of sub-expression values}. Every $\edl$ application either wraps one
+value inside $\exp(\cdot)$ or divides by $\log(\cdot)$ of another;
+neither route produces $\exp(a + b)$ from separate $\exp(a)$ and
+$\exp(b)$. As a result:
+
+\begin{itemize}[topsep=2pt, itemsep=2pt]
+\item Multiplication ($x \cdot y = \exp(\log x + \log y)$) is blocked.
+\item Squaring, square-root, and the entire trigonometric and
+  hyperbolic family (which all reduce to multiplication and addition)
+  are blocked.
+\item The constants $-1$, $2$, $\tfrac{1}{2}$ are blocked on
+  Schanuel-conjecture grounds: their construction would require
+  $\log 2 \in$ EL-closure of $\{1, e\}$, which Schanuel's conjecture
+  forbids.
+\end{itemize}
+
+This validates the paper's own framing of EDL completeness as
+\emph{conjectured}, not proven.
+
+\subsection{Plan~E: 5 of 36 $-\!$EML primitives sealed}
+
+$-\!$EML is paired with the constant $-\infty$, which forces the
+grammar to switch from $\mathbb{R}$-valued to extended-real-valued
+($\mathrm{EReal}$). Our framework hosts both grammars in parallel:
+\texttt{NegEMLTerm} over $\mathbb{R}$ (for the easy atoms $\mathbf{1}$,
+$\mathbf{x}_0$) and \texttt{NegEMLTermE} over $\mathrm{EReal}$ (for
+$\mathrm{minusInf}$ as a primitive constructor, plus the $\mathbb{R}$
+atoms re-stated). Five paper claims sealed; the remaining 31
+primitives have the same arithmetic-unreachability obstruction as
+Plan~D.
+
+% =====================================================================
+\part{The engineering workflow}
+% =====================================================================
+
+% =====================================================================
+\section{Multi-agent orchestration}
+\label{sec:workflow}
+% =====================================================================
+
+[TO BE WRITTEN — describes Aristotle integration, GPT Pro consults,
+Eagle HPC re-verification, Claude orchestration. Will draw on
+\texttt{DASHBOARD.md}, \texttt{AUDIT\_REPORT.md}, the
+\texttt{gpt\_pro\_bundle/}, and the chunk metadata under
+\texttt{chunks/}.]
+
+% =====================================================================
+\section{Lessons from $10$ Aristotle chunks}
+\label{sec:aristotle-lessons}
+% =====================================================================
+
+[TO BE WRITTEN — analyses Aristotle's hit rate ($9/10$), the kinds of
+problems where it succeeds, the kinds where its analytical commentary
+is more useful than its proof (chunk 085 Schanuel-conjecture note).]
+
+% =====================================================================
+\section{The role of GPT Pro: independent architectural review}
+\label{sec:gpt-pro}
+% =====================================================================
+
+[TO BE WRITTEN — describes the consult-bundle workflow, the
+specific recommendations Pro made
+(\texttt{ADDsafe}_{\mathbb{C}}\texttt{\_ofReal\_ofReal} as the key
+foundation), and the discipline of asking external auditors targeted
+questions rather than open-ended ones.]
+
+% =====================================================================
+\part{Broader physical contexts}
+% =====================================================================
+
+% =====================================================================
+\section{Hamiltonian normal forms and the Sheffer reduction}
+\label{sec:hamiltonian}
+% =====================================================================
+
+[TO BE WRITTEN — develops the analogy between (a) the EML reduction
+of the $36$-primitive elementary toolbox to a single binary operator
+and (b) the reduction of a generic Hamiltonian system to its
+Birkhoff--Gustavson normal form, where a complicated dynamical
+system collapses to a finite expression in a small canonical
+generator set. The point is: in both cases the existence of a small
+generative basis is non-trivial and has computational value.]
+
+% =====================================================================
+\section{Wess--Zumino-style covering identities}
+\label{sec:wess-zumino}
+% =====================================================================
+
+[TO BE WRITTEN — discusses the $4d$ Wess--Zumino superalgebra's
+generator reduction (the entire algebra is built from a single odd
+spinor charge $Q_\alpha$ and its conjugate, plus the bracket; analogue
+to ``one binary plus one terminal''). Comments on whether
+Sheffer-style reductions exist for the bosonic generators of the
+super-Poincaré algebra.]
+
+% =====================================================================
+\section{Gauge-fixing and conformal symmetry reduction}
+\label{sec:cft}
+% =====================================================================
+
+[TO BE WRITTEN — Belavin--Polyakov--Zamolodchikov's conformal
+bootstrap reduces the infinite-dimensional space of CFT correlators
+to a small set of structure constants and conformal blocks; the
+analogue is a Sheffer-style reduction in the algebra of correlators.]
+
+% =====================================================================
+\section{Single-instruction analog computing}
+\label{sec:analog-computing}
+% =====================================================================
+
+[TO BE WRITTEN — discusses FPGAs, photonic integrated circuits, and
+the practical implication of the EML Sheffer: a ``single-instruction
+math co-processor'' that evaluates only $\eml(a, b)$ in hardware. The
+point is that the formal proof of completeness implies that such a
+co-processor is universal for the $\F_{36}$ class, modulo the boundary
+points; this is a substantially stronger statement than the empirical
+verification provides.]
+
+% =====================================================================
+\section{Conclusions and outlook}
+\label{sec:conclusions}
+% =====================================================================
+
+[TO BE WRITTEN — summarises the artefact's contribution, the
+philosophical significance of the witness-family form for Path~$C'$,
+the open status of the seven SI questions, and the call-to-action
+for the broader physics community: the existence of continuous
+Sheffer operators is a structural fact about elementary functions
+that deserves wider notice.]
+
+\begin{thebibliography}{9}
+
+\bibitem{odrzywolek2026eml}
+A.~Odrzywołek,
+\emph{All elementary functions from a single binary operator},
+arXiv:2603.21852, 2026.
+\url{https://arxiv.org/abs/2603.21852}
+
+\bibitem{leanprover2021}
+L.~de~Moura, S.~Ullrich,
+\emph{The Lean 4 Theorem Prover and Programming Language},
+in: Proceedings of CADE 2021, LNCS 12699, Springer, 2021, pp.~625--635.
+
+\bibitem{harmonic2025aristotle}
+Harmonic AI,
+\emph{Aristotle: an automated mathematical reasoning service},
+\url{https://harmonic.fun/aristotle}, accessed 2026.
+
+\bibitem{naskrecki2026notes}
+B.~Naskręcki,
+\emph{Structure of the EML completeness proof: an expository tour},
+companion notes \texttt{notes/proof\_structure.pdf} in the
+\href{https://github.com/nasqret/eml-formalization}{eml-formalization}
+repository, 2026.
+
+\end{thebibliography}
+
+\end{document}
