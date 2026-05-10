@@ -35,10 +35,8 @@
 \newtheorem{example}[theorem]{Example}
 
 \title{Formalizing the EML completeness theorem in Lean 4\\[4pt]
-       \large An extended account of the construction, the
-       multi-agent workflow that produced it, and the broader physical
-       contexts in which a single-binary-operator generative basis
-       deserves attention}
+       \large An extended account of the construction and of the
+       multi-agent workflow that produced it}
 
 \author{Bartosz Naskręcki\\[2pt]
   \small Adam Mickiewicz University, Poznań / Politechnika Warszawska\\
@@ -54,24 +52,23 @@ This is an extended companion to A.~Odrzywołek's paper
 \emph{All elementary functions from a single binary operator}
 (arXiv:2603.21852), documenting (a)~a complete formalization of the
 paper's headline completeness theorem in Lean 4 with Mathlib v4.28,
-(b)~the multi-agent engineering workflow (Aristotle proof search, GPT
-Pro architectural review, PCSS Eagle HPC re-verification, Claude
-orchestration) that produced it, and (c)~the broader physical and
-mathematical contexts that make the existence of such a Sheffer
-operator more than a curiosity. We place special emphasis on how the
+and (b)~the multi-agent engineering workflow (Aristotle proof search,
+GPT Pro architectural review, PCSS Eagle HPC re-verification, Claude
+orchestration) that produced it. We place special emphasis on how the
 \emph{form} of the proof---grammars, structural compilers, witness
 families---suggests a research programme well beyond the original
 36-primitive theorem: per-primitive completeness for the
 $\mathrm{EDL}$ and $-\!\mathrm{EML}$ Sheffer cousins (we seal a partial
 artefact, $13$ of $72$ paper claims, and prove a structural-ceiling
-theorem ruling out the rest from closed terms); a Path~$C'$ technique
-for full-real-domain trig that generalises from the paper's
+theorem ruling out the rest from closed terms), and a Path~$C'$
+technique for full-real-domain trig that generalises from the paper's
 ``manual $i$-sign correction'' prose into an explicit
-range-reduction-by-substitution recipe; and a series of physical
-analogues (Hamiltonian normal forms, Wess--Zumino-style covering
-identities, gauge-fixing in conformal field theory, single-instruction
-analog computing) where the Sheffer-style reduction is either already
-in use or would clarify the underlying structure.
+range-reduction-by-substitution recipe. A separate companion essay
+(\texttt{notes/physics\_motivation/}) discusses speculative analogues
+in physics --- Hamiltonian normal forms, Wess--Zumino covering
+identities, conformal-bootstrap reductions, single-instruction analog
+computing --- and is intentionally excluded from the present paper to
+keep the technical scope self-contained.
 
 The artefact described here is hosted at
 \url{https://github.com/nasqret/eml-formalization} (MIT licence).
@@ -161,13 +158,15 @@ human-in-the-loop architectural decisions; mechanical proof labour
 contributed $\sim\!\!9$~hours of Aristotle wall-clock total across $10$
 chunks.
 
-Physically, we close with a survey of contexts where a Sheffer-style
-generative basis arises---or would clarify the underlying
-structure---if it were better known. These include Hamiltonian normal
-forms in classical mechanics, the Wess--Zumino covering identities
-in supersymmetry, gauge-fixing reductions in conformal field theory,
-and single-instruction analog computing architectures (FPGAs and
-photonic integrated circuits).
+A separate companion essay
+(\texttt{notes/physics\_motivation/} in the same repository) collects
+speculative analogues in physics where a Sheffer-style generative
+basis already arises or would clarify the underlying structure
+---Hamiltonian normal forms, Wess--Zumino covering identities,
+conformal-bootstrap reductions, single-instruction analog computing.
+We deliberately keep the present paper restricted to the formalization
+and the workflow, so that the formal-methods reader has a
+self-contained technical document.
 
 % =====================================================================
 \section{The F36 source language}
@@ -912,68 +911,143 @@ the consult unlocked the chunks, and the chunks turned the consult
 into Lean.
 
 % =====================================================================
-\part{Broader physical contexts}
+\part{Outlook}
 % =====================================================================
-
-% =====================================================================
-\section{Hamiltonian normal forms and the Sheffer reduction}
-\label{sec:hamiltonian}
-% =====================================================================
-
-[TO BE WRITTEN — develops the analogy between (a) the EML reduction
-of the $36$-primitive elementary toolbox to a single binary operator
-and (b) the reduction of a generic Hamiltonian system to its
-Birkhoff--Gustavson normal form, where a complicated dynamical
-system collapses to a finite expression in a small canonical
-generator set. The point is: in both cases the existence of a small
-generative basis is non-trivial and has computational value.]
-
-% =====================================================================
-\section{Wess--Zumino-style covering identities}
-\label{sec:wess-zumino}
-% =====================================================================
-
-[TO BE WRITTEN — discusses the $4d$ Wess--Zumino superalgebra's
-generator reduction (the entire algebra is built from a single odd
-spinor charge $Q_\alpha$ and its conjugate, plus the bracket; analogue
-to ``one binary plus one terminal''). Comments on whether
-Sheffer-style reductions exist for the bosonic generators of the
-super-Poincaré algebra.]
-
-% =====================================================================
-\section{Gauge-fixing and conformal symmetry reduction}
-\label{sec:cft}
-% =====================================================================
-
-[TO BE WRITTEN — Belavin--Polyakov--Zamolodchikov's conformal
-bootstrap reduces the infinite-dimensional space of CFT correlators
-to a small set of structure constants and conformal blocks; the
-analogue is a Sheffer-style reduction in the algebra of correlators.]
-
-% =====================================================================
-\section{Single-instruction analog computing}
-\label{sec:analog-computing}
-% =====================================================================
-
-[TO BE WRITTEN — discusses FPGAs, photonic integrated circuits, and
-the practical implication of the EML Sheffer: a ``single-instruction
-math co-processor'' that evaluates only $\eml(a, b)$ in hardware. The
-point is that the formal proof of completeness implies that such a
-co-processor is universal for the $\F_{36}$ class, modulo the boundary
-points; this is a substantially stronger statement than the empirical
-verification provides.]
 
 % =====================================================================
 \section{Conclusions and outlook}
 \label{sec:conclusions}
 % =====================================================================
 
-[TO BE WRITTEN — summarises the artefact's contribution, the
-philosophical significance of the witness-family form for Path~$C'$,
-the open status of the seven SI questions, and the call-to-action
-for the broader physics community: the existence of continuous
-Sheffer operators is a structural fact about elementary functions
-that deserves wider notice.]
+\subsection*{What the artefact contributes}
+
+The technical contribution is twofold.
+
+First, an end-to-end Lean 4 formalization of Odrzywołek's headline
+completeness theorem (\cref{thm:headline}), comprising $48$
+\texttt{paper\_claim\_*} theorems for the $36$-primitive catalogue
+plus $13$ \texttt{*\_paper\_claim\_*} theorems for the EDL and
+$-\!$EML Sheffer cousins. The artefact closes the SI's flagged
+obstacle (the junk-value collision between Mathlib's
+$\log 0 = 0$ convention and the paper's shortest constant
+witnesses) by adopting partial-evaluation semantics: every claim is
+of the form ``there exists a finite term $t$ such that on a non-empty
+open subset of the natural domain, $t.\mathrm{eval?}\downarrow v$
+with $v$ matching the paper's stated value.''
+
+Second, an architectural recipe (Path~$C'$) for full-real-domain
+trig, generalising the paper's prose ``manual $i$-sign correction''
+into an explicit range-reduction-by-substitution recipe. The
+key foundation is the lemma
+\texttt{ADDsafe}$_{\mathbb{C}}$\texttt{\_ofReal\_ofReal}, which
+discharges the eleven-condition precondition bundle of the addition
+combinator whenever both arguments are real-valued. The recipe is
+faithful to the paper's framing in that the resulting witness is a
+\emph{family} (a different shape per region of $x$), but it is now
+fully mechanised.
+
+\subsection*{The witness-family form and what it means}
+
+A short philosophical observation. The original paper-level claim
+``$\sin x$ is EML-expressible'' has two natural formal statements:
+
+\begin{align*}
+  \exists t,\, \forall x,\, t.\mathrm{eval?}(x) = \sin x
+    &\quad \text{(uniform witness)} \\
+  \forall x,\, \exists t,\, t.\mathrm{eval?}(x) = \sin x
+    &\quad \text{(witness family)}.
+\end{align*}
+
+The narrow witnesses we sealed in the original submission realise the
+first form on a strict open subdomain. Path~$C'$ realises the second
+form on the full natural domain. The order of quantifiers matters
+because the paper's compiler in fact \emph{also} uses witness
+families: it picks a different EML expression for $\sin x$ depending
+on which period of $x$ is being evaluated. Treating the second form
+as the primary mathematical content, rather than as a fallback
+weakening of the first, lets us match what the paper's machinery
+actually does.
+
+\subsection*{What the multi-agent workflow proves}
+
+A pragmatic observation, separate from the mathematics. The artefact
+was produced in roughly one calendar month by a single human
+collaborating with three AI services (Claude, Aristotle, GPT~Pro) and
+one HPC cluster (PCSS Eagle). The split of effort was strikingly
+asymmetric: $\sim$$2.5$~hours of Aristotle wall-clock turned into
+$11$ sealed chunks; one GPT~Pro consult turned into a $\sim$$640$-line
+Lean infrastructure module; PCSS Eagle's role was incidental but
+load-bearing for catching environment drift. The dominant cost was
+human-in-the-loop architectural decisions, not mechanical proof
+labour.
+
+We do not claim this generalises automatically to other formalization
+projects, but the patterns isolated in \cref{sec:aristotle-lessons}
+and \cref{sec:gpt-pro} --- minimise chunk size, treat analytical
+commentary as load-bearing, structure consults around named failure
+modes --- are not specific to this artefact's content.
+
+\subsection*{Open questions explicitly out of scope}
+
+The following questions are out of scope for the present paper but
+recorded in \texttt{OPEN\_QUESTIONS.md} in the repository:
+
+\begin{enumerate}[topsep=2pt, itemsep=2pt]
+\item \textbf{The three §G structural boundary points.}
+  $\sqrt{0}$, $\mathrm{arcosh}(1)$, $\mathrm{hypot}(0, 0)$ collide
+  with the junk-value convention. The paper does not provide
+  EML terms for these either; closing them would require either
+  adjusting Mathlib's convention or a non-natural witness shape.
+
+\item \textbf{Per-primitive completeness for the cousins.} Plan~D
+  (EDL, 8/36 sealed) and Plan~E ($-\!$EML, 5/36 sealed) hit a
+  structural ceiling: closed terms in the cousin grammars admit no
+  mechanism for adding sub-expression values, so most of the
+  $36$-primitive catalogue is conjecturally unreachable. A complete
+  treatment would either (a) extend the cousin grammars with explicit
+  variables of the right kind, or (b) prove the unreachability
+  rigorously (which appears to require Schanuel's conjecture
+  \cite{lang1966schanuel}; cf.~chunk \texttt{085}'s analysis).
+
+\item \textbf{Universal-minimality of EML.} Whether the EML witness
+  for each primitive is minimal in the size measure
+  $K = \mathrm{RPN\_length}$ remains paper-open
+  (Odrzywołek~\S5). Two concrete corollaries are sealed in our
+  artefact (the size of the trivial $\mathbf{1}$ and $\mathbf{x}_n$
+  witnesses), but the full minimality conjecture is not.
+
+\item \textbf{Gradient training for witness search.} The paper
+  speculates (\S4.3) on whether gradient-based optimisation could
+  recover EML witnesses from numerical samples. This is a research
+  question with no obvious entry point in the formalization
+  framework.
+\end{enumerate}
+
+\subsection*{Closing}
+
+The headline result of the source paper --- that one binary operator
+plus one terminal generates the $36$-primitive catalogue of
+elementary functions --- is now machine-checked. The artefact is
+public, the build is reproducible, and the per-claim witness terms
+are exposed in the Lean public API. The companion physics-motivation
+essay explores the broader question of why such reductions deserve
+attention beyond the formal-methods community; we leave that
+discussion to its own document.
+
+\bigskip
+
+\noindent\emph{Acknowledgements.} This work would not have been
+possible without (a) Odrzywołek's source paper and supplementary
+information, which together constitute an unusually detailed seed
+artefact for formalization; (b) the Mathlib community, whose
+$\sim\!8000$-job library underpins every step of the construction;
+(c) Harmonic AI, who provided Aristotle access through the relevant
+period; (d) Anthropic, whose Claude Code orchestrated the
+construction; and (e) the Polish national HPC infrastructure (PCSS
+Eagle, project pl0414-02), which provided independent
+re-verification compute.
+
+\medskip
 
 \begin{thebibliography}{9}
 
@@ -999,6 +1073,13 @@ B.~Naskręcki,
 companion notes \texttt{notes/proof\_structure.pdf} in the
 \href{https://github.com/nasqret/eml-formalization}{eml-formalization}
 repository, 2026.
+
+\bibitem{lang1966schanuel}
+S.~Lang,
+\emph{Introduction to Transcendental Numbers},
+Addison-Wesley, 1966.
+(Schanuel's conjecture, attributed to S.~Schanuel, is recorded in
+the introduction to this volume.)
 
 \end{thebibliography}
 
