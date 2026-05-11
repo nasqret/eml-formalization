@@ -3,7 +3,7 @@ import EML.Framework.EMLPartial
 import EML.Framework.KCounting
 
 /-!
-# Compact witnesses — small EMLTerm witnesses for the binary primitives
+# AlternativeWitnesses — direct-macro witnesses for the binary primitives
 
 The `paper_claim_*` theorems in `EML.Framework.PaperClaims` use witnesses
 produced by the structural compiler (F36 → EL → EML pipeline). For
@@ -15,6 +15,12 @@ This module provides **alternative direct-macro witnesses** for the
 same paper claims, built directly from the unconditional macros
 (`mkMulAll`, `mkDivNonzeroDenom`, `mkAvgAll`, `mkPowAll`, `mkLogbAll`,
 `mkHypotAll`, `mkInvNonzero`) defined in `Builders/Unconditional.lean`.
+
+> **Naming note:** this module was renamed from `CompactWitnesses` on
+> 2026-05-11 because the K-count finding below showed the direct-macro
+> witnesses are **not** smaller than the structural-compile output.
+> The `_compact` suffix on the theorem names is kept as the historical
+> identifier; read it as "direct-macro alternative".
 
 **Honest finding** (verified by `K_count_*_compact` theorems below):
 the K-counts of these direct-macro witnesses are **identical** to

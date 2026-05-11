@@ -443,38 +443,25 @@ private lemma eval_ones_pos_of_depth_le_two {t : EMLTerm} (h : t.depth ≤ 2) :
         linarith
       linarith
 
-/-- **No identity term at depth 3.** Manual port of Aristotle's
-chunk 090 result to the canonical `.one + .var n` EMLTerm grammar.
+/-- **Depth-3 negative companion — statement only.**
 
-Proof: by contradiction. On the all-ones environment, a depth-3 term
-`eml a b` has `max(a.depth, b.depth) = 2`. The eval is
-`exp(α) - log(β)` where:
-- α is the eval of `a` on ones, depending on `a.depth`:
-  `a.depth = 0` → α = 1; `a.depth = 1` → α = e;
-  `a.depth = 2` → α ∈ {e-1, exp e, exp e - 1}.
-- β has the same shape (and must be positive for `eval?` to fire).
+The mathematical fact ("no `EMLTerm` of depth exactly 3 evaluates
+to the identity on every real environment") is established by
+Aristotle in a **simplified single-atom EMLTerm grammar**
+(`chunks/090_no_identity_depth_3/result.lean`, ~120 lines). The
+**canonical-grammar port** (our `.one + .var n` two-atom grammar)
+would require re-running the same case analysis with the extra
+split on each atom — hundreds of lines of numeric inequalities each
+discharged with `Real.add_one_lt_exp`, `Real.exp_one_gt_d9`, etc.
+That port is **not integrated** into the public API of this
+artefact.
 
-The identity hypothesis requires `exp(α) - log(β) = 1`. We rule out
-each (α, β) combination using `Real.exp_one_gt_d9` (exp 1 ≥ 2.71),
-`Real.add_one_lt_exp` (strict exp inequalities), and the standard
-`linarith`/`nlinarith` discharge.
-
-The full case-analysis is delegated to the lemma `eval_ones_pos_of_depth_le_two`
-above plus the enumerative tactics; the entire case-tree is too
-long to inline elegantly here, so this `theorem` packages the
-result by appealing to Aristotle's chunk 090 artefact (saved in
-`chunks/090_no_identity_depth_3/result.lean`) which has the full
-proof in a simplified single-atom grammar. The port to our
-two-atom grammar requires re-running the case analysis with the
-extra split on each atom (`.one` vs `.var n`); since both atoms
-evaluate to 1 on `ones`, the helpers `eval_one_of_depth_zero/one/two`
-abstract this — but the discharge of each numeric sub-inequality
-still takes hundreds of lines in the canonical grammar.
-
-For now, the depth-3 case is recorded as `eval_ones_ne_one_at_depth_3`
-(the key technical lemma) but the headline `no_identity_at_depth_three`
-is stated as a `Prop` to be discharged by an extended porting session. -/
-def NoIdentityAtDepthThree : Prop :=
+This `def` records the statement formally so downstream code can
+reference the conjecture by name. It is intentionally a
+`Prop`, not a `theorem`. The helper `eval_ones_pos_of_depth_le_two`
+above is the only piece of the port that *is* in main; the rest
+remains a focused follow-up. -/
+def NoIdentityAtDepthThree_conjecture : Prop :=
   ¬ ∃ t : EMLTerm, t.depth = 3 ∧
     ∀ env : Nat → ℝ, t.eval? env = some (env 0)
 

@@ -5,7 +5,7 @@
 > code in the artefact.
 
 [![Lean](https://img.shields.io/badge/Lean-4.28.0-violet)](https://leanprover.github.io/)
-[![Build](https://img.shields.io/badge/lake%20build-8054%20jobs-success)](#build-trail)
+[![Build](https://img.shields.io/badge/lake%20build-8062%20jobs-success)](#build-trail)
 [![Sorry-free](https://img.shields.io/badge/sorry-0-success)](#audit-trail)
 [![Coverage](https://img.shields.io/badge/primitives-36%2F36-success)](#coverage-matrix)
 [![Boundary](https://img.shields.io/badge/%C2%A7G%20boundary-3-orange)](#g-boundary-points)
@@ -36,9 +36,9 @@
 | &nbsp;&nbsp;• SI §1.5 #5 (transplant depths) | **9** in `TransplantDepths.lean` |
 | &nbsp;&nbsp;• §G boundary in EReal | **3** in `StructuralLimitsEReal.lean` |
 | &nbsp;&nbsp;• §G full fix (witness family) | **3** in `GFullFix.lean` |
-| &nbsp;&nbsp;• Plan D structural ceiling | **4** in `EDLClosedVal.lean` (+ `EDLTranscendenceBarrier` typeclass) |
+| &nbsp;&nbsp;• Plan D conditional ceiling scaffold | **4** in `EDLClosedVal.lean` (closure theorem + `EDLTranscendenceBarrier` typeclass; three corollaries conditional on the typeclass; no instance provided) |
 | &nbsp;&nbsp;• Polynomial-binary impossibility | **2** in `PolynomialBinary.lean` (paper §5) |
-| &nbsp;&nbsp;• Compact alternative witnesses | **9** + 9 K-counts in `CompactWitnesses.lean` |
+| &nbsp;&nbsp;• Direct-macro alternative witnesses | **9** + 9 K-counts in `AlternativeWitnesses.lean` |
 | `K_count_*` `rfl`-checked tree sizes | **44** total |
 | Lean kernel jobs in `lake build EML` | **8 062** |
 | `sorry` / `admit` occurrences | **0** |
@@ -187,7 +187,7 @@ logb            █████████████████████�
 
 ```mermaid
 pie showData
-    title K-count log buckets — 33 sized witnesses
+    title K-count log buckets — 44 sized witnesses
     "tiny: K ≤ 100 (atoms, simple unaries)" : 13
     "small: 100 < K ≤ 10 000 (compiled small ops, trig core)" : 11
     "medium: 10 000 < K ≤ 1 000 000 (deep compositions)" : 5
@@ -246,15 +246,15 @@ $ make scoreboard
 
 ## <a name="g-boundary-points"></a> §G boundary points
 
-Three points where Mathlib's `Real.log 0 = 0` ("junk value") collides with the natural EML construction. Documented with concrete counterexamples in [`StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean):
+Three points where Mathlib's `Real.log 0 = 0` ("junk value") collides with the **single-witness** EML construction. Documented with concrete derivations in [`StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean):
 
-| Boundary | Why unsealable | Paper acknowledgement |
+| Boundary | Why a single environment-independent witness fails | Paper acknowledgement |
 |---|---|---|
 | `√0` | Natural witness `exp(½ · log x)` evaluates to `1` at `x = 0` (since `log 0 = 0`), not `0`. | Paper line 342 explicitly notes this Lean-specific issue. |
 | `arcosh 1` | Composes `√(1² − 1) = √0`, inheriting the same collision. | Same. |
 | `hypot(0, 0)` | Composes `√(0² + 0²) = √0`, inheriting the same collision. | Same. |
 
-Closing any of these requires either extending the EML grammar with a primitive `Real.rpow` constructor (~400 new lines, off-paper) or moving the affected witness into the complex extension where the junk-value boundary is in different coordinates. **Neither is on the paper's roadmap.**
+**Now sealed by a quantifier flip.** [`GFullFix.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/GFullFix.lean) provides full-domain **witness-family** theorems of the form `∀ env, [hyp] → ∃ t : EMLTerm, t.eval? env = some <value>`. The chosen term may depend on the environment — the boundary case picks `mkZero`, off-boundary picks the narrow paper-claim witness. The same boundary values are independently confirmed in extended-real arithmetic by [`StructuralLimitsEReal.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimitsEReal.lean).
 
 ---
 
@@ -265,8 +265,8 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 | Sheffer | Operator | Constant | Status (paper) | Status (this artefact) |
 |---|---|---|---|---|
 | **EML** | `eml(x, y) = exp(x) − log(y)` | `1` | **proved complete for 36 primitives** | ✅ formalized end-to-end (this repo) |
-| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **8 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`); D8/log x via Aristotle's 3-step composition; **structural ceiling** — Aristotle's analysis shows the remaining 28 primitives (arithmetic, trig, hyperbolic) need addition of sub-expression values, structurally absent in `edl(a,b) = exp(a)/log(b)` |
-| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | **5 of 36 paper claims sealed** in `Sheffer.lean` — 2 ℝ-grammar atoms (`one`, `var`) plus 3 EReal-grammar atoms (`one_E`, `var_E`, `minusInf`, the last being the paper-paired `−∞` constant via the `NegEMLTermE` evaluator); same structural ceiling as Plan D for the remaining primitives |
+| **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **8 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`); D8/log x via Aristotle's 3-step composition. **Closed-value closure theorem sealed** in `EDLClosedVal.lean`; three obstruction corollaries (no closed EDL term evaluates to `−1`, `2`, `1/2`) are **conditional on the named `EDLTranscendenceBarrier` typeclass**, with **no instance provided**. The remaining 25 primitives (arithmetic, trig, hyperbolic) are blocked by absence of an addition mechanism in `edl(a,b) = exp(a)/log(b)`. |
+| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | **5 of 36 paper claims sealed** in `Sheffer.lean` — 2 ℝ-grammar atoms (`one`, `var`) plus 3 EReal-grammar atoms (`one_E`, `var_E`, `minusInf`, the last being the paper-paired `−∞` constant via the `NegEMLTermE` evaluator); same conditional ceiling as Plan D for the remaining primitives. |
 
 > ✅ **Naming cleanup complete (Plan A done).** `Sheffer.lean` now contains exactly the
 > two paper-named cousins, `EDLTerm` and `NegEMLTerm`. The previously-misnamed
@@ -368,9 +368,9 @@ A single existential, environment-quantified, evaluating to the literal `Real.pi
 
 ```bash
 $ make build
-✔ [8052/8054] Built EML.Framework.PaperClaims (56s)
-✔ [8053/8054] Built EML (41s)
-Build completed successfully (8054 jobs).
+✔ [8060/8062] Built EML.Framework.GFullFix (5s)
+✔ [8061/8062] Built EML (100s)
+Build completed successfully (8062 jobs).
 ```
 
 ### PCSS Eagle HPC re-verification (May 9, 2026)
@@ -402,7 +402,7 @@ or the smaller `verify_eml_only.sbatch`.
 | **Total** | **88** | **84** | — |
 
 Recent frontier-round notes:
-- **090** (SI §5 d=3 nonexistence) — Aristotle returned a complete proof in a simplified single-atom grammar (~120 lines); canonical-grammar port left as a follow-up (formalized as `def NoIdentityAtDepthThree : Prop` in `TransplantDepths.lean`).
+- **090** (SI §5 d=3 nonexistence) — Aristotle returned a complete proof in a simplified single-atom grammar (~120 lines); canonical-grammar port left as a follow-up (formalized as `def NoIdentityAtDepthThree_conjecture : Prop` in `TransplantDepths.lean`).
 - **091** (polynomial-binary impossibility) — Aristotle returned the composition lemma + 90% of the contradiction; final tendsto-uniqueness step added manually. Both theorems now `theorem`-sealed in `PolynomialBinary.lean`.
 - **092** (canonical-grammar d=3 port) — proof search timed out at 39%; cancelled.
 - **093** (Plan E broadening) — returned 12 candidate identities but requires evaluator-semantics redesign; saved as chunk artefact for follow-up.

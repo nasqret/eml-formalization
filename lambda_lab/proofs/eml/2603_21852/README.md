@@ -4,7 +4,7 @@ Lean 4 + Mathlib v4.28 formalization of *"All elementary functions from a single
 
 ## Headline result
 
-> **All 36 paper primitives are formalized completely on a non-empty open subdomain of their natural domain — modulo three structural boundary points (`√0`, `arcosh 1`, `hypot(0, 0)`).**
+> **All 36 paper primitives are formalized on a non-empty open subdomain of their natural domain. The three §G boundary points (`√0`, `arcosh 1`, `hypot(0, 0)`) are additionally sealed by witness-family theorems (`∀ env, [hyp] → ∃ t, …`) in `GFullFix.lean`, and confirmed correct in extended-real arithmetic in `StructuralLimitsEReal.lean`.**
 
 Each paper primitive is sealed via a literal `EMLTermℂ` (or `EMLTerm`, real fragment) witness term whose `eval?` matches the paper's stated value, with the Lean kernel as the only acceptance criterion.
 
@@ -50,7 +50,7 @@ These unblocked the four trig literal witnesses (`arctan`, `arccos`, `arcsin`, `
 ```bash
 cd lean_workspace
 lake build       # builds the EML library + transitive Mathlib
-                 # ~8 050 jobs, sorry-free
+                 # ~8 062 jobs, sorry-free
 ```
 
 The `EML.lean` root imports the public surface:
@@ -123,15 +123,20 @@ real-EL-compiled `−x` lifted via `EMLTerm.toComplex`) to circumvent the
 witnesses `.one` (`cos 0 = 1`) and `zeroPubℂ` (`sin 0 = tan 0 = arctan 0
 = 0`), filling the previous narrow-domain gap at the origin.
 
-## Boundary points (§G structural)
+## Boundary points (§G) — now sealed via witness family
 
-Three measure-zero corners where the natural EML construction fails because `Real.log 0 = 0` (Mathlib junk):
+Three measure-zero corners where the **single-witness** EML construction collides with the convention `Real.log 0 = 0`:
 
 * **`√0 = 0`**: `mkSqrtPos` requires positive argument.
 * **`arcosh 1 = log(1 + √(1² − 1)) = log(1 + √0)`**: inner sqrt hits the `√0` boundary.
 * **`hypot(0, 0) = √(0² + 0²) = √0`**: same.
 
-Documented in `StructuralLimits.lean` with concrete derivations. The paper's own Table of Witnesses does not provide explicit EML terms for these boundary points either.
+Two complementary artefacts close these:
+
+* `Framework/GFullFix.lean` — **witness-family** theorems of the form `∀ env, [hyp] → ∃ t : EMLTerm, t.eval? env = some <value>` for `√x`, `arcosh x`, `hypot(x, y)` on the *full* natural domain (boundary value picked up by `mkZero`; off-boundary the narrow paper-claim witness applies). This is the Path-C′-style quantifier flip: the term `t` is allowed to depend on the environment.
+* `Framework/StructuralLimitsEReal.lean` — independent **extended-real** confirmation that the limiting value at each boundary is indeed `0` under `ENNReal.log`.
+
+Documented in `StructuralLimits.lean` with the original `decide`-style boundary derivations as well. The paper's own Table of Witnesses does not provide explicit EML terms for these boundary points either.
 
 ## What's done and what's open (see `OPEN_QUESTIONS.md` for a consolidated action list)
 
@@ -140,8 +145,8 @@ Documented in `StructuralLimits.lean` with concrete derivations. The paper's own
 | **Sheffer naming cleanup** (Plan A) | ✅ **DONE** — `Sheffer.lean` aligned with paper §3.1; misnamed types replaced |
 | **Full-real-domain trig** (Plan C′) | ✅ **DONE** — `paper_claim_{sin_full, arctan_full, tan_full}` cover full natural domains |
 | **Custom complex-log branch** (Plan B) | ❌ Architecturally infeasible — see `OPEN_QUESTIONS.md` §B.0 |
-| **EDL per-primitive completeness** (Plan D) | 🔄 **8/36** sealed + closure-theorem scaffold (`EDLClosedVal.lean`) + `EDLTranscendenceBarrier` typeclass packaging the conjectural remaining cases |
-| **−EML per-primitive completeness** (Plan E) | 🔄 **5/36** sealed; structural ceiling same as Plan D |
+| **EDL per-primitive completeness** (Plan D) | 🔄 **8/36** sealed + closed-value closure theorem in `EDLClosedVal.lean`; three obstruction corollaries (`−1`, `2`, `1/2`) are conditional on the named `EDLTranscendenceBarrier` hypothesis, with no instance provided |
+| **−EML per-primitive completeness** (Plan E) | 🔄 **5/36** sealed; same conditional ceiling as Plan D |
 | **SI §1.5 #5 variable-transplant depths** | ✅ Affirmative `4k` family + d=1, 2 negative + d=3 Aristotle-proved (`TransplantDepths.lean`); full closure `OnlyMultiplesOfFourHaveIdentities` remains paper-open |
 | **§G boundary points** (`√0`, `arcosh 1`, `hypot(0,0)`) | ✅ Now sealed via witness-family quantifier flip in `GFullFix.lean`; also proved in EReal arithmetic by `StructuralLimitsEReal.lean` |
 | **Paper §5 universal-minimality (polynomial class)** | ✅ Sealed — `no_polynomial_binary_generates_exp` in `PolynomialBinary.lean`. Other function classes (rational, semialgebraic, real-analytic) remain open |
@@ -150,7 +155,7 @@ Documented in `StructuralLimits.lean` with concrete derivations. The paper's own
 
 ## Authors and acknowledgements
 
-* Bartosz Naskręcki (UAM Poznań / PW) — formalisation lead.
+* Bartosz Naskręcki (UAM Poznań / CCAI Warsaw University of Technology) — formalisation lead.
 * **Aristotle** (Harmonic) — proof search for many individual chunks.
 * **GPT Pro** — independent code review across multiple rounds; recommended the structural-compiler architecture and the Cayley-quotient route for tan.
 * **Claude** (Anthropic) — orchestration, scaffolding, composition.

@@ -48,11 +48,16 @@ commentary.
 
 namespace EML
 
-/-- Inductive predicate for the values reachable as evaluations of
-**closed** `EDLTerm`s (terms with no `var` leaves). The constructors
-mirror the EDL grammar: `1` and `Real.exp 1` are the two atomic
-constants, and the `edl` combinator generates new values via
-`exp(a) / log(b)` when `log b ≠ 0`. -/
+/-- Inductive predicate **containing** the values reachable as
+evaluations of **closed** `EDLTerm`s (terms with no `var` leaves).
+The constructors mirror the EDL grammar: `1` and `Real.exp 1` are
+the two atomic constants, and the `edl` combinator generates new
+values via `exp(a) / log(b)` when `log b ≠ 0`.
+
+We prove containment (`edl_closed_eval_in_closedVal` below) but not
+the converse. So `EDLClosedVal v` should be read as "`v` is in a
+superset of the closed-EDL value set", not "`v` is in the exact
+closed-EDL value set". -/
 inductive EDLClosedVal : ℝ → Prop
   | one : EDLClosedVal 1
   | e_const : EDLClosedVal (Real.exp 1)

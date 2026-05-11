@@ -1,34 +1,45 @@
 import Mathlib
 
 /-!
-# PolynomialBinary — paper §5 / Pro #4 frontier (scaffold)
+# PolynomialBinary — paper §5 polynomial-class first cut (PROVED)
 
-This module sets up the **definitions** for the polynomial-binary
-impossibility result that GPT Pro recommended as the right entry
-point into universal minimality. The headline statement is:
+This module proves the polynomial-class first cut of paper §5
+universal-minimality: every `BTerm` over a polynomial binary
+operation `B` is a univariate polynomial under the diagonal
+environment, hence no such term equals `Real.exp` on all of `ℝ`.
 
-> *No bivariate polynomial binary operation, applied freely with
-> constants and a single variable, can equal `Real.exp` on all of ℝ.*
+## Two theorems
 
-The proof has two pieces (sketches in `gpt_pro_bundle/frontier_questions/RESPONSE.md`):
+1. **Composition lemma** `polynomial_binary_terms_are_polynomial`:
+   if `B : ℝ → ℝ → ℝ` is a polynomial binary (witnessed by some
+   `MvPolynomial (Fin 2) ℝ`), then for every `t : BTerm` there
+   exists a univariate `P : Polynomial ℝ` such that
+   `t.eval B (fun _ => x) = P.eval x` for all `x : ℝ`. Proof: by
+   induction on `t`. The `app` case uses `MvPolynomial.aeval` to
+   substitute the inductive polynomial witnesses for the two
+   sub-terms into the bivariate witness for `B`.
 
-1. A composition lemma: any `BTerm` evaluated under a polynomial
-   binary `B` and a constant environment gives a univariate polynomial
-   in the environment value. By induction; the `app` case substitutes
-   via `MvPolynomial.aeval`.
+2. **Polynomial-binary impossibility**
+   `no_polynomial_binary_generates_exp`: if `B` is a polynomial
+   binary, no `BTerm` over `B` equals `Real.exp` on every input.
+   Proof: by the composition lemma, the candidate witness reduces
+   to a univariate polynomial `P` with `P.eval x = Real.exp x` for
+   all `x`. Then `P.eval x / Real.exp x = 1` for every `x`, but
+   `Polynomial.tendsto_div_exp_atTop` says the ratio tends to `0`
+   at infinity — contradiction.
 
-2. A growth-bound contradiction: `Polynomial.tendsto_div_exp_atTop`
-   says every `P.eval x / Real.exp x` tends to 0 at infinity, but
-   `P.eval x = Real.exp x` for all `x` would force the ratio to be 1.
+## Scope
 
-The composition lemma's `app` case requires precise handling of
-`MvPolynomial.aeval` / `eval₂Hom` interaction with `Polynomial.eval`,
-which is non-trivial Mathlib API surface. This module **states** the
-two theorems and the supporting definitions; the proofs are delegated
-to Aristotle (chunk 091) and not yet integrated.
+This is paper §5's universal-minimality question, **restricted to
+polynomial binaries**. The general question (any continuous binary
+`B`?) remains paper-open; Pro noted that classes like rational,
+semialgebraic, Pfaffian, and real-analytic each need their own
+impossibility argument.
 
-When the proofs return clean, the headline `Prop` is:
-`PolynomialBinaryImpossibility` below.
+GPT Pro recommended this as the right entry point (2026-05-10
+consult). Aristotle (chunk 091) returned the composition lemma and
+the ratio-construction; the final `tendsto_nhds_unique` step was
+added manually.
 -/
 
 /-- Free term language over a single binary operation `B`, with

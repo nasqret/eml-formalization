@@ -26,9 +26,9 @@ Beyond the original 61 paper claims, today's frontier modules
 | `TransplantDepths.lean` | SI §1.5 #5 — variable-transplant identity terms at every depth `4k`; negative for depths 1 and 2 | 9 |
 | `StructuralLimitsEReal.lean` | §G boundary points proved correct in extended-real arithmetic | 3 |
 | `GFullFix.lean` | Full-domain `√x` / `arcosh x` / `hypot(x,y)` via witness families | 3 |
-| `EDLClosedVal.lean` | Plan D structural ceiling: closure theorem + `EDLTranscendenceBarrier` typeclass | 4 + class |
+| `EDLClosedVal.lean` | Plan D conditional ceiling scaffold: closure theorem (proved) + `EDLTranscendenceBarrier` typeclass (no instance) + three obstruction corollaries (conditional on the typeclass) | 4 + class |
 | `PolynomialBinary.lean` | Paper §5 universal-minimality: no polynomial binary can generate `Real.exp` | 2 |
-| `CompactWitnesses.lean` | Direct-macro alternative witnesses for binaries (with honest finding: same K as compile output) | 18 |
+| `AlternativeWitnesses.lean` | Direct-macro alternative witnesses for binaries (with honest finding: same K as compile output) | 18 |
 
 ---
 
@@ -39,18 +39,30 @@ Beyond the original 61 paper claims, today's frontier modules
 `paper_claim_i`. Each is a one-line existential whose witness is a
 concrete, machine-checked `EMLTerm` or `EMLTermℂ` tree.
 
-### Real unaries (8 of 8) — full natural domain bar `√0`
-`paper_claim_{exp, log, inv, half, minus, sqr, sigma}` on full domains;
-`paper_claim_sqrt_pos` on `(0, ∞)`. The boundary `x = 0` for `√` is the
-§G junk-value collision.
+### Real unaries (8 of 8)
+* **Single structural witness — open-domain:**
+  `paper_claim_{exp, log, inv, half, minus, sqr, sigma}` on full
+  natural domains; `paper_claim_sqrt_pos` on `(0, ∞)`.
+* **Boundary / full-domain — witness-family:** the `x = 0` boundary
+  for `√` is sealed by `paper_claim_sqrt_full : ∀ x ≥ 0, ∃ t : EMLTerm,
+  t.eval? <env-of-x> = some (√x)` in `GFullFix.lean` (the term picks
+  `mkZero` at the boundary, the narrow witness elsewhere).
 
-### Hyperbolic (6 of 6) — full natural domain bar `arcosh 1`
-`paper_claim_{sinh, cosh, tanh, arsinh, artanh}` on full domains;
-`paper_claim_arcosh` on `(1, ∞)`.
+### Hyperbolic (6 of 6)
+* **Single structural witness — open-domain:**
+  `paper_claim_{sinh, cosh, tanh, arsinh, artanh}` on full natural
+  domains; `paper_claim_arcosh` on `(1, ∞)`.
+* **Boundary / full-domain — witness-family:** the `x = 1` boundary
+  for `arcosh` is sealed by `paper_claim_arcosh_full : ∀ x ≥ 1, ∃ t,
+  t.eval? <env-of-x> = some (arcosh x)` in `GFullFix.lean`.
 
-### Binary (8 of 8) — full natural domain bar `hypot(0, 0)`
-`paper_claim_{add, sub, mul, div, avg, pow, logb}` on full domains;
-`paper_claim_hypot` on `ℝ² \ {(0, 0)}`.
+### Binary (8 of 8)
+* **Single structural witness — open-domain:**
+  `paper_claim_{add, sub, mul, div, avg, pow, logb}` on full natural
+  domains; `paper_claim_hypot` on `ℝ² \ {(0, 0)}`.
+* **Boundary / full-domain — witness-family:** the origin boundary
+  for `hypot` is sealed by `paper_claim_hypot_full : ∀ (x y : ℝ),
+  ∃ t, t.eval? <env-of-(x,y)> = some (hypot x y)` in `GFullFix.lean`.
 
 ### Trig (6 of 6) — wide subdomains via paired companion witnesses
 | Primitive | Sealed subdomain | Construction |
@@ -239,18 +251,22 @@ symbolic equivalence. **Out of scope for this formalisation.**
   EML; the cousins are confirmed empirically via the Mathematica /
   Rust `VerifyBaseSet` procedure. A full parallel sealing effort for
   either cousin is **1–2 weeks per cousin**. Plans D and E in
-  `OPEN_QUESTIONS.md`. **Plan D — at structural ceiling:** 8 of 36
-  EDL paper claims sealed in the framework
+  `OPEN_QUESTIONS.md`. **Plan D — conditional ceiling scaffold:** 8 of
+  36 EDL paper claims sealed in the framework
   (`edl_paper_claim_{one, var, e_const, exp, log, div, exp_exp,
   log_log}`). D8 / log x is non-trivial — Aristotle (chunk 085)
   discovered the three-step composition `edl one (edl (edl one (var
   0)) e_const)`; D9 / div is `edl(D8(x), D4(y))` (chunk 086, Aristotle
-  also corrected the statement). Constants `−1`, `2`, `1/2` are
-  conjecturally unreachable from closed EDL terms (Schanuel-conjecture
-  obstruction); the remaining 25 primitives (multiplication-needing
-  arithmetic, trig, hyperbolic) are blocked by absence of an addition
-  mechanism in `edl(a, b) = exp(a)/log(b)`. **Plan E — at structural
-  ceiling:** 5 of 36 sealed: `one`, `var` over ℝ, plus the EReal
+  also corrected the statement). The closed-value closure theorem is
+  fully proved in `EDLClosedVal.lean`. Three obstruction corollaries
+  (no closed EDL term evaluates to `−1`, `2`, `1/2`) are **conditional
+  on the named `EDLTranscendenceBarrier` typeclass** (a Schanuel-style
+  hypothesis); **no instance is provided**, so these three corollaries
+  are scaffolded but not closed. The remaining 25 primitives
+  (multiplication-needing arithmetic, trig, hyperbolic) are blocked by
+  absence of an addition mechanism in `edl(a, b) = exp(a)/log(b)`.
+  **Plan E — same conditional ceiling:** 5 of 36 sealed: `one`, `var`
+  over ℝ, plus the EReal
   pilot lifted from chunk 088 (`one_E`, `var_E`, `minusInf` — the
   paper-paired `−∞` constant via a parallel `NegEMLTermE` grammar).
   Same arithmetic obstruction for the remaining 31 primitives.
@@ -270,11 +286,19 @@ symbolic equivalence. **Out of scope for this formalisation.**
   [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
   for the full audit trail.
 
-### Three §G boundary points (architectural)
+### Three §G boundary points — now sealed via witness family
 `√0`, `arcosh 1`, `hypot(0, 0)` — Mathlib's `Real.log 0 = 0` makes
-these unsealable in the natural EML construction. The paper does not
-provide explicit EML terms either. Documented with concrete
-counterexamples in `EML.Framework.StructuralLimits`.
+these unsealable as a **single, environment-independent** EML witness.
+They are sealed instead via a **witness-family quantifier flip** in
+`EML.Framework.GFullFix`: theorems of the form `∀ env, [hyp] → ∃ t,
+t.eval? env = some <value>`, where the boundary case picks the
+constant-zero term `mkZero` and the off-boundary case picks the
+existing narrow paper-claim witness. The same boundary values are
+also confirmed correct in extended-real arithmetic by
+`EML.Framework.StructuralLimitsEReal`. The original
+single-witness obstruction is still recorded with concrete derivations
+in `EML.Framework.StructuralLimits`; the paper does not provide
+explicit EML terms for these points either.
 
 ---
 
@@ -282,7 +306,7 @@ counterexamples in `EML.Framework.StructuralLimits`.
 
 ```bash
 cd lambda_lab/proofs/eml/2603_21852/lean_workspace
-lake build       # local re-verify; ~8 054 jobs
+lake build       # local re-verify; ~8 062 jobs
 ```
 
 The `EML.lean` root imports `EML.Framework.PaperClaims` (the public

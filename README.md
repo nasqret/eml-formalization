@@ -5,7 +5,7 @@
 
 [![Lean](https://img.shields.io/badge/Lean-4.28.0-violet)](https://leanprover.github.io/)
 [![Mathlib](https://img.shields.io/badge/Mathlib-v4.28-blue)](https://github.com/leanprover-community/mathlib4)
-[![Build](https://img.shields.io/badge/lake%20build-8054%20jobs-success)](#quick-start)
+[![Build](https://img.shields.io/badge/lake%20build-8062%20jobs-success)](#quick-start)
 [![Sorry-free](https://img.shields.io/badge/sorry-0-success)](#headline)
 [![Paper](https://img.shields.io/badge/arXiv-2603.21852-darkred)](https://arxiv.org/abs/2603.21852)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
@@ -14,7 +14,7 @@
 
 ## <a name="headline"></a> Headline
 
-**All 36 paper primitives are formalized via literal `EMLTermℂ` (or `EMLTerm`) witness terms whose `eval?` matches the paper's stated value, on a non-empty open subdomain of the natural mathematical domain — modulo three structural boundary points the paper itself flags.**
+**All 36 paper primitives are formalized via literal `EMLTermℂ` (or `EMLTerm`) witness terms whose `eval?` matches the paper's stated value, on a non-empty open subdomain of the natural mathematical domain. The three §G boundary points the paper itself flags (`√0`, `arcosh 1`, `hypot(0, 0)`) are additionally sealed via witness-family theorems (`∀ env, [hyp] → ∃ t, …`) in `GFullFix.lean`.**
 
 The Lean kernel is the only acceptance criterion: every witness is a concrete syntax tree whose partial evaluation (`Option ℂ`-valued) is checked to equal the corresponding `Real.sin x`, `Real.exp x`, `Real.arcsin x`, etc.
 
@@ -27,9 +27,9 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 | 📜 EDL `paper_claim_*` theorems | **8** | in `EML.Framework.Sheffer` (Plan D) |
 | 📜 −EML `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan E) |
 | 📜 **Original public claims** | **61** | 48 EML + 8 EDL + 5 −EML |
-| ⭐ Frontier theorems (GPT Pro consult) | **+39** | SI §1.5 #5, §G witness-family, polynomial-binary impossibility, EDL closure scaffold, compact alternative witnesses, EReal templates |
+| ⭐ Frontier theorems (GPT Pro consult) | **+39** | SI §1.5 #5, §G witness-family, polynomial-binary impossibility, EDL closure scaffold (conditional on `EDLTranscendenceBarrier`), direct-macro alternative witnesses, EReal templates |
 | 📜 **Total public theorems** | **100** | 61 original + 39 frontier |
-| 🌳 K-count theorems (`rfl`-checked tree sizes) | **44** | in `EML.Framework.KCounting` (33 original + 9 compact + 2 conditional-helper) |
+| 🌳 K-count theorems (`rfl`-checked tree sizes) | **44** | in `EML.Framework.KCounting` (33 original + 9 direct-macro alternatives + 2 conditional-helper) |
 | 🛠 Lean kernel jobs | **8 062** | `lake build` finishes sorry-free |
 | 🚫 `sorry` / `admit` / axiom abuse | **0** | clean by `#print axioms` |
 | ⚠ §G structural boundary points | **3 / 3 sealed** | `√0`, `arcosh 1`, `hypot(0, 0)` — now sealed via witness-family quantifier flip in `GFullFix.lean` |
@@ -38,15 +38,15 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 
 ## Coverage scoreboard
 
-| Family | Count | Sealed on | §G boundary |
+| Family | Count | Single structural witness (open-domain) | Boundary / full-domain (witness-family in `GFullFix.lean`) |
 |---|---:|---|---|
 | **Atoms** (`1`, `π`, `e`, `−1`, `2`, `½`, `x`, `i`) | 8 | full domain | — |
 | **Real unaries** (`exp`, `log`, `inv`, `½·`, `−`, `(·)²`, `σ`) | 7 | full natural domain | — |
-| `√` | 1 | `(0, ∞)` | `√0` |
+| `√` | 1 | `(0, ∞)` — `paper_claim_sqrt_pos` | `∀ x ≥ 0, ∃ t, t.eval = √x` — `paper_claim_sqrt_full` |
 | **Hyperbolic** (`sinh`, `cosh`, `tanh`, `arsinh`, `artanh`) | 5 | full natural domain | — |
-| `arcosh` | 1 | `(1, ∞)` | `arcosh 1` |
+| `arcosh` | 1 | `(1, ∞)` — `paper_claim_arcosh` | `∀ x ≥ 1, ∃ t, t.eval = arcosh x` — `paper_claim_arcosh_full` |
 | **Binaries** (`+`, `−`, `·`, `/`, `avg`, `^`, `log_b`) | 7 | full natural domain | — |
-| `hypot` | 1 | `ℝ² ∖ {(0,0)}` | `hypot(0,0)` |
+| `hypot` | 1 | `ℝ² ∖ {(0,0)}` — `paper_claim_hypot` | `∀ (x, y), ∃ t, t.eval = hypot(x, y)` — `paper_claim_hypot_full` |
 | **Trig** `cos` | 1 | `ℝ ∖ {0}` | — (full domain) |
 | **Trig** `sin` | 1 | `ℝ ∖ {π/2}` (full domain via Path C′) | — |
 | **Trig** `arctan` | 1 | full ℝ (full domain via Path C′) | — |
@@ -54,6 +54,10 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 | **Trig** `arccos`, `arcsin` | 2 | full open `(−1, 1)` | — |
 
 **Path C′ delivered full-real-domain witnesses for `sin`, `arctan`, `tan`** via GPT Pro's recommendation: range-reduction by substitution.
+
+> **Two different shapes** appear in the table above:
+> - **Single structural witness** (the bulk of the artefact): one closed `EMLTerm` or `EMLTermℂ` whose `eval?` matches the paper's value on an *open* subdomain of the natural domain, independent of any environment.
+> - **Witness-family** (used at §G boundaries and for the wider Path-C′ trig domains): a theorem of the form `∀ env, [hyp] → ∃ t : EMLTerm, t.eval? env = some <value>`. The term `t` may depend on `env`. The boundary case picks `mkZero`; off-boundary the existing narrow witness applies.
 
 > **Path C′ in one paragraph.** Pro's refinement of the original Plan C. The narrow trig witnesses fail outside their submission-era domains because intermediate complex values cross the `arg = π` cut. Plan B (custom log branch) is architecturally infeasible — `EMLTermℂ.eval?` hard-codes Mathlib's principal `Complex.log`. Plan C′ instead: (1) prove `ADDsafeℂ_ofReal_ofReal` once — the gnarly 11-condition `mkAddℂ` precondition bundle holds automatically when both arguments are real-valued, so period shifts via repeated `mkAddℂ` of fixed real period constants stay entirely in the real fragment; (2) use `EMLTermℂ.subst0` to replace `var 0` in an existing full-domain witness with a real-valued shift term; (3) reuse, don't reshape: `sin x = cos(π/2 − x)` (cos already covers `ℝ ∖ {0}`), `arctan x = arcsin(x / √(1+x²))` (arcsin already covers `(−1, 1)`), `tan x = tan(x − kπ)` (period reduction). The witness becomes a *family* (∀x∃t shape), faithful to the paper compiler's "manual i-sign correction".
 
@@ -174,12 +178,12 @@ make prereqs              # checks elan, lake, python3, git
 make build                # lake build, ~30–60 min cold cache, seconds incrementally
 ```
 
-Expected result: `Build completed successfully (8054 jobs).` On a cold Mathlib cache the first build pulls ~6 GB of `olean` files; subsequent builds are incremental.
+Expected result: `Build completed successfully (8062 jobs).` On a cold Mathlib cache the first build pulls ~6 GB of `olean` files; subsequent builds are incremental.
 
 ### Verify what's sealed
 
 ```bash
-make scoreboard           # lists 48 EML paper_claim theorems + 15 K_count theorems
+make scoreboard           # lists 48 EML paper_claim theorems + 44 K_count theorems
 make sanity               # #checks paper_claim_pi, paper_claim_sin, paper_claim_cos
 make stats                # repo-wide statistics
 ```

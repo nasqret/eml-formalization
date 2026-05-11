@@ -452,12 +452,25 @@ as proper inductive term grammars with partial-evaluation semantics.
 The collapse identities above demonstrate that each grammar can recover
 a standard `exp` / `log` family member via a one-step composition.
 
-**Plan D progress:** 5 of 36 EDL paper claims sealed (`one`, `var`,
-`e_const`, `exp x`, `log x`). The remaining 31 primitives remain
-paper-open; some (e.g. `−1`, `2`, `1/2`) are conjecturally unreachable
-from closed EDL terms (Schanuel-conjecture obstruction per Aristotle's
-analytical note in `chunks/085_edl_atoms_constants/result.lean`).
-Plan E (−EML) per-primitive completeness is also paper-open and not
-yet started. -/
+**Plan D progress (EDL):** 8 of 36 EDL paper claims sealed in this
+file — atoms `1`, `var`, `e_const`; unaries `exp x`, `log x`; the
+binary `x / y`; and the depth-2 iterates `exp(exp x)`, `log(log x)`.
+D8 / `log x` uses Aristotle's chunk-085 three-step composition
+`edl one (edl (edl one (var 0)) e_const)`; D9 / `div` uses
+`edl(D8(x), D4(y))` (chunk 086). The closed-value closure theorem
+for `EDLClosedVal` (see `EDLClosedVal.lean`) is fully proved by
+induction on `EDLTerm`; three obstruction corollaries (no closed EDL
+term evaluates to `−1`, `2`, `1/2`) are stated **conditionally on
+the named `EDLTranscendenceBarrier` typeclass**, with no instance
+provided — discharging it would need a Schanuel-style result. The
+remaining 25 primitives (arithmetic, trig, hyperbolic) are blocked
+by absence of an addition mechanism in `edl(a, b) = exp(a)/log(b)`.
+
+**Plan E progress (−EML):** 5 of 36 −EML paper claims sealed across
+this file — 2 ℝ-grammar atoms (`one`, `var`, via `NegEMLTerm`) and
+3 EReal-grammar atoms (`one_E`, `var_E`, `minusInf`, the last being
+the paper-paired `−∞` constant via the parallel `NegEMLTermE`
+evaluator). Same conditional ceiling as Plan D: 31 primitives blocked
+by the same arithmetic obstruction. -/
 
 end EML
