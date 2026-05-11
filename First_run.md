@@ -99,7 +99,7 @@ and takes 30–60 minutes. Subsequent builds are incremental and finish
 in seconds.
 
 When the build completes, the artefact is verified. The expected
-output is `Build completed successfully (8054 jobs).` (the exact job
+output is `Build completed successfully (8062 jobs).` (the exact job
 count may differ slightly with Mathlib version drift; the important
 thing is `successfully` and no error lines).
 

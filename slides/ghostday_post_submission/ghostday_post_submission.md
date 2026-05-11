@@ -796,7 +796,7 @@ Two layers:
 
 ## The final scoreboard — every paper primitive, on an open subdomain
 
-> **All 36 paper primitives are formalized completely on a non-empty open subdomain of their natural domain — modulo three structural boundary points.**
+> **All 36 paper primitives are formalized on a non-empty open subdomain of their natural domain. The three §G boundary points (`√0`, `arcosh 1`, `hypot(0, 0)`) are additionally sealed by witness-family theorems in `GFullFix.lean`.**
 
 | Group (count) | Sealed subdomain | What we ship |
 |---|---|---|
@@ -806,7 +806,7 @@ Two layers:
 | Binary (8) | full · `ℝ² \ {(0,0)}` for `hypot` | one theorem per primitive |
 | Trig (6) | **`ℝ \ {0}`** for `cos`, **`(-π, π) \ {0}`** for `sin`, `arctan`, **full open `(-1, 1)`** for `arcsin` & `arccos`, **`(-π/2, π/2) \ {0}`** for `tan` | each literal `EMLTermℂ` (positive + negative-side companion where needed) |
 
-**Net: 36 / 36 literal `EMLTermℂ` · 3 boundary points (`√0`, `arcosh 1`, `hypot(0,0)`) documented as structural limits.** All 36 K-counts machine-checked by `rfl` against paper Table 4 (plus 5 K-counts for the post-submission widening companions). Local build clean; re-verified on the **Eagle server** (PCSS, project pl0414-02). One-click reproducer in the public repo.
+**Net: 36 / 36 literal `EMLTermℂ` · 3 §G boundary points now also sealed via witness-family quantifier flip in `GFullFix.lean`.** All 36 K-counts machine-checked by `rfl` against paper Table 4 (plus 5 K-counts for the post-submission widening companions and 9 direct-macro alternatives). Local build clean (8 062 jobs, every public theorem on the three Mathlib-standard axioms only); re-verified on the **Eagle server** (PCSS, project pl0414-02). One-click reproducer in the public repo.
 
 ---
 
