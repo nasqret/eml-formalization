@@ -6,13 +6,29 @@
 > what remained out of reach, and where the formalisation aligns or
 > diverges from the paper's own approach.
 
-**Status as of 2026-05-07.** `lake build EML` → 8 054 jobs, sorry-free,
-clean. The headline result is a literal `EMLTermℂ` (or real-fragment
-`EMLTerm`) witness for **every one of the 36 paper primitives**, on a
-non-empty open subdomain of its natural mathematical domain. Three
-boundary points (`√0`, `arcosh 1`, `hypot(0, 0)`) are documented as
-**§G structural limits** that fall outside the natural construction —
-the paper itself does not exhibit EML terms for them either.
+**Status as of 2026-05-11 (post-frontier sprint).** `lake build EML` →
+**8 062 jobs**, sorry-free, clean. **100 public theorems** total
+(61 original paper claims + 39 from the post-submission frontier
+modules, all consult-driven). The headline result is a literal
+`EMLTermℂ` (or real-fragment `EMLTerm`) witness for **every one of
+the 36 paper primitives**, on a non-empty open subdomain of its
+natural mathematical domain. The three §G boundary points
+(`√0`, `arcosh 1`, `hypot(0, 0)`) — previously documented as
+out-of-scope — are now **also sealed** via a witness-family
+quantifier flip in `EML/Framework/GFullFix.lean` (Pro-recommended
+Path-C′ pattern).
+
+Beyond the original 61 paper claims, today's frontier modules
+(GPT Pro consult 2026-05-10) deliver:
+
+| Module | What it does | Theorems |
+|---|---|---:|
+| `TransplantDepths.lean` | SI §1.5 #5 — variable-transplant identity terms at every depth `4k`; negative for depths 1 and 2 | 9 |
+| `StructuralLimitsEReal.lean` | §G boundary points proved correct in extended-real arithmetic | 3 |
+| `GFullFix.lean` | Full-domain `√x` / `arcosh x` / `hypot(x,y)` via witness families | 3 |
+| `EDLClosedVal.lean` | Plan D structural ceiling: closure theorem + `EDLTranscendenceBarrier` typeclass | 4 + class |
+| `PolynomialBinary.lean` | Paper §5 universal-minimality: no polynomial binary can generate `Real.exp` | 2 |
+| `CompactWitnesses.lean` | Direct-macro alternative witnesses for binaries (with honest finding: same K as compile output) | 18 |
 
 ---
 

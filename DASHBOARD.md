@@ -30,28 +30,38 @@
 | | |
 |---|---:|
 | Paper primitives sealed | **36 / 36** (100%) |
-| `paper_claim_*` theorems exposed | **61** (48 EML in `PaperClaims` + 8 EDL + 5 −EML in `Sheffer`) |
-| `K_count_*` `rfl`-checked tree sizes | **15** |
-| Lean kernel jobs in `lake build EML` | **8 056** |
+| Public theorems exposed | **100** (61 paper claims + 39 from the post-submission frontier modules) |
+| &nbsp;&nbsp;• `paper_claim_*` (EML) | **48** in `PaperClaims.lean` |
+| &nbsp;&nbsp;• Sheffer cousin claims | **13** (8 EDL + 5 −EML) in `Sheffer.lean` |
+| &nbsp;&nbsp;• SI §1.5 #5 (transplant depths) | **9** in `TransplantDepths.lean` |
+| &nbsp;&nbsp;• §G boundary in EReal | **3** in `StructuralLimitsEReal.lean` |
+| &nbsp;&nbsp;• §G full fix (witness family) | **3** in `GFullFix.lean` |
+| &nbsp;&nbsp;• Plan D structural ceiling | **4** in `EDLClosedVal.lean` (+ `EDLTranscendenceBarrier` typeclass) |
+| &nbsp;&nbsp;• Polynomial-binary impossibility | **2** in `PolynomialBinary.lean` (paper §5) |
+| &nbsp;&nbsp;• Compact alternative witnesses | **9** + 9 K-counts in `CompactWitnesses.lean` |
+| `K_count_*` `rfl`-checked tree sizes | **44** total |
+| Lean kernel jobs in `lake build EML` | **8 062** |
 | `sorry` / `admit` occurrences | **0** |
-| §G structural boundary points (documented) | **3** |
+| §G structural boundary points (now sealed via witness family + EReal templates) | **3 / 3** |
 | Witness-tree size — smallest | **K = 1** (the constant `1`) |
 | Witness-tree size — largest | **K = 9 929 087** (`logb`, compiler-produced) |
 | Span (smallest → largest) | **7 orders of magnitude** |
 
 ```mermaid
 pie showData
-    title Sealing status — 36 primitives by domain coverage
+    title Sealing status — 36 primitives by domain coverage (post-frontier session)
     "Full natural domain (atoms, real unaries, hyperbolic, binaries)" : 28
     "Wide subdomain via complex extension (cos, sin, tan, arctan, arcsin, arccos)" : 6
-    "§G structural boundary (√0, arcosh 1, hypot(0,0))" : 0
+    "§G boundary points (now sealed via witness family in GFullFix)" : 3
 ```
 
-> The "boundary" slice is shown empty deliberately — those three points are
-> *not* sealed in the natural construction. The artefact ships counterexample
-> witnesses for them in [`StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean), and the paper itself does not provide EML
-> terms for them either (paper line 342 explicitly notes the Lean-specific
-> junk-value issue).
+> Post-frontier-session update: the three §G boundary points (`√0`, `arcosh 1`,
+> `hypot(0, 0)`) are now sealed in `GFullFix.lean` via a Path-C′-style
+> witness-family quantifier flip (`∀ env, [hyp] → ∃ t, ...`). The boundary
+> value is the constant 0, witnessed by `mkZero`; off-boundary the existing
+> narrow paper-claim witnesses apply. Mathematical correctness is also
+> confirmed in extended-real arithmetic by `StructuralLimitsEReal.lean`
+> (Pro-recommended templates).
 
 ---
 
@@ -256,7 +266,7 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 |---|---|---|---|---|
 | **EML** | `eml(x, y) = exp(x) − log(y)` | `1` | **proved complete for 36 primitives** | ✅ formalized end-to-end (this repo) |
 | **EDL** | `edl(x, y) = exp(x) / log(y)` | `e` | conjectured complete; empirical via VerifyBaseSet | **8 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`); D8/log x via Aristotle's 3-step composition; **structural ceiling** — Aristotle's analysis shows the remaining 28 primitives (arithmetic, trig, hyperbolic) need addition of sub-expression values, structurally absent in `edl(a,b) = exp(a)/log(b)` |
-| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | **2 of 36 paper claims sealed** in `Sheffer.lean` (atoms `1`, `var`); pilot in `chunks/088` shows EReal-grammar for the `−∞` constant; full Plan E needs `NegEMLTerm` switch to `EReal` |
+| **−EML** | `−eml(y, x) = log(x) − exp(y)` | `−∞` | conjectured complete; empirical via VerifyBaseSet | **5 of 36 paper claims sealed** in `Sheffer.lean` — 2 ℝ-grammar atoms (`one`, `var`) plus 3 EReal-grammar atoms (`one_E`, `var_E`, `minusInf`, the last being the paper-paired `−∞` constant via the `NegEMLTermE` evaluator); same structural ceiling as Plan D for the remaining primitives |
 
 > ✅ **Naming cleanup complete (Plan A done).** `Sheffer.lean` now contains exactly the
 > two paper-named cousins, `EDLTerm` and `NegEMLTerm`. The previously-misnamed
@@ -388,7 +398,15 @@ or the smaller `verify_eml_only.sbatch`.
 | Plan D pilot (077, 079, 084) | 3 | 3 | ~16 min |
 | Plan D continuation (085–087, 089) | 4 | 4 | ~30–180 min |
 | Plan E pilot (088) | 1 | 1 | ~16 min |
-| **Total this thread** | **10** | **9** | — |
+| Frontier directions (090–094) | 5 | 3 | ~20–60 min for completions |
+| **Total** | **88** | **84** | — |
+
+Recent frontier-round notes:
+- **090** (SI §5 d=3 nonexistence) — Aristotle returned a complete proof in a simplified single-atom grammar (~120 lines); canonical-grammar port left as a follow-up (formalized as `def NoIdentityAtDepthThree : Prop` in `TransplantDepths.lean`).
+- **091** (polynomial-binary impossibility) — Aristotle returned the composition lemma + 90% of the contradiction; final tendsto-uniqueness step added manually. Both theorems now `theorem`-sealed in `PolynomialBinary.lean`.
+- **092** (canonical-grammar d=3 port) — proof search timed out at 39%; cancelled.
+- **093** (Plan E broadening) — returned 12 candidate identities but requires evaluator-semantics redesign; saved as chunk artefact for follow-up.
+- **094** (§G full fix) — returned integration-vacuous proof (re-defined grammar with `sqrtT` as primitive); manual `GFullFix.lean` does the actual job using witness-family quantifier flip.
 
 Aristotle proofs were deployed in two modes: pure-Mathlib
 auxiliaries (`atanArg_in_Ioo`, `tan_period_reduction`) inlined
@@ -424,6 +442,6 @@ The artefact uses only Mathlib's standard noncomputable axioms (classical choice
 
 - **[README.md](README.md)** — project entry point, installation, quick start.
 - **[lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md)** — author-facing synopsis (forwardable).
-- **[lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md)** — five concrete plans (Sheffer cleanup, full-real-domain trig × 2, EDL completeness, −EML completeness).
+- **[lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md)** — concrete plans (A through E) plus four GPT Pro frontier directions (SI §1.5 #5, §G boundary points, Plan D ceiling via `EDLClosedVal`, polynomial-binary impossibility) plus paper-open conjectures.
 - **[lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf)** — 11-page expository paper on the architecture (the primary reading for moderately-technical readers who want to understand *why* the proof is structured this way without diving into Lean source).
 - **[First_run.md](First_run.md)** — bootstrap recipe for fresh checkouts / fresh Claude sessions.

@@ -133,17 +133,20 @@ Three measure-zero corners where the natural EML construction fails because `Rea
 
 Documented in `StructuralLimits.lean` with concrete derivations. The paper's own Table of Witnesses does not provide explicit EML terms for these boundary points either.
 
-## What's not done (open work — see `OPEN_QUESTIONS.md` for action plans)
+## What's done and what's open (see `OPEN_QUESTIONS.md` for a consolidated action list)
 
-| Item | Status | Plan |
-|---|---|---|
-| **Sheffer naming cleanup** | ✅ **DONE** — `Sheffer.lean` now hosts only the two paper-named cousins (`EDL`, `−EML` via `NegEMLTerm`); the misnamed `LDETerm` has been replaced and the fabricated binary `T1Term`/`T2Term` removed. SI §1.4 ternary candidates documented as preliminary future work in [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md). | Plan A — complete |
-| **Full-real-domain trig** | ✅ **DONE** via Path C′ (GPT Pro's recommendation: range-reduction by substitution). `paper_claim_{sin_full, arctan_full, tan_full}` cover full natural domains: `sin` on `ℝ ∖ {π/2}`, `arctan` on full ℝ, `tan` on `{x : cos x ≠ 0}`. Foundation: `ADDsafeℂ_ofReal_ofReal` keeps period shifts in the real fragment. Plan B (custom log branch) was found architecturally infeasible — see [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) §B.0. | Path C′ — complete |
-| **EDL per-primitive completeness** | `EDLTerm` grammar scaffolded; per-primitive paper claims paper-open. | Plan D (1–2 wk) |
-| **−EML per-primitive completeness** | `NegEMLTerm` grammar scaffolded; per-primitive paper claims paper-open. Closing Lean-side completeness needs Mathlib's `EReal` for the `−∞` constant. | Plan E (1–2 wk) |
-| **§3.2 universal minimality conjecture** | Paper-open — paper does not prove it; one `sorry` in chunk `029_eml_minimality.lean`. | Research result, not a formalisation task |
-| **§4.3 gradient training** | Out of scope — requires optimisation-in-Lean framework that doesn't exist in Mathlib. | — |
-| **Eagle re-verify** of today's tan/arccos/arcsin chunks | Blocked by Eagle's pre-existing Mathlib snapshot (two unrelated modules broken). Local build is source of truth. | Wait for upstream Mathlib fix or upgrade |
+| Item | Status |
+|---|---|
+| **Sheffer naming cleanup** (Plan A) | ✅ **DONE** — `Sheffer.lean` aligned with paper §3.1; misnamed types replaced |
+| **Full-real-domain trig** (Plan C′) | ✅ **DONE** — `paper_claim_{sin_full, arctan_full, tan_full}` cover full natural domains |
+| **Custom complex-log branch** (Plan B) | ❌ Architecturally infeasible — see `OPEN_QUESTIONS.md` §B.0 |
+| **EDL per-primitive completeness** (Plan D) | 🔄 **8/36** sealed + closure-theorem scaffold (`EDLClosedVal.lean`) + `EDLTranscendenceBarrier` typeclass packaging the conjectural remaining cases |
+| **−EML per-primitive completeness** (Plan E) | 🔄 **5/36** sealed; structural ceiling same as Plan D |
+| **SI §1.5 #5 variable-transplant depths** | ✅ Affirmative `4k` family + d=1, 2 negative + d=3 Aristotle-proved (`TransplantDepths.lean`); full closure `OnlyMultiplesOfFourHaveIdentities` remains paper-open |
+| **§G boundary points** (`√0`, `arcosh 1`, `hypot(0,0)`) | ✅ Now sealed via witness-family quantifier flip in `GFullFix.lean`; also proved in EReal arithmetic by `StructuralLimitsEReal.lean` |
+| **Paper §5 universal-minimality (polynomial class)** | ✅ Sealed — `no_polynomial_binary_generates_exp` in `PolynomialBinary.lean`. Other function classes (rational, semialgebraic, real-analytic) remain open |
+| **§4.3 gradient training** | Out of scope — Mathlib doesn't have the needed optimisation framework |
+| **PCSS Eagle re-verify** | Project inode quota currently exceeded; see `eagle_scripts/INODE_QUOTA_REQUEST.md` for the staff request |
 
 ## Authors and acknowledgements
 

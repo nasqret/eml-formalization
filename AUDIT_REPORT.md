@@ -1,16 +1,25 @@
 # Repository audit report
 
-> Date: 2026-05-10
-> Branch: `feat/path-c-prime-and-plan-d` @ `5263518`
+> **Historical snapshot.** Date: 2026-05-10. Branch: `feat/path-c-prime-and-plan-d` @ `5263518`.
+> All anomalies identified below have been addressed in subsequent
+> commits (PRs #6 through the post-PR-#11 direct-to-main batch).
+> Current state: `lake build EML` clean at **8062 jobs** (was 8056
+> at audit time, +6 from frontier modules), zero `sorry` / `admit`,
+> all paper claims sealed, three §G boundary points now also sealed
+> via witness families in `EML/Framework/GFullFix.lean`. See
+> [`DASHBOARD.md`](DASHBOARD.md) and [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for the
+> live status. This report is kept for traceability of the audit
+> process; the headline numbers below are as of the audit snapshot.
+
 > Scope: full sweep — build state, git hygiene, chunk integrity,
 > cross-document consistency, generated artefacts, external services,
 > link resolution.
 > Method: each finding has a re-runnable shell command in
 > `## Evidence` so the user can verify independently.
 
-## Headline
+## Headline (as-of 2026-05-10)
 
-**Build is healthy** — `lake build` clean at 8056 jobs, sorry-free in
+**Build was healthy** — `lake build` clean at 8056 jobs, sorry-free in
 the public-API surface. **No silent regressions.** Ten anomalies
 found, none of them block correctness; **most are documentation drift
 or dead-code housekeeping** introduced incrementally over the past

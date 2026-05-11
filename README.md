@@ -24,13 +24,15 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 |---|---:|---|
 | 📐 EML paper primitives sealed | **36 / 36** | atoms · real unaries · hyperbolic · binaries · trig |
 | 📜 `paper_claim_*` theorems (EML) | **48** | in `EML.Framework.PaperClaims`; includes Path C′ `sin_full`, `arctan_full`, `tan_full` |
-| 📜 EDL `paper_claim_*` theorems | **8** | in `EML.Framework.Sheffer` (Plan D; `one`, `var`, `e_const`, `exp x`, `log x`, `x/y`, `exp(exp x)`, `log(log x)`) |
-| 📜 −EML `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan E; ℝ-grammar `one`, `var` + EReal-grammar `one_E`, `var_E`, `minusInf`) |
-| 📜 **Total public claims** | **61** | 48 EML + 8 EDL + 5 −EML |
-| 🌳 K-count theorems (`rfl`-checked tree sizes) | **15** | in `EML.Framework.KCounting` |
-| 🛠 Lean kernel jobs | **8 056** | `lake build` finishes sorry-free |
+| 📜 EDL `paper_claim_*` theorems | **8** | in `EML.Framework.Sheffer` (Plan D) |
+| 📜 −EML `paper_claim_*` theorems | **5** | in `EML.Framework.Sheffer` (Plan E) |
+| 📜 **Original public claims** | **61** | 48 EML + 8 EDL + 5 −EML |
+| ⭐ Frontier theorems (GPT Pro consult) | **+39** | SI §1.5 #5, §G witness-family, polynomial-binary impossibility, EDL closure scaffold, compact alternative witnesses, EReal templates |
+| 📜 **Total public theorems** | **100** | 61 original + 39 frontier |
+| 🌳 K-count theorems (`rfl`-checked tree sizes) | **44** | in `EML.Framework.KCounting` (33 original + 9 compact + 2 conditional-helper) |
+| 🛠 Lean kernel jobs | **8 062** | `lake build` finishes sorry-free |
 | 🚫 `sorry` / `admit` / axiom abuse | **0** | clean by `#print axioms` |
-| ⚠ §G structural boundary points | **3** | `√0`, `arcosh 1`, `hypot(0, 0)` — paper-acknowledged |
+| ⚠ §G structural boundary points | **3 / 3 sealed** | `√0`, `arcosh 1`, `hypot(0, 0)` — now sealed via witness-family quantifier flip in `GFullFix.lean` |
 
 ---
 

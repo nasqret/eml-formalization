@@ -13,47 +13,66 @@ direction, or a future-work extension.
 > Plan A–E lives below in this file; the scoreboard summary is in
 > `First_run.md`.
 
-## Within-reach engineering items (no research required)
+## What was sealed in the frontier sprint (2026-05-10/11)
 
-These are concrete pieces of work that can be done with current
-machinery, without crossing into paper-frontier territory. Listed in
-roughly increasing effort.
+GPT Pro consult (`gpt_pro_bundle/frontier_questions/RESPONSE.md`)
+identified four research-grade directions; the sprint that followed
+delivered substantive Lean content on all four:
+
+| # | Pro direction | Final disposition |
+|---|---|---|
+| 1 | **SI §1.5 #5 — variable-transplant depths** | ✅ Affirmative family `identity_terms_at_depth_multiples_of_four` for every `4k`; negative depth 1 / depth 2 sealed; depth 3 mathematically proved by Aristotle chunk 090 (saved in chunk dir), `def NoIdentityAtDepthThree : Prop` recorded; canonical-grammar full proof of d=3 is the open follow-up. |
+| 2 | **§G boundary points** | ✅ All three points (`√0`, `arcosh 1`, `hypot(0, 0)`) now sealed. Two complementary modules: `StructuralLimitsEReal.lean` proves the three templates evaluate correctly in extended-real arithmetic; `GFullFix.lean` provides full-domain witness-family theorems in the canonical grammar (`paper_claim_sqrt_full`, `paper_claim_arcosh_full`, `paper_claim_hypot_full`). |
+| 3 | **Plan D structural ceiling** | ✅ `EDLClosedVal` predicate + closure theorem + `EDLTranscendenceBarrier` typeclass + three corollaries. The transcendence barrier remains a named hypothesis (no Mathlib instance yet — would need a Schanuel-style result). |
+| 4 | **Polynomial-binary impossibility (paper §5)** | ✅ `no_polynomial_binary_generates_exp` sealed as `theorem`. `BTerm` + `IsPolynomialBinary` predicate + composition lemma via `MvPolynomial.aeval` + growth-bound contradiction via `Polynomial.tendsto_div_exp_atTop`. |
+
+## Open problems session
+
+Items now consolidated here for a focused future session. None of
+them is required for the headline result (paper-completeness for the
+36 primitives + Pro's four directions are all sealed); each is an
+extension or polish target.
+
+### Within-reach engineering
 
 | Item | Effort | Why it matters |
 |---|---|---|
-| **K-count consolidation** for 12 primitives (`logb`, `div`, `mul`, `pow`, `hypot`, `arccos`, `arcsin` (narrow), `arsinh`, `arcosh`, `σ`, `inv`, `sq`, `√`, `halve`) — replace structural-compile witnesses with direct compositional macros + custom closure proofs | ~500 Lean lines | Drops the dashboard's biggest figure from K=9 929 087 (`logb`) to K~10³, makes the per-primitive table apples-to-apples comparable with the source paper's Table 4 |
-| **Plan E broadening** — extend the EReal-grammar pilot to cover whichever primitives translate cleanly under the −EML operator (likely a subset of arithmetic) | ~200 Lean lines | Bumps Plan E from 5/36 toward whatever its true structural ceiling is (currently estimated by analogy with Plan D, but not formally pinned) |
-| **Physics-motivation companion essay** — flesh out the four stub chapters in `notes/physics_motivation/` (Hamiltonian normal forms, Wess–Zumino, CFT bootstrap, single-instruction analog computing) | ~10–15 pages of prose | Pre-existing scaffold; each chapter is independently draftable |
-| **`First_run.md` pruning** — trim sections that have become redundant with `OPEN_QUESTIONS.md` and `DASHBOARD.md` | small | Keeps the bootstrap recipe focused |
+| **SI §1.5 #5 d=3 canonical-grammar full proof** | ~150 Lean lines | Aristotle's chunk 090 has the proof in a simplified single-atom grammar; the canonical-grammar port involves ~25 numeric sub-inequalities each with specific Mathlib lemma names. `eval_ones_pos_of_depth_le_two` helper + `NoIdentityAtDepthThree : Prop` already on main. |
+| **SI #5 depths 5, 6, 7, …** | finite-search per-`d` | Each new depth doubles the case count; case-explosion makes manual proofs increasingly tedious. The structural conjecture (paper-open) would close all at once. |
+| **Plan E broadening to richer −EML witnesses** | ~200 lines | Aristotle chunk 093 returned 12 candidate identities (saved in chunk dir) but they assume a different `NegEMLTermE.eval?` semantics; integration requires redesigning our public evaluator. |
+| **Physics-motivation companion essay §§2–7** | ~10–15 pages of prose | Scaffold in `notes/physics_motivation/` ready; chapters on Hamiltonian normal forms, Wess–Zumino, CFT bootstrap, single-instruction analog computing are draftable independently. |
+| **K-count consolidation** | (done, but honest finding) | Direct-macro witnesses have IDENTICAL K-counts to compile-output (the compiler already uses them); see `CompactWitnesses.lean`. Genuine reduction would need positivity-restricted macros. |
+| **Three §G full-builder lift to EReal** | ~500 Lean lines | The templates in `StructuralLimitsEReal.lean` show this would work; full lift is engineering scale-up, not in scope. |
 
-## Frontier (research-grade)
+### Frontier (mathematical research)
 
-GPT Pro consultation completed 2026-05-10
-(transcript in `gpt_pro_bundle/frontier_questions/RESPONSE.md`).
-Pro's overall ranking, summarised:
+| Item | Why it's frontier |
+|---|---|
+| **`OnlyMultiplesOfFourHaveIdentities` proved as theorem** | Requires inductive invariant on the value lattice generated by `{1, exp, log, −}` — paper-open. |
+| **Discharge `EDLTranscendenceBarrier` typeclass** | Would need a Mathlib Schanuel-style transcendence theorem connecting closed-EDL values to integers (the typeclass packages three concrete non-membership claims for `−1`, `2`, `1/2`). |
+| **Universal minimality for classes beyond polynomial** | Pro #4 ruled out polynomial; rational, semialgebraic, Pfaffian, real-analytic each need their own impossibility argument. |
+| **Plan D / E search beyond the structural ceiling** | Aristotle's chunk 085 analysis shows the closed-term fragment can't reach further; extending the grammars is itself research-grade. |
 
-| Rank | Direction | Pro's verdict | Recommended Lean target |
-|---|---|---|---|
-| **1** | **SI §1.5 #5 — variable-transplant depths** | ✅ **substantively addressed** | `EML/Framework/TransplantDepths.lean` — affirmative `identity_terms_at_depth_multiples_of_four` for every `4k`; negative `no_identity_at_depth_one` and `no_identity_at_depth_two`; formal closure conjecture stated as `OnlyMultiplesOfFourHaveIdentities : Prop`. Depth 3 is in flight on Aristotle (chunk 090); depths ≥ 5 remain finite-search problems. |
-| **2** | **§G boundary points via narrow EReal templates** | ✅ **sealed** | `EML/Framework/StructuralLimitsEReal.lean` — `sqrt_templateE_at_zero`, `arcosh_templateE_at_one`, `hypot_templateE_at_zero_zero` all proved. Demonstrates that the §G points are junk-value-collisions in the real-fragment grammar, not deeper obstructions: with `log 0 = ⊥` and `exp ⊥ = 0` honored, the natural witnesses produce the correct boundary values. |
-| **3** | **Plan D ceiling — closed-EDL closure + transcendence barrier** | ✅ **scaffolded** | `EML/Framework/EDLClosedVal.lean` — closure theorem `edl_closed_eval_in_closedVal` (every closed-term evaluation lies in `EDLClosedVal`); typeclass `EDLTranscendenceBarrier` packaging the three conjectural non-membership facts; corollaries `no_closed_edl_{neg_one, two, half}`. The transcendence barrier is the named hypothesis a future Mathlib Schanuel-style result would discharge. |
-| **4** | **Universal minimality — polynomial-binary impossibility** | 🟡 partial / next session | Pro's recommended first serious lemma: `IsPolynomialBinary B → no BTerm generates Real.exp`, using `Polynomial.tendsto_div_exp_atTop`. Estimated ~150 Lean lines including MvPolynomial composition machinery (via `MvPolynomial.aeval`). Not started; Pro flagged this as the right entry point but it doesn't follow the same easy-win pattern as #1–#3. |
+### Paper-open conjectures (out of artefact scope)
 
-The detailed Lean code skeletons for each direction live in
-`gpt_pro_bundle/frontier_questions/RESPONSE.md`.
+The seven SI §1.5 questions are reproduced below. Only #5 has been
+substantively addressed (see Pro direction #1 above).
 
-## Quick triage
+## Quick triage (post-frontier sprint)
 
-| Direction | Feasibility | Effort | Action plan |
-|---|---|---|---|
-| **Sheffer cleanup** (align names with paper §3.1) | ✅ **DONE** | — | See [Plan A](#plan-a--sheffer-naming-cleanup-1-2-hours-complete) for the audit trail |
-| **Full-real-domain trig** | ✅ **DONE** (Plan C′) | — | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
-| **Full-real-domain trig — custom branch (superseded)** | Not viable | — | [Plan B](#plan-b--full-real-domain-trig-via-custom-branch-1-3-days) — see §B.0 finding |
-| **EDL per-primitive completeness** | 🔄 **8/36 in framework** + analysis | — | [Plan D](#plan-d--edl-per-primitive-completeness-1-2-weeks) — `one`, `var`, `e_const`, `exp`, `log`, `div`, `exp(exp)`, `log(log)` sealed; arithmetic (`+`, `−`, `·`, `−1`, `2`, `½`, `sqr`, `sqrt`) conjecturally unreachable from closed EDL terms (Aristotle analysis: addition of sub-expression values is structurally impossible in the `edl(a,b) = exp(a)/log(b)` combinator, ruling out trigonometric/hyperbolic primitives too) |
-| **−EML per-primitive completeness** | 🔄 **5/36** (structural ceiling) | — | [Plan E](#plan-e--neg-eml-per-primitive-completeness-1-2-weeks) — 2 ℝ-grammar atoms (`one`, `var`) + 3 EReal-grammar pilot atoms (`one_E`, `var_E`, `minusInf`) sealed; same structural obstruction as Plan D for the rest |
-| **§3.2 universal minimality** | Paper-open | — | research result, not a formalization task; partial scaffold expected via polynomial-binary direction (4) above |
-| **§4.3 gradient training** | Out of scope | — | needs Mathlib infrastructure that doesn't exist |
-| **Three §G boundary points** | ✅ **scaffolded in extended-real** | — | `StructuralLimitsEReal.lean` proves all three template values at the boundary; full §G fix (lifting every builder to extended-real) remains future work, ~500 Lean lines |
+| Direction | Feasibility | Status |
+|---|---|---|
+| **Sheffer cleanup** (Plan A) | ✅ **DONE** | `Sheffer.lean` aligned with paper §3.1 |
+| **Full-real-domain trig** (Plan C′) | ✅ **DONE** | `paper_claim_{sin_full, arctan_full, tan_full}` in `PaperClaims.lean` |
+| **Full-real-domain trig — custom branch** (Plan B) | ❌ Not viable | Architectural finding §B.0 |
+| **EDL per-primitive completeness** (Plan D) | 🔄 **8/36 + structural ceiling** | Closure theorem + transcendence-barrier scaffold in `EDLClosedVal.lean` |
+| **−EML per-primitive completeness** (Plan E) | 🔄 **5/36 + structural ceiling** | 2 ℝ-grammar atoms + 3 EReal-grammar pilot atoms |
+| **SI §1.5 #5 variable-transplant depths** (Pro #1) | ✅ **sealed for `4k` + d=1, 2** | `TransplantDepths.lean`; d=3 Aristotle-proved + Prop-stated |
+| **§G boundary points** (Pro #2) | ✅ **sealed** | `GFullFix.lean` + `StructuralLimitsEReal.lean` |
+| **Plan D closure scaffold** (Pro #3) | ✅ **scaffolded** | `EDLClosedVal.lean` + `EDLTranscendenceBarrier` typeclass |
+| **Polynomial-binary impossibility** (Pro #4) | ✅ **sealed** | `PolynomialBinary.lean` — paper §5 first cut |
+| **§3.2 universal minimality (general)** | Paper-open | Polynomial-class ruled out (above); other classes (rational, semialgebraic, real-analytic) remain open |
+| **§4.3 gradient training** | Out of scope | Needs Mathlib infrastructure that doesn't exist |
 
 ---
 
