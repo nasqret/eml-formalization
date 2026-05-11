@@ -854,9 +854,9 @@ Same kernel, same `rfl`-checked Table-4 counterparts, plus a **Sheffer §3.1 sca
 
 After the negative-side companions, two architectural moves landed (May 8–9, 2026):
 
-**1. Plan A — Sheffer cleanup.** The earlier scaffolding had `LDE = log(x)/exp(y)` (division) misnamed as the paper's `−EML` (which is **subtraction**). Renamed `LDETerm → NegEMLTerm` with the correct subtraction operator. Fabricated binary `T₁`/`T₂` removed (the paper's actual T₁/T₂ are **ternary** per SI §1.4 and out of scope). Line-level paper sourcing in `notes/legacy_planning/Sheffer_PaperSourcing.md`.
+**1. Plan A — Sheffer cleanup.** The earlier scaffolding had `LDE = log(x)/exp(y)` (division) misnamed as the paper's `−EML` (which is **subtraction**). Renamed `LDETerm → NegEMLTerm` with the correct subtraction operator. Fabricated binary `T₁`/`T₂` removed (the paper's actual T₁/T₂ are **ternary** per SI §1.4 and out of scope). Line-level paper sourcing in `process_archive/legacy_planning/Sheffer_PaperSourcing.md`.
 
-**2. Path C′ — full-real-domain trig.** GPT Pro's recommendation (`gpt_pro_bundle/trig_widening/RESPONSE.md`): rather than chase the paper's "manual i-sign correction" (architecturally infeasible — `EMLTermℂ.eval` hard-codes Mathlib's principal `Complex.log`), use **range-reduction by substitution**. Foundation: one lemma `ADDsafeℂ_ofReal_ofReal` that discharges the gnarly 11-condition `mkAddℂ` precondition bundle when both args are real-valued. Then:
+**2. Path C′ — full-real-domain trig.** GPT Pro's recommendation (`process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md`): rather than chase the paper's "manual i-sign correction" (architecturally infeasible — `EMLTermℂ.eval` hard-codes Mathlib's principal `Complex.log`), use **range-reduction by substitution**. Foundation: one lemma `ADDsafeℂ_ofReal_ofReal` that discharges the gnarly 11-condition `mkAddℂ` precondition bundle when both args are real-valued. Then:
 
 | Primitive | New domain | Strategy |
 |---|---|---|

@@ -41,8 +41,8 @@ the package source and documentation.
 
 ## See also
 
-* `EML_review_bundle_sources/paper_source/EML.tex` — the paper itself,
-  Section 3 of which describes the discovery procedure.
-* `EML_review_bundle_sources/SupplementaryInformation.pdf` — Sections
-  1.1–1.4, which document the Rust reimplementation `rust_verify` and
-  Profiles 0/A/B/C of the exhaustive Sheffer-operator search.
+* `paper/EML.tex` — the paper itself, Section 3 of which describes the
+  discovery procedure.
+* `paper/SupplementaryInformation.pdf` — Sections 1.1–1.4, which
+  document the Rust reimplementation `rust_verify` and Profiles 0/A/B/C
+  of the exhaustive Sheffer-operator search.

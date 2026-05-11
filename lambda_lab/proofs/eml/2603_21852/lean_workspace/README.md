@@ -42,6 +42,6 @@ transitively depends on.
 
 The `EML.Solutions` namespace is auto-populated by `eml watch` when
 Aristotle returns proofs for the chunks listed under
-`lambda_lab/proofs/eml/2603_21852/chunks/`. Each completed chunk lands
+`process_archive/chunks/`. Each completed chunk lands
 as `EML/Solutions/<chunk_id>.lean`; the `.gitkeep` placeholder is just
 to keep the empty directory tracked by git.

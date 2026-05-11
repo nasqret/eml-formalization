@@ -16,20 +16,19 @@ make sanity
 make scoreboard
 ```
 
-A bootstrap recipe for fresh checkouts is in [`First_run.md`](First_run.md).
+A bootstrap recipe for fresh checkouts is in [`process_archive/First_run.md`](process_archive/First_run.md).
 
 ## Repository layout
 
 | Path | What lives there |
 |---|---|
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/) | The Lean artefact. Public API in `Framework/PaperClaims.lean` and `Framework/Sheffer.lean`. |
-| [`lambda_lab/proofs/eml/2603_21852/chunks/`](lambda_lab/proofs/eml/2603_21852/chunks/) | Per-statement decomposition; numbered directories. See [`chunks/README.md`](lambda_lab/proofs/eml/2603_21852/chunks/README.md). |
 | [`lambda_lab/proofs/eml/2603_21852/notes/`](lambda_lab/proofs/eml/2603_21852/notes/) | Expository writeup (`proof_structure.tex/.pdf`). |
+| [`paper/`](paper/) | Canonical paper LaTeX + Supplementary Information PDF. |
 | [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser EML tree compiler. |
-| [`slides/`](slides/) | Three EML decks. |
-| [`gpt_pro_bundle/`](gpt_pro_bundle/) | Saved consult bundles for GPT Pro audits. |
+| [`slides/ghostday_post_submission/`](slides/ghostday_post_submission/) | Post-submission deck reflecting today's sealed status. |
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts. |
-| [`AUDIT_REPORT.md`](AUDIT_REPORT.md) | Pre-release engineering audit + punch list. |
+| [`process_archive/`](process_archive/) | Provenance: Aristotle chunks, GPT Pro consult bundles, superseded decks, pre-release audit, legacy planning notes. Not part of the verified artefact, kept for traceability. |
 
 ## Pull-request flow
 
@@ -65,17 +64,17 @@ The project follows a standard fork-and-PR model.
 
 ## Working with chunks
 
-Chunks (under `lambda_lab/proofs/eml/2603_21852/chunks/`) are atomic theorem statements that can be submitted independently to the Aristotle proof-search service. Each chunk is a directory with:
+Chunks (under `process_archive/chunks/`) are atomic theorem statements that were submitted independently to the Aristotle proof-search service during development. They are kept as provenance, not as part of the verified artefact. Each chunk is a directory with:
 
 - `chunk.md` — human-readable description (what's the target, why, dependencies).
 - `meta.json` — machine-readable metadata (id, status, dependencies, Aristotle project id).
 - `target.lean` — the theorem statement with `sorry`.
 - `result.lean` — the Aristotle-returned proof, *if* the chunk was sealed via Aristotle. Hand-coded chunks lift directly into the framework and don't need this file.
 
-To submit a chunk:
+To re-submit a chunk (e.g. when iterating an open frontier item):
 
 ```bash
-cd lambda_lab/proofs/eml/2603_21852/chunks/<chunk-id>
+cd process_archive/chunks/<chunk-id>
 aristotle submit "Prove the theorem in target.lean. <strategy hints>" --project-dir .
 ```
 

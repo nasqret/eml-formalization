@@ -243,7 +243,7 @@ symbolic equivalence. **Out of scope for this formalisation.**
   Plan B (custom log branch) was found architecturally infeasible —
   the EML grammar's eval rule hard-codes Mathlib's principal
   `Complex.log`. See `OPEN_QUESTIONS.md` §B.0 for the finding and
-  GPT Pro consult bundle (`gpt_pro_bundle/trig_widening/`) for the
+  GPT Pro consult bundle (`process_archive/gpt_pro_bundle/trig_widening/`) for the
   reasoning.
 * **Sheffer companions — per-primitive completeness for EDL and −EML.**
   The paper presents EML, EDL, and −EML as a "family" (paper §3,
@@ -283,7 +283,7 @@ symbolic equivalence. **Out of scope for this formalisation.**
   *preliminary unverified candidates* for the constant-free Sheffer
   open question (SI §1.5 #3) and they are out of scope for this
   formalisation. See
-  [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
+  [`process_archive/legacy_planning/Sheffer_PaperSourcing.md`](../../../../process_archive/legacy_planning/Sheffer_PaperSourcing.md)
   for the full audit trail.
 
 ### Three §G boundary points — now sealed via witness family

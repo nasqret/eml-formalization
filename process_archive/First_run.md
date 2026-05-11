@@ -202,9 +202,9 @@ Ready to work. What would you like to tackle?
 - `lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf` —
   11-page expository paper on the architecture. Branch-cut analysis
   in §10, open questions in §11.
-- `EML_review_bundle_sources/paper_source/EML.tex` — the original
-  paper source. Use when the user asks "what does the paper say
-  about X" — search this rather than guessing.
+- `paper/EML.tex` — the original paper source. Use when the user
+  asks "what does the paper say about X" — search this rather than
+  guessing.
 
 ## Who to mention by name
 

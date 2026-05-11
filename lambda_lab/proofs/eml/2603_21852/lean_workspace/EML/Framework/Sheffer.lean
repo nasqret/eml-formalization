@@ -19,7 +19,7 @@ operator-plus-one-constant structure (paper equation block
 Per-primitive completeness is **proved in the paper only for EML** —
 the cousins are confirmed empirically by the Mathematica / Rust
 `VerifyBaseSet` procedure, not formally. See
-[`notes/legacy_planning/Sheffer_PaperSourcing.md`](../../../../../notes/legacy_planning/Sheffer_PaperSourcing.md)
+[`process_archive/legacy_planning/Sheffer_PaperSourcing.md`](../../../../../process_archive/legacy_planning/Sheffer_PaperSourcing.md)
 for the line-level paper citations and SI §1.4 references.
 
 This file provides the **framework scaffolding** for the two cousins:

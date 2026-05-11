@@ -61,7 +61,7 @@ The Lean kernel is the only acceptance criterion: every witness is a concrete sy
 
 > **Path C′ in one paragraph.** Pro's refinement of the original Plan C. The narrow trig witnesses fail outside their submission-era domains because intermediate complex values cross the `arg = π` cut. Plan B (custom log branch) is architecturally infeasible — `EMLTermℂ.eval?` hard-codes Mathlib's principal `Complex.log`. Plan C′ instead: (1) prove `ADDsafeℂ_ofReal_ofReal` once — the gnarly 11-condition `mkAddℂ` precondition bundle holds automatically when both arguments are real-valued, so period shifts via repeated `mkAddℂ` of fixed real period constants stay entirely in the real fragment; (2) use `EMLTermℂ.subst0` to replace `var 0` in an existing full-domain witness with a real-valued shift term; (3) reuse, don't reshape: `sin x = cos(π/2 − x)` (cos already covers `ℝ ∖ {0}`), `arctan x = arcsin(x / √(1+x²))` (arcsin already covers `(−1, 1)`), `tan x = tan(x − kπ)` (period reduction). The witness becomes a *family* (∀x∃t shape), faithful to the paper compiler's "manual i-sign correction".
 
-See [`gpt_pro_bundle/trig_widening/RESPONSE.md`](gpt_pro_bundle/trig_widening/RESPONSE.md) for the verbatim consult and [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for the status of the remaining plans.
+See [`process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md`](process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md) for the verbatim consult and [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for the status of the remaining plans.
 
 <a name="trig-note"></a>**Trig full-domain coverage delivered** (Path C′, 2026-05-09): the previously narrow `sin`, `arctan`, `tan` witnesses are now lifted to full natural domain via range-reduction substitution. See [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) for the architectural finding (Plan B's "custom log branch" was found infeasible) and Pro's recommended Path C′.
 
@@ -190,7 +190,7 @@ make stats                # repo-wide statistics
 
 ### Bootstrap a fresh checkout
 
-A first-time-run recipe is encoded in [`First_run.md`](First_run.md) — reading it executes the full build + memory + sanity + scoreboard sequence and prints a status block. Useful for any new Claude / collaborator joining the project.
+A first-time-run recipe is archived at [`process_archive/First_run.md`](process_archive/First_run.md) — reading it executes the full build + memory + sanity + scoreboard sequence and prints a status block. Useful for any new Claude / collaborator joining the project.
 
 ---
 
@@ -198,20 +198,20 @@ A first-time-run recipe is encoded in [`First_run.md`](First_run.md) — reading
 
 | Path | Purpose |
 |---|---|
-| [`lambda_lab/proofs/eml/2603_21852/`](lambda_lab/proofs/eml/2603_21852/) | The Lean artefact (`lean_workspace/EML/Framework/` is the public API; `chunks/`, `notes/`, `report/` for decomposition and exposition) |
+| [`lambda_lab/proofs/eml/2603_21852/`](lambda_lab/proofs/eml/2603_21852/) | The Lean artefact (`lean_workspace/EML/Framework/` is the public API; `notes/` and `report/` for exposition) |
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard.** `#check paper_claim_<f>` to inspect any seal |
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | `rfl`-checked tree sizes for all 36 primitives + companions |
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean) | The three §G boundary-point counterexamples |
 | [`lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) | 11-page expository paper on the architecture |
 | [`lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) | Author-facing synopsis |
 | [`lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) | Concrete action plans (Sheffer cleanup, full-real trig, EDL/−EML completeness) |
-| [`lambda_lab/lab/commands/aristotle.py`](lambda_lab/lab/commands/aristotle.py) | CLI integration with Harmonic AI's Aristotle proof search |
-| [`lambda_lab/lab/commands/eml.py`](lambda_lab/lab/commands/eml.py) | Per-chunk submit / verification commands |
-| [`EML_review_bundle_sources/`](EML_review_bundle_sources/) | Paper sources (`paper_source/EML.tex`), Supplementary Information PDF, bibliography |
+| [`lambda_lab/proofs/eml/2603_21852/VERIFICATION_EVIDENCE.md`](lambda_lab/proofs/eml/2603_21852/VERIFICATION_EVIDENCE.md) | Build transcript + `#print axioms` output for every headline theorem |
+| [`paper/`](paper/) | Canonical paper LaTeX (`EML.tex`, `EML.bib`, figures, `anc/`) + `SupplementaryInformation.pdf` |
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts (`verify_all.sbatch`, `rebuild_cache.sbatch`, …) |
 | [`mathematica/`](mathematica/) | Stub pointing at upstream `VA00/SymbolicRegressionPackage` (`VerifyBaseSet`) |
-| [`slides/`](slides/) | Three EML decks: original, GhostDay 2026 (submitted), post-submission widening update |
+| [`slides/ghostday_post_submission/`](slides/ghostday_post_submission/) | The current post-submission deck reflecting today's sealed status |
 | [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser compiler — type a function, see the EML tree built by the same `F36 → EL → EML` macros as the Lean artefact |
+| [`process_archive/`](process_archive/) | Provenance: Aristotle proof-search chunks, GPT Pro consult bundles, superseded decks, early review bundle, legacy planning notes. **Not part of the verified artefact**, kept for traceability. |
 
 ---
 
@@ -226,7 +226,7 @@ A first-time-run recipe is encoded in [`First_run.md`](First_run.md) — reading
 | **Get an author-facing synopsis to forward** | [`AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) |
 | **Re-verify locally** | `make build` |
 | **Re-verify on Eagle (PCSS)** | [`eagle_scripts/verify_all.sbatch`](eagle_scripts/verify_all.sbatch) |
-| **Bootstrap a fresh Claude session** | [`First_run.md`](First_run.md) |
+| **Bootstrap a fresh Claude session** | [`process_archive/First_run.md`](process_archive/First_run.md) |
 
 ---
 

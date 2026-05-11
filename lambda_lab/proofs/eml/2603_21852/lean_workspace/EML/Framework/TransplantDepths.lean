@@ -37,7 +37,7 @@ generative result: **for every multiple of 4, there is a literal EML
 term of that depth that computes the identity function.**
 
 The recommendation came from a 2026-05-10 GPT Pro consult; the bundle
-lives at `gpt_pro_bundle/frontier_questions/`.
+lives at `process_archive/gpt_pro_bundle/frontier_questions/`.
 -/
 
 namespace EML
@@ -448,7 +448,7 @@ private lemma eval_ones_pos_of_depth_le_two {t : EMLTerm} (h : t.depth ≤ 2) :
 The mathematical fact ("no `EMLTerm` of depth exactly 3 evaluates
 to the identity on every real environment") is established by
 Aristotle in a **simplified single-atom EMLTerm grammar**
-(`chunks/090_no_identity_depth_3/result.lean`, ~120 lines). The
+(`process_archive/chunks/090_no_identity_depth_3/result.lean`, ~120 lines). The
 **canonical-grammar port** (our `.one + .var n` two-atom grammar)
 would require re-running the same case analysis with the extra
 split on each atom — hundreds of lines of numeric inequalities each

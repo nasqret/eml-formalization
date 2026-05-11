@@ -41,7 +41,7 @@ degree under Schanuel's conjecture. So the barrier is genuinely
 unproven and we keep it as a typeclass hypothesis rather than
 asserting it.
 
-The chunks/085 commentary from Aristotle remains the source-of-record
+The `process_archive/chunks/085` commentary from Aristotle remains the source-of-record
 informal argument; this module is the formal scaffolding around that
 commentary.
 -/

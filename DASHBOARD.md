@@ -277,7 +277,7 @@ The paper presents EML, EDL, and −EML as a "family" (paper §3.1, equation blo
 > `T₂(x,x,x) = 1`) and are out of scope for the present formalisation —
 > the SI flags them as preliminary candidates for the constant-free Sheffer
 > open question (SI §1.5 #3). Line-level paper sourcing in
-> [`notes/legacy_planning/Sheffer_PaperSourcing.md`](lambda_lab/proofs/eml/2603_21852/notes/legacy_planning/Sheffer_PaperSourcing.md).
+> [`process_archive/legacy_planning/Sheffer_PaperSourcing.md`](process_archive/legacy_planning/Sheffer_PaperSourcing.md).
 
 ---
 
@@ -416,7 +416,7 @@ end-of-pipeline assembly proofs (`sin_via_cos`, `arctan_via_arcsin`,
 
 ### Path C′ — full-real-domain trig (post-submission)
 
-GPT Pro's recommendation (consult bundle in `gpt_pro_bundle/`)
+GPT Pro's recommendation (consult bundle in `process_archive/gpt_pro_bundle/`)
 delivered three witness-family theorems extending the previously
 narrow `sin`, `arctan`, `tan` to their full natural domains:
 
@@ -444,4 +444,4 @@ The artefact uses only Mathlib's standard noncomputable axioms (classical choice
 - **[lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md)** — author-facing synopsis (forwardable).
 - **[lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md)** — concrete plans (A through E) plus four GPT Pro frontier directions (SI §1.5 #5, §G boundary points, Plan D ceiling via `EDLClosedVal`, polynomial-binary impossibility) plus paper-open conjectures.
 - **[lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf)** — 11-page expository paper on the architecture (the primary reading for moderately-technical readers who want to understand *why* the proof is structured this way without diving into Lean source).
-- **[First_run.md](First_run.md)** — bootstrap recipe for fresh checkouts / fresh Claude sessions.
+- **[process_archive/First_run.md](process_archive/First_run.md)** — bootstrap recipe for fresh checkouts / fresh Claude sessions.

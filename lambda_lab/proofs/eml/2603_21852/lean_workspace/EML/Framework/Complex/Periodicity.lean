@@ -4,7 +4,7 @@ import EML.Framework.Complex.Builders.Trig
 /-!
 # Periodicity infrastructure for trig witnesses (Plan C′)
 
-Following GPT Pro's recommendation (`gpt_pro_bundle/trig_widening/RESPONSE.md`),
+Following GPT Pro's recommendation (`process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md`),
 this file provides the **real-safe addition** layer that lets us build
 period shifts via repeated `mkAddℂ` of fixed real constants — staying
 entirely in the real fragment, so the `arg = π` boundary trap never
@@ -28,7 +28,7 @@ appears.
 - `arctan x = arcsin(x / √(1+x²))` substitution witness (Path C′ §3)
 - `tan` periodic substitution (Path C′ §4)
 
-See `notes/legacy_planning/Periodicity_plan.md` for the original
+See `process_archive/legacy_planning/Periodicity_plan.md` for the original
 Path C′ implementation roadmap (kept for traceability).
 -/
 

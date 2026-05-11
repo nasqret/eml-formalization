@@ -9,13 +9,13 @@ direction, or a future-work extension.
 
 > **Plan tracking has been consolidated here.** The earlier separate
 > planning files (`PLAN.md`, `PATH_C_PRIME_TASKS.md`) are now archived
-> under `notes/legacy_planning/` for traceability. Live status of every
-> Plan A–E lives below in this file; the scoreboard summary is in
-> `First_run.md`.
+> under `process_archive/legacy_planning/` for traceability. Live
+> status of every Plan A–E lives below in this file; the scoreboard
+> summary is in `process_archive/First_run.md`.
 
 ## What was sealed in the frontier sprint (2026-05-10/11)
 
-GPT Pro consult (`gpt_pro_bundle/frontier_questions/RESPONSE.md`)
+GPT Pro consult (`process_archive/gpt_pro_bundle/frontier_questions/RESPONSE.md`)
 identified four research-grade directions; the sprint that followed
 delivered substantive Lean content on all four:
 
@@ -299,7 +299,7 @@ The previously-misnamed `LDETerm` (which was *division*, not paper's
 *subtraction*) has been replaced; the fabricated binary `T1Term` /
 `T2Term` (the paper's actual T₁ / T₂ are **ternary**, SI §1.4) have
 been removed. See
-[`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md)
+[`process_archive/legacy_planning/Sheffer_PaperSourcing.md`](../../../../process_archive/legacy_planning/Sheffer_PaperSourcing.md)
 for line-level paper citations.
 
 ---
@@ -314,7 +314,7 @@ for line-level paper citations.
 > cousins; `LDETerm` was replaced by `NegEMLTerm` with the correct
 > subtraction operator; the fabricated binary `T1Term`/`T2Term` were
 > removed; line-level paper sourcing lives in
-> [`notes/legacy_planning/Sheffer_PaperSourcing.md`](notes/legacy_planning/Sheffer_PaperSourcing.md);
+> [`process_archive/legacy_planning/Sheffer_PaperSourcing.md`](../../../../process_archive/legacy_planning/Sheffer_PaperSourcing.md);
 > README.md, lambda_lab/.../README.md, AUTHOR_SUMMARY.md, and
 > DASHBOARD.md updated. `lake build EML.Framework.Sheffer` clean.
 > The plan-of-record below is preserved for the audit trail.
@@ -552,7 +552,7 @@ trig require a more deliberate witness-search loop.
 
 > **Plan-of-record for full-real-domain trig.** Refines Plan C with
 > GPT Pro's specific recommendations (see
-> [`gpt_pro_bundle/trig_widening/RESPONSE.md`](../../../gpt_pro_bundle/trig_widening/RESPONSE.md)
+> [`process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md`](../../../../process_archive/gpt_pro_bundle/trig_widening/RESPONSE.md)
 > for the verbatim consult). Rejects Path A (boundary lemmas) and
 > Path B (Euler-form reshaping) as global strategies; keeps the
 > witness-substitution architecture from Plan C but generalises it.
