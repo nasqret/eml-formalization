@@ -166,4 +166,7 @@ Documented in `StructuralLimits.lean` with the original `decide`-style boundary 
 
 ## Licence
 
-MIT — see `LICENSE` at the repo root.
+Dual-licensed: Apache License 2.0 for code, Creative Commons
+Attribution-ShareAlike 4.0 International for documentation. See
+[`LICENSING.md`](../../../../LICENSING.md) at the repo root for the
+per-file rules.

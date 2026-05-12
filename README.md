@@ -8,7 +8,8 @@
 [![Build](https://img.shields.io/badge/lake%20build-8062%20jobs-success)](#quick-start)
 [![Sorry-free](https://img.shields.io/badge/sorry-0-success)](#headline)
 [![Paper](https://img.shields.io/badge/arXiv-2603.21852-darkred)](https://arxiv.org/abs/2603.21852)
-[![License](https://img.shields.io/badge/license-MIT-lightgrey)](LICENSE)
+[![Code license](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
+[![Docs license](https://img.shields.io/badge/docs-CC--BY--SA--4.0-lightgrey)](LICENSE-DOCS)
 
 ---
 
@@ -249,6 +250,15 @@ This repository was extracted from the larger `falenty-2026` workspace on 2026-0
 * **Codex** (OpenAI) — paraphrase and informalization.
 * **Mathlib community** — the underlying Lean library.
 
-## License
+## Licensing
 
-[MIT](LICENSE).
+**Dual-licensed.** Code under [Apache License 2.0](LICENSE) (Lean
+sources, Python sources, build scripts, web tool); documentation and
+narrative prose under [Creative Commons Attribution-ShareAlike 4.0
+International](LICENSE-DOCS) (READMEs, DASHBOARD, AUTHOR_SUMMARY,
+REPORT.pdf, slide markdown, etc.). The source paper LaTeX in
+[`paper/`](paper/) is © Andrzej Odrzywołek and is not covered by
+either license here — it is included for reference.
+
+See [`LICENSING.md`](LICENSING.md) for the precise per-file rules
+and worked examples.

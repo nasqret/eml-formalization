@@ -109,7 +109,12 @@ Turnaround is typically 1–3 days for routine changes, longer for architectural
 
 ## Licence
 
-Contributions are accepted under the project's MIT licence. See [`LICENSE`](LICENSE).
+Contributions are accepted under the project's dual licence: Apache
+License 2.0 for code, CC BY-SA 4.0 for documentation. See
+[`LICENSING.md`](LICENSING.md) for the per-file rules, [`LICENSE`](LICENSE)
+for the Apache text, and [`LICENSE-DOCS`](LICENSE-DOCS) for the CC
+text. By submitting a contribution you agree to license it under the
+applicable file's licence.
 
 ## Acknowledgements
 

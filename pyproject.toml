@@ -9,7 +9,7 @@ description = "Lean 4 + Mathlib formalization of arXiv:2603.21852 (Odrzywołek, 
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [{ name = "Bartosz Naskręcki" }]
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 
 # Runtime dependencies of the Aristotle / EML CLI scaffold (used to
 # orchestrate proof submissions; the Lean artefact itself does not

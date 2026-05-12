@@ -1,0 +1,22 @@
+EML formalization — Lean 4 + Mathlib v4.28
+Copyright 2026 Bartosz Naskręcki
+
+Code in this repository is licensed under the Apache License 2.0
+(see LICENSE).
+
+Documentation, narrative prose, and academic-style write-ups (READMEs,
+DASHBOARD, AUTHOR_SUMMARY, OPEN_QUESTIONS, VERIFICATION_EVIDENCE,
+report/REPORT.tex, notes/proof_structure.tex, slide-deck markdown,
+CONTRIBUTING) are licensed under Creative Commons Attribution-ShareAlike
+4.0 International (see LICENSE-DOCS).
+
+LICENSING.md gives the precise per-directory rules.
+
+The source paper LaTeX in paper/ (EML.tex, EML.bib, figures, anc/, and
+SupplementaryInformation.pdf) is Copyright (C) Andrzej Odrzywołek and
+is not covered by either of the licenses above; it is included here
+for reference under the terms under which the author made it
+available on arXiv.
+
+This product includes software developed at:
+  https://github.com/nasqret/eml-formalization

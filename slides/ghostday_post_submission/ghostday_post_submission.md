@@ -964,7 +964,7 @@ Not yet, and not for the right reasons.
 
 <img src="assets/swiss_knife.svg" alt="Swiss army knife"/>
 
-Repo: `github.com/nasqret/eml-formalization` · License: MIT.
+Repo: `github.com/nasqret/eml-formalization` · Dual-licensed: Apache 2.0 (code) · CC BY-SA 4.0 (docs).
 
 ---
 

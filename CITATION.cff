@@ -38,7 +38,9 @@ keywords:
   - Sheffer operator
   - elementary functions
   - automated theorem proving
-license: MIT
+license:
+  - Apache-2.0
+  - CC-BY-SA-4.0
 references:
   - type: article
     authors:
