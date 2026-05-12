@@ -202,8 +202,9 @@ A first-time-run recipe is archived at [`process_archive/First_run.md`](process_
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) | **Public scoreboard.** `#check paper_claim_<f>` to inspect any seal |
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/KCounting.lean) | `rfl`-checked tree sizes for all 36 primitives + companions |
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/StructuralLimits.lean) | The three §G boundary-point counterexamples |
-| [`lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) | 11-page expository paper on the architecture |
-| [`lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) | Author-facing synopsis |
+| [`lambda_lab/proofs/eml/2603_21852/report/REPORT.pdf`](lambda_lab/proofs/eml/2603_21852/report/REPORT.pdf) | **Post-frontier technical report (12 May 2026, 11 pp).** Headline-to-handle summary of architecture, what is sealed, frontier sprint, axiom audit. Best single-PDF entry point for a reader who wants the full story without reading the source. |
+| [`lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) | Expository tour of grammars, combinators, and bridges (16 pp) |
+| [`lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) | Author-facing synopsis (Markdown) |
 | [`lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) | Concrete action plans (Sheffer cleanup, full-real trig, EDL/−EML completeness) |
 | [`lambda_lab/proofs/eml/2603_21852/VERIFICATION_EVIDENCE.md`](lambda_lab/proofs/eml/2603_21852/VERIFICATION_EVIDENCE.md) | Build transcript + `#print axioms` output for every headline theorem |
 | [`paper/`](paper/) | Canonical paper LaTeX (`EML.tex`, `EML.bib`, figures, `anc/`) + `SupplementaryInformation.pdf` |
@@ -219,9 +220,10 @@ A first-time-run recipe is archived at [`process_archive/First_run.md`](process_
 
 | If you want to… | Start here |
 |---|---|
+| **Read the single-PDF technical summary** | [`report/REPORT.pdf`](lambda_lab/proofs/eml/2603_21852/report/REPORT.pdf) (11 pp, 12 May 2026) |
 | **Read the formal claim**, primitive by primitive | [`PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) |
 | **See what's sealed and what isn't** | [Coverage scoreboard ↑](#coverage-scoreboard) and [DASHBOARD.md](DASHBOARD.md) |
-| **Understand the architecture** | [`notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) |
+| **Understand the architecture in depth** | [`notes/proof_structure.pdf`](lambda_lab/proofs/eml/2603_21852/notes/proof_structure.pdf) (16 pp expository tour) |
 | **See what's open** | [`OPEN_QUESTIONS.md`](lambda_lab/proofs/eml/2603_21852/OPEN_QUESTIONS.md) — five concrete plans (A–E) |
 | **Get an author-facing synopsis to forward** | [`AUTHOR_SUMMARY.md`](lambda_lab/proofs/eml/2603_21852/AUTHOR_SUMMARY.md) |
 | **Re-verify locally** | `make build` |
