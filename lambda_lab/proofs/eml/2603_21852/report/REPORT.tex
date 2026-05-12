@@ -147,15 +147,19 @@ The source paper proves that the binary operator
    \eml(x, y) \;=\; \exp(x) - \log(y),
 \]
 together with the constant $1$, is a Sheffer system for elementary
-functions: each primitive on a 36-button reference calculator
-($\pi, e, \imu, -1, 1, 2, x, y, \exp, \log, \mathrm{inv}, \sqrt{\cdot},
-\sin, \cos, \arctan, \sinh, \mathrm{arcosh}, \dots, +, -, \cdot, /,
-\log_b, \mathrm{pow}, \mathrm{avg}, \mathrm{hypot}$) admits a finite
-\emph{EML reconstruction tree} built from $\{1, \mathbf{x}_n, \eml\}$.
-The paper's central evidence is empirical (a Rust-plus-Mathematica
-sieve enumerated trees up to fixed complexity and reported per-primitive
-RPN-length witnesses), supplemented by a paper-level proof sketch
-(Lemmas 1--3, Corollary 4 of the Supplementary Information).
+functions: each primitive on a 36-button reference calculator admits a
+finite \emph{EML reconstruction tree} built from
+$\{1, \mathbf{x}_n, \eml\}$. The reference calculator hosts six
+constants ($\pi$, $e$, $\imu$, $-1$, $1$, $2$), the two variables
+$x$ and $y$, the unaries $\exp$, $\log$, $\mathrm{inv}$,
+$\sqrt{\cdot}$, $\sin$, $\cos$, $\arctan$, $\sinh$, $\mathrm{arcosh}$,
+$\dots$, and the binaries $+$, $-$, $\cdot$, $/$, $\log_b$,
+$\mathrm{pow}$, $\mathrm{avg}$, $\mathrm{hypot}$ ($36$ primitives in
+total). The paper's central evidence is empirical (a
+Rust-plus-Mathematica sieve enumerated trees up to fixed complexity
+and reported per-primitive RPN-length witnesses), supplemented by a
+paper-level proof sketch (Lemmas 1--3, Corollary 4 of the
+Supplementary Information).
 
 The paper's Supplementary §2 explicitly notes that ``a natural next
 step would be formalization in Lean 4, but preliminary AI-assisted
@@ -202,10 +206,10 @@ plus Path~C$'$ phase 2 in May 2026; a frontier sprint phase 3 on
   \item All $36$ paper primitives via literal $\EMLT$ or $\EMLTC$
     witnesses on a non-empty open subdomain of the natural domain;
   \item The three §G boundary points via witness-family theorems
-    (\texttt{GFullFix.lean}) where the term depends on the environment;
-  \item Full natural domain for $\sin$, $\arctan$, $\tan$ via Path~C$'$
-    range-reduction by substitution (\texttt{Periodicity.lean},
-    \texttt{Subst.lean});
+    (in \texttt{GFullFix.lean}) where the term depends on the
+    environment;
+  \item Full natural domain for $\sin$, $\arctan$, $\tan$ via
+    Path~C$'$ range-reduction by substitution;
   \item $8 / 36$ Sheffer-cousin primitives for the paper's EDL
     cousin and $5 / 36$ for $-$EML
     (\texttt{Sheffer.lean}, \texttt{EDLClosedVal.lean});
@@ -282,18 +286,18 @@ noncomputable def EMLTerm.eval? (env : Nat -> Real)
 
 Every \texttt{paper\_claim\_<f>} theorem states an existential of the
 shape
-\[
-   \exists t \in \EMLT.\quad
-   \forall \mathrm{env} \in (\N \to \R),
-   \;[\text{precondition on } \mathrm{env}],
-   \;t.\mathrm{eval}_?\,\mathrm{env} =
+\begin{align*}
+   \exists\,t \in \EMLT.\;
+   &\forall \mathrm{env} \in (\N \to \R),
+   \;[\text{precondition on } \mathrm{env}], \\
+   &t.\mathrm{eval}_?\,\mathrm{env} =
    \mathrm{some}\,(f(\mathrm{env}\,0,\,\mathrm{env}\,1,\,\dots)).
-\]
+\end{align*}
 The precondition is empty when $f$ is a full-natural-domain primitive;
 otherwise it restricts to the open subdomain of validity (e.g. $x > 0$
 for $\sqrt{\cdot}$).
 
-\subsection{Path~C$'$: the witness-family shape}\label{sec:wf}
+\subsection{\texorpdfstring{Path~C$'$}{Path C-prime}: the witness-family shape}\label{sec:wf}
 
 Two architectural problems force a generalisation of the existential
 shape:
@@ -377,23 +381,23 @@ each new primitive.
 \subsection{Coverage scoreboard}
 
 \begin{center}
-\begin{tabular}{l l l}
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
 \toprule
 \textbf{Family (count)} & \textbf{Single structural witness}
                         & \textbf{Witness-family (full domain)} \\
 \midrule
 Atoms (7)                 & full natural domain                   & --- \\
-$\imu$ (1)                & full ($\mathrm{realize}_\C^{\,\imu}$) & --- \\
+$\imu$ (1)                & full (via $\mathrm{realize}_\C^{\,\imu}$) & --- \\
 Real unary (7)            & full natural domain                   & --- \\
 $\sqrt{\cdot}$ (1)        & $(0, \infty)$                          & $\forall x \geq 0$ \\
 Hyperbolic (5)            & full natural domain                   & --- \\
 $\mathrm{arcosh}$ (1)     & $(1, \infty)$                          & $\forall x \geq 1$ \\
 Binary (7)                & full natural domain                   & --- \\
 $\mathrm{hypot}$ (1)      & $\R^2 \setminus \{(0,0)\}$             & $\forall (x, y)$ \\
-$\cos$, $\arccos$, $\arcsin$ (3) & full natural domain (1, $(-1,1)$, $(-1,1)$) & --- \\
-$\sin$, $\arctan$, $\tan$ (3) & narrow positive/negative           & full natural domain (Path~C$'$) \\
+$\cos$, $\arccos$, $\arcsin$ (3) & full natural domain & --- \\
+$\sin$, $\arctan$, $\tan$ (3) & narrow positive / negative subdomains  & full natural domain (Path~C$'$) \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \noindent\textbf{Net.} $36 / 36$ paper primitives sealed. Three §G
@@ -434,7 +438,7 @@ gap: \texttt{GFullFix} is the Lean-level witness-family seal, and
 \texttt{StructuralLimitsEReal} is the independent confirmation that
 the value those witnesses produce is the mathematically correct one.
 
-\subsection{Path~C$'$: full-real-domain trig}\label{sec:trig}
+\subsection{\texorpdfstring{Path~C$'$}{Path C-prime}: full-real-domain trig}\label{sec:trig}
 
 The three Path~C$'$ widenings deliver
 \begin{itemize}[topsep=2pt, itemsep=1pt]
@@ -460,18 +464,18 @@ appears.
 \subsection{Closed numeric constants and the imaginary unit}
 
 Five reusable \texttt{EMLRealization}$_\C$ packages
-($\mathrm{realize}_\C^{\,\{0, 2, -\imu, \imu, \pi\}}$) live in
-\path{Framework/Complex/Closures/Constants.lean}. Each consists of a
-literal $\EMLTC$ tree plus a partial-evaluation proof that the tree
-returns the constant when given any environment. These are the
-building blocks for the trig witnesses, the Path~C$'$ period shifts,
-and the §G \texttt{mkZero} term.
+($\mathrm{realize}_\C^{\,\{0, 2, -\imu, \imu, \pi\}}$) live in the
+\texttt{Closures/Constants} module of the complex framework. Each
+consists of a literal $\EMLTC$ tree plus a partial-evaluation proof
+that the tree returns the constant when given any environment. These
+are the building blocks for the trig witnesses, the Path~C$'$ period
+shifts, and the §G \texttt{mkZero} term.
 
 For the hand-tuned closed constants our K-counts match the paper's
 hand-tuned Table~4 figures to the unit: $K(0) = 7$, $K(2) = 19$,
 $K(-\imu) = 127$, $K(\imu) = 407$, $K(\pi) = 233$.
 
-\subsection{Sheffer cousins: EDL and $-$EML}\label{sec:sheffer}
+\subsection{\texorpdfstring{Sheffer cousins: EDL and $-$EML}{Sheffer cousins: EDL and -EML}}\label{sec:sheffer}
 
 The paper presents EML, EDL, and $-$EML as a ``family'' of Sheffer
 operators (paper §3.1, equation block \texttt{label\{Sheffers\}}) but
@@ -560,16 +564,17 @@ asks (open question \#5) whether other depths admit identity terms.
 \texttt{TransplantDepths.lean} proves:
 
 \begin{itemize}[topsep=2pt, itemsep=2pt]
-  \item \textbf{Affirmative family:} for every $k \in \N$, an explicit
-    $\EMLT$ term constructor \texttt{identityTermAtDepth\,k} of depth
-    $4k$ that evaluates to $\mathrm{env}\,0$ on every real environment.
-  \item \textbf{Negative closures for $d = 1$ and $d = 2$:} no
+  \item \textbf{Affirmative family.} For every $k \in \N$, an
+    explicit $\EMLT$ term constructor of depth $4k$ that evaluates to
+    $\mathrm{env}\,0$ on every real environment.
+  \item \textbf{Negative closures for $d = 1$ and $d = 2$.} No
     $\EMLT$ of either depth is identity on every environment.
-  \item \textbf{$d = 3$ statement:} the proposition
-    \texttt{NoIdentityAtDepthThree\_conjecture\,:\,Prop}, recording
-    the next open case. Aristotle proved it in a simplified
-    single-atom grammar
-    (\path{process_archive/chunks/090_no_identity_depth_3/result.lean});
+  \item \textbf{$d = 3$ statement.} The proposition
+    \texttt{NoIdentityAtDepthThree\_conjecture}, recording the next
+    open case. Aristotle proved it in a simplified single-atom
+    grammar (saved at
+    \path{chunks/090_no_identity_depth_3/result.lean} in the
+    archive);
     the canonical-grammar port (our two-atom $\{1, \mathrm{var}\}$
     grammar) is the natural follow-up.
 \end{itemize}
@@ -615,10 +620,11 @@ single variable, can equal $\mathrm{Real.exp}$ on every input.
 
 \begin{proof}[Proof sketch]
 By the composition lemma, the candidate witness reduces to a
-univariate polynomial $Q$ with $Q(x) = \exp(x)$ on every $x$.
-Then $Q(x) / \exp(x) = 1$ identically. But
-\texttt{Polynomial.tendsto\_div\_exp\_atTop} says this ratio tends
-to $0$ at infinity, contradicting the constant-$1$ identification.
+univariate polynomial $Q$ with $Q(x) = \exp(x)$ on every $x$. Then
+$Q(x) / \exp(x) = 1$ identically. But the Mathlib lemma
+\texttt{Polynomial.\allowbreak tendsto\_div\_exp\_atTop} says this
+ratio tends to $0$ at infinity, contradicting the constant-$1$
+identification.
 \end{proof}
 
 This is a single class of rule-outs. Rational, semialgebraic, Pfaffian,
