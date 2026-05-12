@@ -5,6 +5,7 @@
 \usepackage{microtype}
 \usepackage{tikz-cd}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{enumitem}
 \usepackage[hidelinks]{hyperref}
 
@@ -879,7 +880,7 @@ the most accessible ones.
 % =====================================================================
 
 \begin{center}
-\begin{tabular}{l l l}
+\begin{tabularx}{\textwidth}{@{}l X X@{}}
 \toprule
 \textbf{Family} & \textbf{Sealed coverage} & \textbf{Mechanism} \\
 \midrule
@@ -890,7 +891,7 @@ Hyperbolic (6)         & open: full $\setminus \{\mathrm{arcosh}(1)\}$; boundary
 $\cos$, $\arccos$, $\arcsin$ (3) & full natural domain                       & Euler bridges + companions \\
 $\sin$, $\arctan$, $\tan$ (3) & full natural domain (Path~C$'$)             & Euler bridges + range-reduction \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \medskip
@@ -930,7 +931,7 @@ Mathlib's three standard axioms (\texttt{propext},
 PCSS Eagle HPC: clean.
 
 % =====================================================================
-\section{Addendum: post-submission progress (Path~C$'$ + Plans A/D/E)}
+\section{\texorpdfstring{Addendum: post-submission progress (Path~C$'$ + Plans A/D/E)}{Addendum: post-submission progress (Path C-prime + Plans A/D/E)}}
 \label{sec:post-submission}
 % =====================================================================
 
@@ -953,11 +954,11 @@ Sheffer.
 
 After cleanup, \texttt{Sheffer.lean} hosts exactly the two
 paper-named cousins, $\mathrm{EDL}$ and $-\mathrm{EML}$, with the
-correct definitions and a line-level paper-sourcing audit trail in
-\texttt{process\_archive/legacy\_planning/Sheffer\_PaperSourcing.md}.
-The fabricated binary T$_1$/T$_2$
-are removed; the paper's real ternary T$_1$/T$_2$ are documented as
-preliminary future work, not as part of the present scaffolding.
+correct definitions and a line-level paper-sourcing audit trail at
+\path{process_archive/legacy_planning/Sheffer_PaperSourcing.md}.
+The fabricated binary T$_1$/T$_2$ are removed; the paper's real
+ternary T$_1$/T$_2$ are documented as preliminary future work, not as
+part of the present scaffolding.
 
 \subsection*{Plan~B \textemdash\ architectural finding (custom log
 branch infeasible)}
@@ -983,8 +984,8 @@ do not. The fix-point of this analysis is that the paper's
 different witness shape per region of $x$, mathematically equivalent
 to the witness-family construction of Path~C$'$.
 
-\subsection*{Plan~C$'$ \textemdash\ full-real-domain trig via
-range-reduction by substitution}
+\subsection*{\texorpdfstring{Plan~C$'$ \textemdash\ full-real-domain trig via
+range-reduction by substitution}{Plan C-prime --- full-real-domain trig via range-reduction by substitution}}
 
 A GPT~Pro consultation (transcript in
 \texttt{process\_archive/gpt\_pro\_bundle/trig\_widening/}) gave
@@ -1071,8 +1072,8 @@ $\log(\log x)$                 & nested D8                                      
 
 \noindent\textbf{Conditional ceiling scaffold.} Aristotle's
 analytical work (transcripts in
-\texttt{process\_archive/chunks/085\_*},
-\texttt{process\_archive/chunks/089\_*}) shows that the EDL combinator
+\path{process_archive/chunks/085_*} and \path{089_*}) shows that the
+EDL combinator
 $\mathrm{edl}(a, b) = \exp(a)/\log(b)$ admits no mechanism for
 \emph{addition} of sub-expression values. Multiplication ($x \cdot y =
 \exp(\log x + \log y)$), squaring, square-root, and the entire
@@ -1093,7 +1094,7 @@ instance of the typeclass is provided, so the corollaries are
 \emph{scaffolded but not closed}; discharging them would require a
 Mathlib transcendence result that does not yet exist.
 
-\subsection*{Plan~E \textemdash\ $-$EML pilot}
+\subsection*{\texorpdfstring{Plan~E \textemdash\ $-$EML pilot}{Plan E --- -EML pilot}}
 
 The third Sheffer cousin in the paper's \S3.1 is $-$EML, paired with
 the constant $-\infty$. Two trivial atoms ($1$, $\mathrm{var}$) are
@@ -1124,9 +1125,9 @@ proof-tactic discovery within self-contained chunk files.
 \label{sec:frontier-sprint}
 % =====================================================================
 
-After Path~C$'$ closed the trig-widening gap, an independent
-GPT~Pro consult (transcript in
-\texttt{process\_archive/gpt\_pro\_bundle/frontier\_questions/})
+After Path~C$'$ closed the trig-widening gap, an independent GPT~Pro
+consult (transcript in the
+\path{process_archive/gpt_pro_bundle/frontier_questions/} subdirectory)
 identified four research-grade directions that the original artefact
 left open. A short focused sprint over two days delivered substantive
 Lean content for all four, adding $39$ public theorems for a total
