@@ -25,7 +25,7 @@ A bootstrap recipe for fresh checkouts is in [`process_archive/First_run.md`](pr
 | [`lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/) | The Lean artefact. Public API in `Framework/PaperClaims.lean` and `Framework/Sheffer.lean`. |
 | [`lambda_lab/proofs/eml/2603_21852/notes/`](lambda_lab/proofs/eml/2603_21852/notes/) | Expository writeup (`proof_structure.tex/.pdf`). |
 | [`paper/`](paper/) | Canonical paper LaTeX + Supplementary Information PDF. |
-| [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser EML tree compiler. |
+| [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser EML tree compiler. Live at <https://nasqret.github.io/eml-formalization/>. |
 | [`slides/ghostday_post_submission/`](slides/ghostday_post_submission/) | Post-submission deck reflecting today's sealed status. |
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts. |
 | [`process_archive/`](process_archive/) | Provenance: Aristotle chunks, GPT Pro consult bundles, superseded decks, pre-release audit, legacy planning notes. Not part of the verified artefact, kept for traceability. |

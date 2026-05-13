@@ -71,7 +71,7 @@ Every cell either lists the sealed subdomain or marks the §G boundary point.
 
 > **About the K-count column.** Three different compilation paths feed the
 > formal artefact's witnesses, and the K-counts you see below are a mix of all
-> three. The web companion at `web/eml-tree-builder/` uses *only* path (a) plus
+> three. The web companion (live at <https://nasqret.github.io/eml-formalization/>) uses *only* path (a) plus
 > the verbatim trig witnesses, so its K-counts agree with this table for
 > log/exp/sub/mul/div/sq/sqrt/sigmoid/sinh/cosh/tanh and for the entire trig
 > family, but **diverge** for path-(b) and path-(c) entries — see the end of
