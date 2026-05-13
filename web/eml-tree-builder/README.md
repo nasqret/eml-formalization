@@ -4,6 +4,8 @@ Interactive in-browser compiler for arXiv:2603.21852.
 Type a mathematical function; it builds the complete `EMLTerm` tree
 using only `1`, variables, and `eml(a, b) = exp(a) − log(b)`.
 
+**Live demo:** <https://nasqret.github.io/eml-formalization/>
+
 ## What it shows
 
 - The compiled EML tree (SVG, hover the `eml` nodes for the

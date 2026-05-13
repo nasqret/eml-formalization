@@ -10,6 +10,7 @@
 [![Paper](https://img.shields.io/badge/arXiv-2603.21852-darkred)](https://arxiv.org/abs/2603.21852)
 [![Code license](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE)
 [![Docs license](https://img.shields.io/badge/docs-CC--BY--SA--4.0-lightgrey)](LICENSE-DOCS)
+[![Live demo](https://img.shields.io/badge/live%20demo-EML%20Tree%20Builder-purple)](https://nasqret.github.io/eml-formalization/)
 
 ---
 
@@ -212,7 +213,7 @@ A first-time-run recipe is archived at [`process_archive/First_run.md`](process_
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts (`verify_all.sbatch`, `rebuild_cache.sbatch`, …) |
 | [`mathematica/`](mathematica/) | Stub pointing at upstream `VA00/SymbolicRegressionPackage` (`VerifyBaseSet`) |
 | [`slides/ghostday_post_submission/`](slides/ghostday_post_submission/) | The current post-submission deck reflecting today's sealed status |
-| [`web/eml-tree-builder/`](web/eml-tree-builder/) | Interactive in-browser compiler — type a function, see the EML tree built by the same `F36 → EL → EML` macros as the Lean artefact |
+| [`web/eml-tree-builder/`](web/eml-tree-builder/) — [live demo](https://nasqret.github.io/eml-formalization/) | Interactive in-browser compiler — type a function, see the EML tree built by the same `F36 → EL → EML` macros as the Lean artefact |
 | [`process_archive/`](process_archive/) | Provenance: Aristotle proof-search chunks, GPT Pro consult bundles, superseded decks, early review bundle, legacy planning notes. **Not part of the verified artefact**, kept for traceability. |
 
 ---
