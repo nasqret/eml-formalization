@@ -212,7 +212,7 @@ A first-time-run recipe is archived at [`process_archive/First_run.md`](process_
 | [`paper/`](paper/) | Canonical paper LaTeX (`EML.tex`, `EML.bib`, figures, `anc/`) + `SupplementaryInformation.pdf` |
 | [`eagle_scripts/`](eagle_scripts/) | PCSS Eagle HPC SLURM scripts (`verify_all.sbatch`, `rebuild_cache.sbatch`, …) |
 | [`mathematica/`](mathematica/) | Stub pointing at upstream `VA00/SymbolicRegressionPackage` (`VerifyBaseSet`) |
-| [`slides/ghostday_post_submission/`](slides/ghostday_post_submission/) | The current post-submission deck reflecting today's sealed status |
+| [`slides/ghostday_post_submission/ghostday_post_submission.pdf`](slides/ghostday_post_submission/ghostday_post_submission.pdf) | **GhostDay 2026 slide deck (PDF).** Prebuilt, committed; regenerable from the markdown source in the same folder via `./build.sh pdf`. |
 | **Live demo:** <https://nasqret.github.io/eml-formalization/> | Interactive in-browser compiler — type a function, see the EML tree built by the same `F36 → EL → EML` macros as the Lean artefact. No install needed. |
 | [`web/eml-tree-builder/`](web/eml-tree-builder/) | Source for the live demo above (pure static HTML + JS + CSS; deployed to Pages via `.github/workflows/pages.yml`). |
 | [`process_archive/`](process_archive/) | Provenance: Aristotle proof-search chunks, GPT Pro consult bundles, superseded decks, early review bundle, legacy planning notes. **Not part of the verified artefact**, kept for traceability. |
@@ -224,6 +224,7 @@ A first-time-run recipe is archived at [`process_archive/First_run.md`](process_
 | If you want to… | Start here |
 |---|---|
 | **Try the EML compiler in the browser** | <https://nasqret.github.io/eml-formalization/> |
+| **See the GhostDay 2026 slide deck** | [`slides/ghostday_post_submission/ghostday_post_submission.pdf`](slides/ghostday_post_submission/ghostday_post_submission.pdf) |
 | **Read the single-PDF technical summary** | [`report/REPORT.pdf`](lambda_lab/proofs/eml/2603_21852/report/REPORT.pdf) (11 pp, 12 May 2026) |
 | **Read the formal claim**, primitive by primitive | [`PaperClaims.lean`](lambda_lab/proofs/eml/2603_21852/lean_workspace/EML/Framework/PaperClaims.lean) |
 | **See what's sealed and what isn't** | [Coverage scoreboard ↑](#coverage-scoreboard) and [DASHBOARD.md](DASHBOARD.md) |

@@ -4,6 +4,13 @@ This is the working folder for the full presentation:
 **"Automatic verification of mathematical theorems with AI"**
 by dr Bartosz Naskręcki, GhostDay 2026.
 
+**Prebuilt PDF (committed):**
+[`ghostday_post_submission.pdf`](ghostday_post_submission.pdf) —
+slide deck reflecting the post-frontier state (8 062 jobs, 100
+theorems, §G sealed via witness family, dual-licensed Apache 2.0 /
+CC BY-SA 4.0). Regenerable from `ghostday_post_submission.md` via
+`./build.sh pdf`.
+
 ## Folder layout
 
 | Subfolder | Purpose |
