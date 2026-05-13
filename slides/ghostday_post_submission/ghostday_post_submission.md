@@ -806,7 +806,7 @@ Two layers:
 | Binary (8) | full natural domain; `hypot(0,0)` boundary sealed by witness-family | structural compiler + `GFullFix` |
 | Trig (6) | `cos`, `arccos`, `arcsin` full natural domain; `sin`, `arctan`, `tan` full natural domain via Path C′ | Euler bridges + range-reduction |
 
-**Net: 36 / 36 literal `EMLTermℂ` · 3 §G boundary points now also sealed via witness-family quantifier flip in `GFullFix.lean`.** All 36 K-counts machine-checked by `rfl` against paper Table 4 (plus 5 K-counts for the post-submission widening companions and 9 direct-macro alternatives). Local build clean (8 062 jobs, every public theorem on the three Mathlib-standard axioms only); re-verified on the **Eagle server** (PCSS, project pl0414-02). One-click reproducer in the public repo.
+**Net: 36 / 36 sealed · 3 §G boundary points via witness-family in `GFullFix.lean` · 100 public theorems · 8 062 lake jobs · axiom-clean · re-verified on PCSS Eagle.** One-click reproducer in the public repo.
 
 ---
 
@@ -930,15 +930,13 @@ These are deliberately *unrelated* to EML — different mathematical content (nu
 
 | Horizon | Goal | Status |
 |---|---|---|
-| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points sealed via witness-family in `GFullFix` · **full-real-domain trig** (Path C′) · **8 EDL + 5 −EML** Sheffer-cousin witnesses · frontier sprint (TransplantDepths, PolynomialBinary, EDLClosedVal) | ✓ **100 theorems, sorry-free, 8 062 jobs** |
-| Already done | K-counting: machine-checked Table 4 figures for 44 witnesses (`KCounting.lean` + `AlternativeWitnesses.lean`, `rfl`-proofs) | ✓ done |
+| Already done | **36/36 paper primitives** sealed via literal `EMLTermℂ` witnesses · §G via witness-family in `GFullFix` · full-real-domain trig (Path C′) · 8 EDL + 5 −EML cousin witnesses · 44 `rfl`-checked K-counts · frontier sprint (Transplant / Polynomial / EDLClosed) | ✓ **100 theorems, 8 062 jobs** |
 | Already done | Axiom audit: every public theorem on Mathlib's three standard axioms only | ✓ `VERIFICATION_EVIDENCE.md` |
-| Now → 1 wk | Discharge `EDLTranscendenceBarrier` (or instance via a Schanuel-style Mathlib result) | open |
+| Now → 1 wk | Discharge `EDLTranscendenceBarrier` (Mathlib Schanuel instance) | open |
 | 1 → 4 wk | Canonical-grammar port of SI §1.5 #5 d=3 non-existence | scoped |
-| 1 → 3 mo | Universal pipeline for *any* paper of this shape (definition + Table-of-witnesses) | scoping |
-| 3 → 6 mo | **Acorn** integration (the new tactic-suggestion service) | watching |
-| 3 → 6 mo | Faster Aristotle as Harmonic ramps capacity | external |
-| 6 → 12 mo | Fully autonomous loops with multi-LLM cross-audit (Claude × GPT Pro × ?) | research |
+| 1 → 3 mo | Universal pipeline for *any* paper of this shape | scoping |
+| 3 → 6 mo | **Acorn** integration · faster Aristotle as Harmonic ramps | external |
+| 6 → 12 mo | Fully autonomous loops, multi-LLM cross-audit | research |
 | 12 mo + | Larger paper portfolio — EML push was a pilot | pipeline |
 
 ---
