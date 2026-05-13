@@ -801,10 +801,10 @@ Two layers:
 | Group (count) | Sealed subdomain | What we ship |
 |---|---|---|
 | Atoms + `i` (8) | full | one theorem per constant |
-| Real unary (8) | full · `(0, ∞)` for `sqrt` | one theorem per primitive |
-| Hyperbolic (6) | full · `(1, ∞)` for `arcosh` | one theorem per primitive |
-| Binary (8) | full · `ℝ² \ {(0,0)}` for `hypot` | one theorem per primitive |
-| Trig (6) | **`ℝ \ {0}`** for `cos`, **`(-π, π) \ {0}`** for `sin`, `arctan`, **full open `(-1, 1)`** for `arcsin` & `arccos`, **`(-π/2, π/2) \ {0}`** for `tan` | each literal `EMLTermℂ` (positive + negative-side companion where needed) |
+| Real unary (8) | full natural domain; `√0` boundary sealed by witness-family | structural compiler + `GFullFix` |
+| Hyperbolic (6) | full natural domain; `arcosh 1` boundary sealed by witness-family | F36→EL+compiler + `GFullFix` |
+| Binary (8) | full natural domain; `hypot(0,0)` boundary sealed by witness-family | structural compiler + `GFullFix` |
+| Trig (6) | `cos`, `arccos`, `arcsin` full natural domain; `sin`, `arctan`, `tan` full natural domain via Path C′ | Euler bridges + range-reduction |
 
 **Net: 36 / 36 literal `EMLTermℂ` · 3 §G boundary points now also sealed via witness-family quantifier flip in `GFullFix.lean`.** All 36 K-counts machine-checked by `rfl` against paper Table 4 (plus 5 K-counts for the post-submission widening companions and 9 direct-macro alternatives). Local build clean (8 062 jobs, every public theorem on the three Mathlib-standard axioms only); re-verified on the **Eagle server** (PCSS, project pl0414-02). One-click reproducer in the public repo.
 
@@ -930,10 +930,11 @@ These are deliberately *unrelated* to EML — different mathematical content (nu
 
 | Horizon | Goal | Status |
 |---|---|---|
-| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points documented · **full-real-domain trig** (Path C′) · **8 EDL + 5 −EML** Sheffer-cousin witnesses (incl. EReal-grammar `−∞` for Plan E E3) | ✓ 61 paper claims, sorry-free |
-| Already done | K-counting: machine-checked Table 4 figures for 15 witnesses (`KCounting.lean`, `rfl`-proofs) | ✓ done |
-| Now → 1 wk | Plan E proper — EReal-grammar `NegEMLTerm` for the `−∞` constant | scoped |
-| 1 → 4 wk | Rebuild the GPT-Pro review bundle with the post-submission artefact | scheduled |
+| Already done | **All 36 paper primitives** sealed on an open subdomain via literal `EMLTermℂ` witnesses · 3 §G boundary points sealed via witness-family in `GFullFix` · **full-real-domain trig** (Path C′) · **8 EDL + 5 −EML** Sheffer-cousin witnesses · frontier sprint (TransplantDepths, PolynomialBinary, EDLClosedVal) | ✓ **100 theorems, sorry-free, 8 062 jobs** |
+| Already done | K-counting: machine-checked Table 4 figures for 44 witnesses (`KCounting.lean` + `AlternativeWitnesses.lean`, `rfl`-proofs) | ✓ done |
+| Already done | Axiom audit: every public theorem on Mathlib's three standard axioms only | ✓ `VERIFICATION_EVIDENCE.md` |
+| Now → 1 wk | Discharge `EDLTranscendenceBarrier` (or instance via a Schanuel-style Mathlib result) | open |
+| 1 → 4 wk | Canonical-grammar port of SI §1.5 #5 d=3 non-existence | scoped |
 | 1 → 3 mo | Universal pipeline for *any* paper of this shape (definition + Table-of-witnesses) | scoping |
 | 3 → 6 mo | **Acorn** integration (the new tactic-suggestion service) | watching |
 | 3 → 6 mo | Faster Aristotle as Harmonic ramps capacity | external |

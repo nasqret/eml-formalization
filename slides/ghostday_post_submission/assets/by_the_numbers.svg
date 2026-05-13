@@ -18,25 +18,25 @@
   <!-- Row 1: 4 tiles -->
   <g transform="translate(40,70)">
     <rect class="tileGreen" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="numG">66/66</text>
-    <text x="110" y="108" class="lblb">chunks verified</text>
-    <text x="110" y="128" class="lbl">lake env lean exit 0</text>
+    <text x="110" y="78"  class="numG">100</text>
+    <text x="110" y="108" class="lblb">public theorems</text>
+    <text x="110" y="128" class="lbl">61 paper claims + 39 frontier</text>
   </g>
   <g transform="translate(290,70)">
     <rect class="tile" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="num">~5,000</text>
-    <text x="110" y="108" class="lblb">lines of Lean</text>
-    <text x="110" y="128" class="lbl">spec + witnesses + proofs</text>
+    <text x="110" y="78"  class="num">8 062</text>
+    <text x="110" y="108" class="lblb">lake build jobs</text>
+    <text x="110" y="128" class="lbl">sorry-free, axiom-clean</text>
   </g>
   <g transform="translate(540,70)">
     <rect class="tile" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="num">3</text>
-    <text x="110" y="108" class="lblb">days elapsed</text>
-    <text x="110" y="128" class="lbl">~1 active engineering day</text>
+    <text x="110" y="78"  class="num">36 / 36</text>
+    <text x="110" y="108" class="lblb">paper primitives sealed</text>
+    <text x="110" y="128" class="lbl">+ 3 §G boundary points</text>
   </g>
   <g transform="translate(790,70)">
     <rect class="tileGold" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="numW">16</text>
+    <text x="110" y="78"  class="numW">134</text>
     <text x="110" y="108" class="lblb">git commits</text>
     <text x="110" y="128" class="lbl">replayable audit trail</text>
   </g>
@@ -44,9 +44,9 @@
   <!-- Row 2: 4 tiles -->
   <g transform="translate(40,240)">
     <rect class="tile" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="num">25+</text>
-    <text x="110" y="108" class="lblb">Aristotle submissions</text>
-    <text x="110" y="128" class="lbl">over 5 waves</text>
+    <text x="110" y="78"  class="num">44</text>
+    <text x="110" y="108" class="lblb">rfl-checked K-counts</text>
+    <text x="110" y="128" class="lbl">machine-verified Table 4</text>
   </g>
   <g transform="translate(290,240)">
     <rect class="tile" width="220" height="150" rx="8"/>
@@ -56,9 +56,10 @@
   </g>
   <g transform="translate(540,240)">
     <rect class="tile" width="220" height="150" rx="8"/>
-    <text x="110" y="78"  class="num">5</text>
-    <text x="110" y="108" class="lblb">tools cooperated</text>
-    <text x="110" y="128" class="lbl">Aristotle · Claude · Codex · MMA · Lean</text>
+    <text x="110" y="78"  class="num">6</text>
+    <text x="110" y="98"  class="lblb">tools cooperated</text>
+    <text x="110" y="118" class="lbl">Aristotle · Claude · GPT Pro</text>
+    <text x="110" y="135" class="lbl">Codex · Mathematica · Lean</text>
   </g>
   <g transform="translate(790,240)">
     <rect class="tileGreen" width="220" height="150" rx="8"/>
@@ -67,5 +68,5 @@
     <text x="110" y="128" class="lbl">scope, taste, sign-off</text>
   </g>
 
-  <text x="540" y="430" class="meta">Active wall-clock under one engineering day; the rest is queue time on Aristotle.</text>
+  <text x="540" y="430" class="meta">Numbers as of 2026-05-13 (post-frontier sprint + pre-announcement seal).</text>
 </svg>
